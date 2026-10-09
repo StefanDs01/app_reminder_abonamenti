@@ -26,8 +26,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -41,6 +42,7 @@ jobs:
       - name: Copy APK to root as ScadenzApp.apk
         run: |
           cp android-app/app/build/outputs/apk/release/app-release.apk ./ScadenzApp.apk
+          ls -lh ./ScadenzApp.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -50,15 +52,16 @@ jobs:
 
       - name: Commit ScadenzApp.apk to repository
         run: |
+          git pull --rebase origin main
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ScadenzApp.apk
+          git add -f ScadenzApp.apk
           git diff --staged --quiet || (git commit -m "chore: update compiled ScadenzApp.apk [skip ci]" && git push origin HEAD:main)
 
       - name: Publish / Update Latest GitHub Release with APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
+          tag_name: v1.0.0
           name: "ScadenzApp Android (.APK)"
           files: ./ScadenzApp.apk
           prerelease: false

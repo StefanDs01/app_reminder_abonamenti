@@ -2036,10 +2036,12 @@
             showToast('📲 Installazione App Android avviata!');
           }
         } else {
+          const stepGuide = document.getElementById('nativeInstallStepGuide');
+          if (stepGuide) stepGuide.classList.remove('hidden');
           showToast(
             state.lang === 'ro'
-              ? '📲 Pe Android Chrome: apasă pe cele 3 puncte ⋮ sus în dreapta și alege "Instalează aplicația"!'
-              : '📲 Su Android Chrome: tocca i 3 puntini ⋮ in alto a destra e premi "Installa app" (o scarica il file .APK qui sotto)!'
+              ? '📲 Pe Android Chrome: apasă pe ⋮ sus în dreapta și alege "Instalează aplicația"!'
+              : '📲 Segui i 2 passaggi verdi qui sopra oppure clicca "Scarica ScadenzApp.apk" qui sotto!'
           );
         }
       });

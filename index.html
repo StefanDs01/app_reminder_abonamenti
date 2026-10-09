@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — Abbonamenti, Disdette, Bollette &amp; Auto (IT 🇮🇹 / RO 🇷🇴)</title>
-  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="manifest" href="./manifest.webmanifest?v=4" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
-  <link rel="apple-touch-icon" href="./icon.svg" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="stylesheet" href="./styles.css?v=4" />
 </head>
 <body>
   <!-- Top Header -->
@@ -49,7 +49,7 @@
           📅 <span class="hide-mobile" id="txtCalendarIcs">Calendario .ics</span>
         </button>
 
-        <button type="button" class="btn btn-success btn-sm" id="btnOpenDownloadAppModal" title="Scarica e installa l'app Android sullo smartphone">
+        <button type="button" class="btn btn-success btn-sm" id="btnOpenDownloadAppModal" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')" title="Scarica e installa l'app Android sullo smartphone">
           <span id="txtDownloadAppBtn">📲 Scarica App</span>
         </button>
 
@@ -503,27 +503,30 @@
     <div class="modal-content modal-lg">
       <div class="modal-header">
         <h2 id="downloadAppModalTitle">📲 Scarica ScadenzApp su Smartphone Android</h2>
-        <button type="button" class="modal-close" id="btnCloseDownloadAppModal" aria-label="Chiudi">✕</button>
+        <button type="button" class="modal-close" id="btnCloseDownloadAppModal" onclick="document.getElementById('downloadAppModalBackdrop').classList.add('hidden')" aria-label="Chiudi">✕</button>
       </div>
 
       <div class="modal-body">
         <!-- Metodo 1: Installazione Diretta Android (WebAPK Nativa firmata da Google Play) -->
         <div class="sync-section vps-highlight-box" style="margin-bottom: 16px;">
           <div class="sync-title-row">
-            <h3>⚡ Metodo 1 (Consigliato): Installazione Diretta Android in 1 Click</h3>
-            <span class="badge-pwa" id="pwaInstallReadyBadge">Pronta</span>
+            <h3>⚡ Metodo 1 (Consigliato): Installa App Direttamente dal Browser</h3>
+            <span class="badge-pwa" id="pwaInstallReadyBadge">Android &amp; iOS</span>
           </div>
           <p class="text-muted">
-            Su Android (Chrome / Samsung Internet / Edge), questo pulsante installa l'<strong>App Nativa (WebAPK)</strong> direttamente nel menu delle applicazioni del tuo telefono (a tutto schermo, con icona e notifiche, <strong>senza avvisi di blocco "Origini sconosciute"</strong> e con aggiornamenti automatici!):
+            Su Android (Chrome / Samsung Internet / Edge), installa l'<strong>App Nativa (WebAPK)</strong> nel menu delle applicazioni del telefono (a tutto schermo, con icona e notifiche, <strong>senza blocchi di sicurezza Play Protect</strong>):
           </p>
           <div class="sync-buttons-row" style="margin-top: 8px;">
             <button type="button" class="btn btn-success" id="btnTriggerNativeInstall" style="font-size: 0.96rem; padding: 11px 18px;">
               📲 Installa App Ora sul Telefono
             </button>
           </div>
-          <p id="nativeInstallHint" class="text-muted" style="font-size: 0.8rem; margin-top: 6px;">
-            💡 <em>Suggerimento: se su Chrome non compare subito il popup automatico, tocca i <strong>3 puntini ⋮</strong> in alto a destra nel browser del telefono e premi <strong>"Installa app"</strong> (oppure "Aggiungi a schermata Home").</em>
-          </p>
+          <div id="nativeInstallStepGuide" class="cancel-limit-callout hidden" style="margin-top: 10px; font-size: 0.86rem; background: rgba(16, 185, 129, 0.15); border-left-color: #10b981; color: var(--text-main);">
+            📲 <strong>Come completare l'installazione su Chrome Android in 2 tocchi:</strong><br/>
+            1️⃣ Tocca l'icona dei <strong>3 puntini <code>⋮</code></strong> in alto a destra su Chrome<br/>
+            2️⃣ Tocca <strong>"Installa app"</strong> (oppure <em>"Aggiungi a schermata Home"</em>)<br/>
+            ✨ L'app verrà installata nel menu del tuo telefono come una vera app!
+          </div>
         </div>
 
         <hr class="divider" />
@@ -531,22 +534,22 @@
         <!-- Metodo 2: Download File .APK Classico -->
         <div class="sync-section">
           <div class="sync-title-row">
-            <h3>📦 Metodo 2: Scarica il pacchetto <code>ScadenzApp.apk</code> per Android</h3>
-            <span class="badge-sync">Android .APK</span>
+            <h3>📦 Metodo 2: Scarica il file <code>ScadenzApp.apk</code> per Android</h3>
+            <span class="badge-sync">File .APK</span>
           </div>
           <p class="text-muted">
-            Preferisci scaricare e installare manualmente il file <strong><code>.APK</code></strong> sul tuo smartphone Android o inviarlo su WhatsApp/Telegram alla tua amica in Romania?
+            Vuoi scaricare direttamente il pacchetto <strong><code>ScadenzApp.apk</code></strong> sul tuo smartphone Android o inviarlo su WhatsApp alla tua amica in Romania?
           </p>
           <div class="sync-buttons-row" style="margin-top: 8px;">
-            <a href="./ScadenzApp.apk" download="ScadenzApp.apk" class="btn btn-primary" id="btnDownloadApkDirect">
-              ⬇️ Scarica ScadenzApp.apk (Dal tuo Server)
+            <a href="https://raw.githubusercontent.com/StefanDs01/app_reminder_abonamenti/main/ScadenzApp.apk" download="ScadenzApp.apk" class="btn btn-primary" id="btnDownloadApkDirect">
+              ⬇️ Scarica ScadenzApp.apk (Download Diretto)
             </a>
-            <a href="https://github.com/StefanDs01/app_reminder_abonamenti/releases/latest/download/ScadenzApp.apk" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-              🐙 Scarica ScadenzApp.apk (Da GitHub Releases)
+            <a href="https://github.com/StefanDs01/app_reminder_abonamenti/releases/download/v1.0.0/ScadenzApp.apk" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              🐙 Scarica ScadenzApp.apk (Mirror GitHub Release)
             </a>
           </div>
           <p class="text-muted" style="font-size: 0.78rem; margin-top: 6px;">
-            Nota: durante l'installazione di un file <code>.apk</code> scaricato fuori dal Play Store, Android potrebbe chiederti <em>"Consenti installazione da questa origine"</em> o mostrare l'avviso di Play Protect (premi <em>"Altri dettagli → Installa comunque"</em>).
+            Nota: quando apri il file <code>ScadenzApp.apk</code> su Android, se compare l'avviso di Google Play Protect tocca <strong>"Altri dettagli" → "Installa comunque"</strong>.
           </p>
         </div>
       </div>
@@ -556,8 +559,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js"></script>
-  <script src="./data-presets.js"></script>
-  <script src="./app.js"></script>
+  <script src="./i18n.js?v=4"></script>
+  <script src="./data-presets.js?v=4"></script>
+  <script src="./app.js?v=4"></script>
 </body>
 </html>
