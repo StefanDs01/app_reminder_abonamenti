@@ -15,15 +15,15 @@ L'applicazione ora include:
 
 Sul tuo PC (in questa cartella):
 ```bash
-git remote add origin https://github.com/TUO-USERNAME/scadenzapp.git
+git remote set-url origin https://github.com/StefanDs01/app_reminder_abonamenti.git
 git branch -M main
 git push -u origin main
 ```
 
 Poi collegati via SSH alla tua **VPS** (`ssh root@IP_DELLA_TUA_VPS`) e clona il repository:
 ```bash
-git clone https://github.com/TUO-USERNAME/scadenzapp.git
-cd scadenzapp
+git clone https://github.com/StefanDs01/app_reminder_abonamenti.git
+cd app_reminder_abonamenti
 ```
 
 ---
