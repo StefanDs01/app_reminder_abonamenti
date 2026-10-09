@@ -22,19 +22,17 @@ Puoi anche aprire direttamente il file **`index.html`** con qualsiasi browser (C
 
 ---
 
-## 🐙 Come salvare e pubblicare su GitHub (e usare su Telefono)
+## 🐙 Come salvare e pubblicare su GitHub e VPS
 
-1. Crea un nuovo repository su GitHub (es. `scadenzapp`).
-2. Dal terminale nella cartella del progetto esegui:
+1. Il repository GitHub collegato è: `https://github.com/StefanDs01/app_reminder_abonamenti`
+2. Per inviare gli aggiornamenti su GitHub dal terminale:
    ```bash
-   git remote add origin https://github.com/TUO-USERNAME/scadenzapp.git
+   git remote set-url origin https://github.com/StefanDs01/app_reminder_abonamenti.git
    git branch -M main
    git push -u origin main
    ```
-3. **Attiva GitHub Pages** (opzionale, per aprirla anche da smartphone):
-   - Vai su **Settings → Pages** del tuo repository GitHub
+3. **Pubblicazione su VPS (Multi-Utente IT 🇮🇹 / RO 🇷🇴)**:
+   - Segui passo-passo il file **[GUIDA_VPS.md](./GUIDA_VPS.md)** per clonare `app_reminder_abonamenti` sulla tua VPS e collegarlo al tuo dominio `inimaaiassist`.
+4. **Attiva GitHub Pages** (opzionale):
+   - Vai su **Settings → Pages** del tuo repository `app_reminder_abonamenti`
    - Sotto **Source**, seleziona `Deploy from a branch` → branch `main` → cartella `/ (root)` e clicca **Save**.
-4. **Sincronizza i tuoi dati tra PC e Telefono tramite GitHub Gist**:
-   - Clicca in alto a destra nell'app su **`☁️ Locale & GitHub`**
-   - Inserisci un **Personal Access Token GitHub** con permesso `gist`
-   - Premi **`☁️⬆️ Salva ora su GitHub (Push)`** o attiva la sincronizzazione automatica!

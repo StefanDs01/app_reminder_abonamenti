@@ -51,8 +51,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/root/scadenzapp
-ExecStart=/usr/bin/python3 /root/scadenzapp/server.py --port 8080
+WorkingDirectory=/root/app_reminder_abonamenti
+ExecStart=/usr/bin/python3 /root/app_reminder_abonamenti/server.py --port 8080
 Restart=always
 RestartSec=3
 
@@ -63,15 +63,15 @@ EOF
 systemctl daemon-reload
 systemctl enable --now scadenzapp
 ```
-*(Se il tuo progetto non è in `/root/scadenzapp`, sostituisci il percorso in `WorkingDirectory` e `ExecStart`).*
+*(Se il tuo progetto non è in `/root/app_reminder_abonamenti`, sostituisci il percorso in `WorkingDirectory` e `ExecStart`).*
 
 ---
 
-## 🔒 Passo 3 (Consigliato per Smartphone): Attivare HTTPS con Dominio o Sottodominio
+## 🔒 Passo 3 (Consigliato per Smartphone): Collegare il tuo sottodominio `inimaaiassist` in HTTPS
 
 > **Nota importante per le Notifiche sul Telefono**: I browser moderni (Chrome su Android e Safari su iPhone) attivano le **Notifiche Web Push** e l'**Installazione PWA** solo se il sito è in **HTTPS** (oppure `localhost`).
 
-Se hai un dominio o sottodominio puntato all'IP della tua VPS (es. `scadenze.tuodominio.com` oppure un dominio gratuito come DuckDNS), il modo più veloce in assoluto per avere **HTTPS automatico gratuito** è usare **Caddy** o **Nginx + Certbot**:
+Nel pannello DNS del tuo dominio **`inimaaiassist`**, crea un nuovo record **`A`** (es. `scadenze.inimaaiassist...` o `reminder.inimaaiassist...`) che punta allo stesso indirizzo IP della tua VPS dove hai `n8n.inimaaiassist...`.
 
 ### Con Caddy (2 righe di configurazione, certificato SSL automatico):
 ```bash
@@ -79,7 +79,7 @@ apt install -y caddy
 ```
 Nel file `/etc/caddy/Caddyfile` aggiungi:
 ```caddyfile
-scadenze.tuodominio.com {
+scadenze.inimaaiassist.com {
     reverse_proxy localhost:8080
 }
 ```
@@ -88,10 +88,10 @@ E riavvia Caddy:
 systemctl reload caddy
 ```
 
-### Oppure con Nginx (se usi già Nginx sulla VPS):
+### Oppure con Nginx (se usi già Nginx sulla VPS per `n8n`):
 ```nginx
 server {
-    server_name scadenze.tuodominio.com;
+    server_name scadenze.inimaaiassist.com;
 
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -100,13 +100,13 @@ server {
     }
 }
 ```
-Poi lancia `certbot --nginx -d scadenze.tuodominio.com`.
+Poi lancia `certbot --nginx -d scadenze.inimaaiassist.com` (sostituendo l'estensione del tuo dominio `.com` / `.it` / `.ro`).
 
 ---
 
 ## 👩‍💻 Passo 4: Come usarla tu e la tua amica in Romania
 
-1. **Manda il link della tua VPS alla tua amica** (es. `https://scadenze.tuodominio.com` o `http://IP_VPS:8080`).
+1. **Manda il link della tua VPS alla tua amica** (es. `https://scadenze.inimaaiassist...` o `http://IP_VPS:8080`).
 2. **Per la tua amica in Romania**:
    - Appena apre il link, può cliccare in alto su **`🇮🇹 IT`** per passare a **`🇷🇴 RO` (Română)** e su **`💶 EUR`** per passare a **`🇷🇴 RON (lei)`** (oppure tenere entrambe le valute!).
    - Clicca su **`👤 Contul Meu & Cloud`** (in alto a destra), inserisce il suo nome (es. `maria`) e sceglie un suo **PIN segreto**, poi preme **`🔐 Accedi / Salva`**.
