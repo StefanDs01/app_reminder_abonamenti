@@ -422,6 +422,7 @@
       txtLabelUsername: 'labelUsername',
       txtLabelPassword: 'labelPassword',
       txtAuthFooterNote: 'authFooterNote',
+      btnAuthDownloadApp: 'downloadAppBtn',
       txtDownloadAppBtn: 'downloadAppBtn',
       txtLogoutBtn: 'logoutBtn',
       txtHeroGreeting: 'heroGreeting',
@@ -429,7 +430,12 @@
       txtKpiUrgentLabel: 'kpiUrgentLabel',
       txtKpiBillsLabel: 'kpiBillsLabel',
       txtKpiSavedLabel: 'kpiSavedLabel',
+      btnTriggerBrowserNotif: 'btnTestNotif',
       txtMyActiveTitle: 'myActiveTitle',
+      optSortDueDate: 'sortDueDateAsc',
+      optSortCancelFirst: 'sortCancelFirst',
+      optSortPriceDesc: 'sortPriceDesc',
+      optSortNameAsc: 'sortNameAsc',
       txtFilterAll: 'filterAll',
       txtFilterMustCancel: 'filterMustCancel',
       txtFilterSubs: 'filterSubs',
@@ -438,20 +444,38 @@
       txtFilterCancelled: 'filterCancelled',
       txtEmptyTitle: 'emptyMySubsTitle',
       txtEmptyDesc: 'emptyMySubsDesc',
+      btnEmptyConnectGmail: 'btnEmptyConnectGmail',
       btnEmptyGoConnect: 'btnGoToConnect',
       btnEmptyAdd: 'btnAddCustom',
+      txtGmailTagNew: 'gmailTagNew',
+      txtGmailBannerTitle: 'gmailBannerTitle',
+      txtGmailBannerDesc: 'gmailBannerDesc',
+      btnScanGmailQuick: 'btnScanGmailQuick',
       txtConnectSectionTitle: 'connectSectionTitle',
       txtConnectSectionSub: 'connectSectionSub',
+      txtCatTabAll: 'catTabAll',
+      txtCatTabStreaming: 'catTabStreaming',
+      txtCatTabSoftware: 'catTabSoftware',
+      txtCatTabBills: 'catTabBills',
+      txtCatTabAuto: 'catTabAuto',
+      txtNavMySubsLabel: 'navMySubs',
       txtNavConnect: 'navConnect',
       txtNavCalendar: 'navCalendar',
+      txtNavHistoryLabel: 'navHistory',
       btnPrevMonth: 'prevMonth',
       btnNextMonth: 'nextMonth',
       txtHistoryTitle: 'historyTitle',
       txtHistorySubtitle: 'historySubtitle',
+      btnExportIcsAll: 'btnExportIcs',
+      btnExportJson: 'btnExportJson',
+      txtBtnImportJson: 'btnImportJson',
       btnClearHistory: 'clearHistoryBtn',
+      txtAutoDetectBoxTitle: 'autoDetectBoxTitle',
+      txtAutoDetectStepHelp: 'autoDetectStepHelp',
+      btnVerifyOfficialAccount: 'btnOpenSiteAndDetect',
+      btnAutoPasteFromPage: 'btnAutoPasteFromPage',
+      btnDirectCancelPage: 'btnDirectCancelPage',
       txtChooseRealPlan: 'chooseRealPlan',
-      txtVerifyAccountBanner: 'verifyAccountBanner',
-      btnVerifyOfficialAccount: 'verifyAccountBtn',
       txtTypeSubTitle: 'typeSubTitle',
       txtTypeSubDesc: 'typeSubDesc',
       txtTypeBillTitle: 'typeBillTitle',
@@ -464,12 +488,54 @@
       txtLabelPrice: 'labelPrice',
       txtLabelCurrency: 'labelCurrency',
       txtLabelCycle: 'labelCycle',
+      optCycleMonthly: 'cycleMonthly',
+      optCycleBimonthly: 'cycleBimonthly',
+      optCycleQuarterly: 'cycleQuarterly',
+      optCycleSemiannual: 'cycleSemiannual',
+      optCycleYearly: 'cycleYearly',
+      optCycleBiennial: 'cycleBiennial',
+      optCycleOnce: 'cycleOnce',
       txtLabelRemindDays: 'labelRemindDays',
+      optRemind1: 'remind1d',
+      optRemind2: 'remind2d',
+      optRemind3: 'remind3d',
+      optRemind5: 'remind5d',
+      optRemind7: 'remind7d',
+      optRemind10: 'remind10d',
+      optRemind15: 'remind15d',
+      optRemind30: 'remind30d',
       txtLabelPaymentMethod: 'labelPaymentMethod',
+      optCatStreaming: 'catOptStreaming',
+      optCatSoftware: 'catOptSoftware',
+      optCatBills: 'catOptBills',
+      optCatAuto: 'catOptAuto',
+      optCatOther: 'catOptOther',
       txtLabelCancelUrl: 'labelCancelUrl',
       txtLabelNotes: 'labelNotes',
       btnCancelModal: 'btnCancel',
-      btnSaveItem: 'btnSave'
+      btnSaveItem: 'btnSave',
+      downloadAppModalTitle: 'downloadModalTitle',
+      txtDownloadMethod1Title: 'downloadMethod1Title',
+      txtDownloadMethod1Desc: 'downloadMethod1Desc',
+      btnTriggerNativeInstall: 'btnInstallNowPhone',
+      txtDownloadMethod2Title: 'downloadMethod2Title',
+      btnDownloadApkFile: 'btnDownloadApkFile',
+      gmailModalTitle: 'gmailModalTitle',
+      txtGmailModalSec1Title: 'gmailModalSec1Title',
+      txtGmailModalSec1Desc: 'gmailModalSec1Desc',
+      txtGmailGuideTitle: 'gmailGuideTitle',
+      txtGmailGuideStep1: 'gmailGuideStep1',
+      txtGmailGuideStep2: 'gmailGuideStep2',
+      txtGmailGuideStep3: 'gmailGuideStep3',
+      btnGmailGuideLink: 'gmailGuideBtn',
+      txtLabelGmailAddress: 'labelGmailAddress',
+      txtLabelGmailAppPass: 'labelGmailAppPass',
+      btnConnectAndScanGmail: 'btnConnectAndScanGmail',
+      btnRescanGmailModal: 'btnRescanGmailModal',
+      btnDisconnectGmail: 'btnDisconnectGmail',
+      txtGmailModalSec2Title: 'gmailModalSec2Title',
+      txtGmailModalSec2Desc: 'gmailModalSec2Desc',
+      btnParseReceiptText: 'btnParseReceiptText'
     };
 
     Object.entries(mapIds).forEach(([elId, tKey]) => {
@@ -482,8 +548,19 @@
       authSubmit.textContent = state.authMode === 'register' ? t('btnRegisterSubmit') : t('btnLoginSubmit');
     }
 
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.placeholder = t('searchPlaceholder');
+    const placeholdersMap = {
+      authUsername: 'placeholderUsername',
+      authPassword: 'placeholderPassword',
+      searchInput: 'searchPlaceholder',
+      itemAccountEmail: 'placeholderAccountEmail',
+      itemPaymentMethod: 'placeholderPaymentMethod',
+      itemNotes: 'placeholderNotes',
+      inputPasteReceiptText: 'placeholderPasteReceipt'
+    };
+    Object.entries(placeholdersMap).forEach(([elId, tKey]) => {
+      const el = document.getElementById(elId);
+      if (el) el.placeholder = t(tKey);
+    });
 
     const weekdaysRow = document.getElementById('calendarWeekdaysRow');
     if (weekdaysRow) {
@@ -837,16 +914,21 @@
   }
 
   // --- RENDER SERVICE PROPOSALS ("COLLEGA NETFLIX, DISNEY+...") ---
+  let waitingForAutoDetectFromSite = false;
+
   function renderServiceProposals() {
     const grid = document.getElementById('serviceProposalsGrid');
     if (!grid) return;
 
     const presets = window.SERVICE_PRESETS.filter(
-      (p) => state.catalogCategory === 'all' || p.category === state.catalogCategory
+      (p) =>
+        (state.catalogCategory === 'all' || p.category === state.catalogCategory) &&
+        (!p.country || p.country === 'all' || p.country === state.lang)
     );
 
     grid.innerHTML = presets
       .map((preset) => {
+        const displayName = state.lang === 'ro' && preset.name_ro ? preset.name_ro : preset.name;
         const isAlreadyConnected = state.items.some(
           (i) =>
             i.status === 'active' &&
@@ -855,6 +937,9 @@
 
         const cycleMeta = window.BILLING_CYCLES[preset.billingCycle] || { short: '/mese', short_ro: '/lună' };
         const cycleShort = state.lang === 'ro' ? cycleMeta.short_ro || cycleMeta.short : cycleMeta.short;
+        const useRon = state.lang === 'ro' || state.mainCurrency === 'RON';
+        const shownPrice = useRon && preset.defaultPriceRON ? preset.defaultPriceRON : preset.defaultPrice;
+        const shownCurrency = useRon && preset.defaultPriceRON ? 'RON' : preset.defaultCurrency;
 
         return `
           <div class="proposal-card ${isAlreadyConnected ? 'is-already-connected' : ''}">
@@ -863,14 +948,14 @@
                 ${escapeHtml(preset.brandTag || preset.icon)}
               </div>
               <div class="proposal-info">
-                <h4>${escapeHtml(preset.icon)} ${escapeHtml(preset.name)}</h4>
-                <span>da ${formatCurrency(preset.defaultPrice, preset.defaultCurrency)}${escapeHtml(cycleShort)}</span>
+                <h4>${escapeHtml(preset.icon)} ${escapeHtml(displayName)}</h4>
+                <span>${t('fromPricePrefix')} ${formatCurrency(shownPrice, shownCurrency)}${escapeHtml(cycleShort)}</span>
               </div>
             </div>
 
             <div class="proposal-actions">
               <button type="button" class="btn btn-sm ${isAlreadyConnected ? 'btn-outline' : 'btn-primary'}" data-connect-preset="${preset.id}">
-                ${isAlreadyConnected ? t('btnConnectedAlready') : `${t('btnConnectService')} ${escapeHtml(preset.name.split(' ')[0])}`}
+                ${isAlreadyConnected ? t('btnConnectedAlready') : `${t('btnConnectService')} ${escapeHtml(displayName.split(' ')[0])}`}
               </button>
               ${
                 preset.cancelUrl
@@ -884,7 +969,7 @@
       .join('');
   }
 
-  // --- OPEN CONNECT / ADD MODAL WITH REAL PLANS ---
+  // --- OPEN CONNECT / ADD MODAL WITH REAL PLANS & AUTO-DETECT ---
   function openConnectServiceModal(presetId) {
     const preset = window.SERVICE_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
@@ -896,30 +981,42 @@
     const plansGrid = document.getElementById('servicePlansButtons');
     const officialRow = document.getElementById('officialAccountRow');
     const verifyBtn = document.getElementById('btnVerifyOfficialAccount');
+    const directCancelBtn = document.getElementById('btnDirectCancelPage');
+    const howToCancelBox = document.getElementById('howToCancelCallout');
+
+    const displayName = state.lang === 'ro' && preset.name_ro ? preset.name_ro : preset.name;
+    const useRon = state.lang === 'ro' || state.mainCurrency === 'RON';
+    const initialPrice = useRon && preset.defaultPriceRON ? preset.defaultPriceRON : preset.defaultPrice;
+    const initialCurrency = useRon && preset.defaultPriceRON ? 'RON' : preset.defaultCurrency || state.mainCurrency || 'EUR';
+    const howToCancelText = state.lang === 'ro' ? preset.howToCancel_ro || preset.howToCancel_it : preset.howToCancel_it;
 
     form.reset();
     document.getElementById('itemId').value = '';
-    title.textContent = `${t('modalConnectPrefix')} ${preset.icon} ${preset.name}`;
+    title.textContent = `${t('modalConnectPrefix')} ${preset.icon} ${displayName}`;
 
     // Pre-fill form fields from the selected service
-    document.getElementById('itemName').value = preset.name;
+    document.getElementById('itemName').value = displayName;
     document.getElementById('itemIcon').value = preset.icon;
     document.getElementById('itemCategory').value = preset.category;
-    document.getElementById('itemPrice').value = preset.defaultPrice;
-    document.getElementById('itemCurrency').value = preset.defaultCurrency || state.mainCurrency || 'EUR';
+    document.getElementById('itemPrice').value = initialPrice;
+    document.getElementById('itemCurrency').value = initialCurrency;
     document.getElementById('itemCycle').value = preset.billingCycle;
     document.getElementById('itemRemindDays').value = String(preset.remindDaysBefore);
     document.getElementById('itemColor').value = preset.color;
-    document.getElementById('itemCancelUrl').value = preset.cancelUrl || '';
-    document.getElementById('itemNotes').placeholder = preset.notesPlaceholder || '';
+    document.getElementById('itemCancelUrl').value = preset.directCancelUrl || preset.cancelUrl || '';
+    document.getElementById('itemNotes').value = howToCancelText || '';
     document.getElementById('itemNextDate').value = addMonthsKeepDay(formatDateInput(getTodayMidnight()), 1);
+
+    if (state.gmailStatus && state.gmailStatus.email) {
+      document.getElementById('itemAccountEmail').value = state.gmailStatus.email;
+    }
 
     const radio = document.querySelector(`input[name="itemType"][value="${preset.itemType}"]`);
     if (radio) radio.checked = true;
     updateFormVisibilityByType(preset.itemType);
 
-    // Show real plans if available + official account link
-    if ((preset.plans && preset.plans.length > 0) || preset.cancelUrl) {
+    // Show Auto-Detect box + how to cancel + real plans
+    if ((preset.plans && preset.plans.length > 0) || preset.cancelUrl || howToCancelText) {
       planBox.classList.remove('hidden');
 
       if (preset.cancelUrl) {
@@ -929,19 +1026,38 @@
         officialRow.classList.add('hidden');
       }
 
+      if (directCancelBtn) {
+        if (preset.directCancelUrl) {
+          directCancelBtn.href = preset.directCancelUrl;
+          directCancelBtn.classList.remove('hidden');
+        } else {
+          directCancelBtn.classList.add('hidden');
+        }
+      }
+
+      if (howToCancelBox) {
+        if (howToCancelText) {
+          howToCancelBox.innerHTML = `<strong>${t('howToCancelLabel')}</strong> ${escapeHtml(howToCancelText)}`;
+          howToCancelBox.classList.remove('hidden');
+        } else {
+          howToCancelBox.classList.add('hidden');
+        }
+      }
+
       if (preset.plans && preset.plans.length > 0) {
         plansGrid.innerHTML = preset.plans
-          .map(
-            (plan, idx) => `
+          .map((plan, idx) => {
+            const pLabel = state.lang === 'ro' && plan.label_ro ? plan.label_ro : plan.label;
+            return `
             <button type="button" class="plan-option-btn ${idx === 1 ? 'selected' : ''}"
               data-plan-price="${plan.price}"
               data-plan-currency="${plan.currency}"
               data-plan-cycle="${plan.cycle}"
-              data-plan-label="${escapeAttr(plan.label)}">
-              ${escapeHtml(plan.label)}
+              data-plan-label="${escapeAttr(pLabel)}">
+              ${escapeHtml(pLabel)}
             </button>
-          `
-          )
+          `;
+          })
           .join('');
       } else {
         plansGrid.innerHTML = '';
@@ -1620,6 +1736,161 @@
     if (btnScanQuick) btnScanQuick.addEventListener('click', handleScanGmailNow);
     if (btnDisconnectGmail) btnDisconnectGmail.addEventListener('click', handleDisconnectGmail);
     if (btnParseReceipt) btnParseReceipt.addEventListener('click', handleParseReceiptText);
+
+    // Auto-Detect when clicking "1. Apri Account Ufficiale" and returning to ScadenzApp
+    const btnVerifyOfficial = document.getElementById('btnVerifyOfficialAccount');
+    const btnAutoPastePage = document.getElementById('btnAutoPasteFromPage');
+
+    if (btnVerifyOfficial) {
+      btnVerifyOfficial.addEventListener('click', () => {
+        waitingForAutoDetectFromSite = true;
+        showToast(
+          state.lang === 'ro'
+            ? '🌐 Copiază prețul/scadența din contul deschis și revino în aplicație!'
+            : '🌐 Copia la riga col prezzo/scadenza dalla pagina aperta e torna qui!'
+        );
+      });
+    }
+
+    if (btnAutoPastePage) {
+      btnAutoPastePage.addEventListener('click', () => triggerAutoReadFromClipboardOrPrompt(false));
+    }
+
+    window.addEventListener('focus', () => {
+      if (waitingForAutoDetectFromSite) {
+        waitingForAutoDetectFromSite = false;
+        triggerAutoReadFromClipboardOrPrompt(true);
+      }
+    });
+  }
+
+  // --- AUTO-DETECT PRICE, RENEWAL DATE & EMAIL FROM OFFICIAL SITE (NETFLIX, DISNEY+, ETC.) ---
+  const MONTH_NAMES_MAP = {
+    gennaio: 1, gen: 1, ianuarie: 1, ian: 1, january: 1, jan: 1,
+    febbraio: 2, feb: 2, februarie: 2, february: 2,
+    marzo: 3, mar: 3, martie: 3, march: 3,
+    aprile: 4, apr: 4, aprilie: 4, april: 4,
+    maggio: 5, mag: 5, mai: 5, may: 5,
+    giugno: 6, giu: 6, iunie: 6, iun: 6, june: 6, jun: 6,
+    luglio: 7, lug: 7, iulie: 7, iul: 7, july: 7, jul: 7,
+    agosto: 8, ago: 8, august: 8, aug: 8,
+    settembre: 9, set: 9, septembrie: 9, sep: 9, sept: 9, september: 9,
+    ottobre: 10, ott: 10, octombrie: 10, oct: 10, october: 10,
+    novembre: 11, nov: 11, noiembrie: 11, november: 11,
+    dicembre: 12, dic: 12, decembrie: 12, dec: 12, december: 12
+  };
+
+  function extractExplicitDateFromText(text) {
+    if (!text) return null;
+    const now = new Date();
+
+    // 1. DD/MM/YYYY o DD.MM.YYYY o DD-MM-YYYY
+    const numMatch = text.match(/\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})\b/);
+    if (numMatch) {
+      const d = parseInt(numMatch[1], 10);
+      const m = parseInt(numMatch[2], 10);
+      let y = parseInt(numMatch[3], 10);
+      if (y < 100) y += 2000;
+      if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2024 && y <= 2035) {
+        return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      }
+    }
+
+    // 2. DD <mese IT/RO/EN> [YYYY] (es. "18 novembre 2026" o "18 noiembrie")
+    const wordRegex = /\b(\d{1,2})\s+([a-zA-ZăâîșțĂÂÎȘȚ]{3,12})(?:\.?\s+(\d{4}))?\b/g;
+    let mMatch;
+    while ((mMatch = wordRegex.exec(text)) !== null) {
+      const day = parseInt(mMatch[1], 10);
+      const monthRaw = mMatch[2].toLowerCase();
+      const month = MONTH_NAMES_MAP[monthRaw];
+      if (month && day >= 1 && day <= 31) {
+        let year = mMatch[3] ? parseInt(mMatch[3], 10) : now.getFullYear();
+        const candidate = new Date(year, month - 1, day);
+        if (!mMatch[3] && candidate < getTodayMidnight()) {
+          year += 1;
+        }
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+    }
+
+    return null;
+  }
+
+  function extractPriceAndCurrencyFromText(text) {
+    if (!text) return null;
+    const patterns = [
+      { re: /(?:€|EUR)\s*(\d{1,4}[.,]\d{2})/i, curr: 'EUR' },
+      { re: /(\d{1,4}[.,]\d{2})\s*(?:€|EUR)/i, curr: 'EUR' },
+      { re: /(\d{1,4}[.,]\d{2})\s*(?:lei|LEI|RON)/i, curr: 'RON' },
+      { re: /(?:RON|LEI)\s*(\d{1,4}[.,]\d{2})/i, curr: 'RON' }
+    ];
+    for (const p of patterns) {
+      const m = text.match(p.re);
+      if (m) {
+        const val = parseFloat(m[1].replace(',', '.'));
+        if (val >= 0.5 && val <= 3000) {
+          return { price: val, currency: p.curr };
+        }
+      }
+    }
+    return null;
+  }
+
+  async function triggerAutoReadFromClipboardOrPrompt(isSilentFocus = false) {
+    let rawText = '';
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        rawText = await navigator.clipboard.readText();
+      }
+    } catch (_) {}
+
+    if (!rawText || rawText.trim().length < 3) {
+      if (isSilentFocus) return;
+      const promptMsg =
+        state.lang === 'ro'
+          ? 'Lipește aici textul copiat din pagina contului tău (Netflix, Disney+, Spotify... cu prețul și data facturării):'
+          : 'Incolla qui il testo copiato dalla pagina del tuo account (Netflix, Disney+, Spotify... con prezzo e data di rinnovo):';
+      rawText = window.prompt(promptMsg, '') || '';
+    }
+
+    if (!rawText.trim()) return;
+
+    const priceFound = extractPriceAndCurrencyFromText(rawText);
+    const dateFound = extractExplicitDateFromText(rawText);
+    const emailMatch = rawText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+
+    if (!priceFound && !dateFound && !emailMatch) {
+      if (!isSilentFocus) {
+        showToast(
+          state.lang === 'ro'
+            ? '⚠️ Nu am găsit prețul sau data în textul copiat. Copiază rândul cu prețul și data scadenței!'
+            : '⚠️ Non ho trovato prezzo o data nel testo copiato. Copia la riga con prezzo e scadenza!'
+        );
+      }
+      return;
+    }
+
+    if (priceFound) {
+      document.getElementById('itemPrice').value = priceFound.price.toFixed(2);
+      document.getElementById('itemCurrency').value = priceFound.currency;
+    }
+    if (dateFound) {
+      document.getElementById('itemNextDate').value = dateFound;
+    }
+    if (emailMatch) {
+      document.getElementById('itemAccountEmail').value = emailMatch[0];
+    }
+
+    const summaryParts = [];
+    if (priceFound) summaryParts.push(formatCurrency(priceFound.price, priceFound.currency));
+    if (dateFound) summaryParts.push(formatLocalizedDate(dateFound));
+    if (emailMatch) summaryParts.push(emailMatch[0]);
+
+    showToast(
+      state.lang === 'ro'
+        ? `⚡ Preluat automat din pagină: ${summaryParts.join(' • ')}!`
+        : `⚡ Rilevato in automatico dalla pagina: ${summaryParts.join(' • ')}!`
+    );
   }
 
   // --- GMAIL / GOOGLE PLAY AUTO-IMPORT LOGIC ---
@@ -1636,22 +1907,16 @@
 
     if (pill) {
       if (isConnected) {
-        pill.textContent = `🟢 Attivo: ${state.gmailStatus.email}`;
+        pill.textContent = `${t('gmailConnectedPrefix')} ${state.gmailStatus.email}`;
         pill.classList.add('connected');
       } else {
-        pill.textContent = state.lang === 'ro' ? '⚪ Neconectat' : '⚪ Non collegato';
+        pill.textContent = t('gmailNotConnected');
         pill.classList.remove('connected');
       }
     }
 
     if (btnOpen) {
-      btnOpen.textContent = isConnected
-        ? state.lang === 'ro'
-          ? '⚙️ Gestionează Gmail'
-          : '⚙️ Gestisci Gmail'
-        : state.lang === 'ro'
-        ? '📧 Conectează Gmail (Auto-Import)'
-        : '📧 Collega Gmail (Auto-Import)';
+      btnOpen.textContent = isConnected ? t('btnOpenGmailManage') : t('btnOpenGmailConnect');
     }
 
     if (btnQuickScan) {
@@ -1659,7 +1924,7 @@
     }
 
     if (modalBadge) {
-      modalBadge.textContent = isConnected ? `🟢 ${state.gmailStatus.email}` : 'Non collegato';
+      modalBadge.textContent = isConnected ? `🟢 ${state.gmailStatus.email}` : t('gmailNotConnected');
     }
     if (inputEmail && isConnected && !inputEmail.value) {
       inputEmail.value = state.gmailStatus.email;
@@ -1697,13 +1962,21 @@
     const btn = document.getElementById('btnConnectAndScanGmail');
 
     if (!gmailEmail || !gmailEmail.includes('@')) {
-      showGmailModalMessage('⚠️ Inserisci il tuo indirizzo @gmail.com valido.', true);
+      showGmailModalMessage(
+        state.lang === 'ro'
+          ? '⚠️ Introdu o adresă @gmail.com validă.'
+          : '⚠️ Inserisci il tuo indirizzo @gmail.com valido.',
+        true
+      );
       return;
     }
 
     const oldText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '⏳ Connessione a Gmail e scansione in corso...';
+    btn.textContent =
+      state.lang === 'ro'
+        ? '⏳ Conectare la Gmail și scanare în curs...'
+        : '⏳ Connessione a Gmail e scansione in corso...';
 
     try {
       const res = await fetch('/api/gmail/connect', {
@@ -1729,13 +2002,21 @@
       const count = data.addedCount || 0;
       showGmailModalMessage(
         count > 0
-          ? `🎉 Gmail collegata! Trovati e importati ${count} nuovi abbonamenti dalle tue email!`
+          ? state.lang === 'ro'
+            ? `🎉 Gmail conectat! Am găsit și importat ${count} abonamente noi din emailurile tale!`
+            : `🎉 Gmail collegata! Trovati e importati ${count} nuovi abbonamenti dalle tue email!`
+          : state.lang === 'ro'
+          ? '✅ Gmail conectat cu succes! Niciun abonament nou în ultimele 60 de zile (serverul va verifica automat emailurile viitoare).'
           : '✅ Gmail collegata con successo! Nessun nuovo abbonamento negli ultimi 60 giorni (il server controllerà in automatico le prossime email).',
         false
       );
       showToast(
         count > 0
-          ? `🎉 Importati ${count} abbonamenti da Gmail!`
+          ? state.lang === 'ro'
+            ? `🎉 ${count} abonamente importate din Gmail!`
+            : `🎉 Importati ${count} abbonamenti da Gmail!`
+          : state.lang === 'ro'
+          ? '✅ Gmail conectat! Auto-Import activ.'
           : '✅ Gmail collegata! Auto-Import attivo.'
       );
     } catch (err) {
@@ -1751,11 +2032,11 @@
     const btnModal = document.getElementById('btnRescanGmailModal');
     if (btnQuick) {
       btnQuick.disabled = true;
-      btnQuick.textContent = '⏳ Scansione...';
+      btnQuick.textContent = '⏳...';
     }
     if (btnModal) {
       btnModal.disabled = true;
-      btnModal.textContent = '⏳ Scansione in corso...';
+      btnModal.textContent = '⏳...';
     }
 
     try {
@@ -1780,7 +2061,11 @@
       const count = data.addedCount || 0;
       const msg =
         count > 0
-          ? `🎉 Trovati e aggiunti ${count} nuovi abbonamenti dalle tue email!`
+          ? state.lang === 'ro'
+            ? `🎉 Am găsit și adăugat ${count} abonamente noi din emailurile tale!`
+            : `🎉 Trovati e aggiunti ${count} nuovi abbonamenti dalle tue email!`
+          : state.lang === 'ro'
+          ? '✅ Scanare completă: niciun abonament nou găsit.'
           : '✅ Scansione completata: nessun nuovo abbonamento trovato.';
       showGmailModalMessage(msg, false);
       showToast(msg);
@@ -1790,11 +2075,11 @@
     } finally {
       if (btnQuick) {
         btnQuick.disabled = false;
-        btnQuick.textContent = '🔄 Scansiona Ora';
+        btnQuick.textContent = t('btnScanGmailQuick');
       }
       if (btnModal) {
         btnModal.disabled = false;
-        btnModal.textContent = '🔄 Scansiona Nuove Email Ora';
+        btnModal.textContent = t('btnRescanGmailModal');
       }
     }
   }
@@ -1813,15 +2098,21 @@
       if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
       document.getElementById('inputGmailAppPassword').value = '';
       renderAll();
-      showGmailModalMessage('🔌 Gmail scollegata.', false);
-      showToast('🔌 Gmail scollegata.');
+      const msg = state.lang === 'ro' ? '🔌 Gmail deconectat.' : '🔌 Gmail scollegata.';
+      showGmailModalMessage(msg, false);
+      showToast(msg);
     } catch (_) {}
   }
 
   async function handleParseReceiptText() {
     const rawText = (document.getElementById('inputPasteReceiptText').value || '').trim();
     if (!rawText) {
-      showGmailModalMessage('⚠️ Incolla prima il testo della ricevuta o dell\'email.', true);
+      showGmailModalMessage(
+        state.lang === 'ro'
+          ? '⚠️ Lipește mai întâi textul din cont sau din chitanță.'
+          : "⚠️ Incolla prima il testo della pagina account o dell'email.",
+        true
+      );
       return;
     }
 
@@ -1836,7 +2127,14 @@
       });
       const data = await res.json();
       if (!res.ok || !data.ok || !data.item) {
-        throw new Error(data.error || 'Impossibile leggere la ricevuta');
+        throw new Error(data.error || 'Impossibile leggere il testo');
+      }
+
+      // Se nel testo c'è una data esplicita (es. "18 novembre 2026"), usiamola!
+      const explicitDate = extractExplicitDateFromText(rawText);
+      if (explicitDate) {
+        data.item.nextDate = explicitDate;
+        data.item.nextDueDate = explicitDate;
       }
 
       state.items.unshift(data.item);
@@ -1844,7 +2142,9 @@
       saveUserDataAndSync();
       renderAll();
       closeGmailModal();
-      showToast(`✅ Aggiunto in automatico: ${data.item.icon} ${data.item.name} (${formatCurrency(data.item.price, data.item.currency)})`);
+      showToast(
+        `✅ ${data.item.icon} ${data.item.name} (${formatCurrency(data.item.price, data.item.currency)})`
+      );
     } catch (err) {
       showGmailModalMessage(`⚠️ ${err.message}`, true);
     }
