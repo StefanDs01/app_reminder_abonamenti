@@ -49,6 +49,10 @@
           📅 <span class="hide-mobile" id="txtCalendarIcs">Calendario .ics</span>
         </button>
 
+        <button type="button" class="btn btn-success btn-sm" id="btnOpenDownloadAppModal" title="Scarica e installa l'app Android sullo smartphone">
+          <span id="txtDownloadAppBtn">📲 Scarica App</span>
+        </button>
+
         <button type="button" class="btn btn-outline btn-sm" id="btnOpenSyncModal" title="Accedi al tuo profilo personale sulla VPS, sincronizza con GitHub o esporta backup">
           <span id="syncBtnLabel">👤 Profilo &amp; Cloud</span>
         </button>
@@ -489,6 +493,61 @@
             <button type="button" class="btn btn-ghost btn-sm" id="btnSaveGhConfig">💾 Salva Token</button>
           </div>
           <p id="ghStatusMsg" class="sync-status-msg"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODALE SCARICA APP ANDROID (.APK & INSTALLAZIONE DIRETTA) ================= -->
+  <div class="modal-backdrop hidden" id="downloadAppModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="downloadAppModalTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="downloadAppModalTitle">📲 Scarica ScadenzApp su Smartphone Android</h2>
+        <button type="button" class="modal-close" id="btnCloseDownloadAppModal" aria-label="Chiudi">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Metodo 1: Installazione Diretta Android (WebAPK Nativa firmata da Google Play) -->
+        <div class="sync-section vps-highlight-box" style="margin-bottom: 16px;">
+          <div class="sync-title-row">
+            <h3>⚡ Metodo 1 (Consigliato): Installazione Diretta Android in 1 Click</h3>
+            <span class="badge-pwa" id="pwaInstallReadyBadge">Pronta</span>
+          </div>
+          <p class="text-muted">
+            Su Android (Chrome / Samsung Internet / Edge), questo pulsante installa l'<strong>App Nativa (WebAPK)</strong> direttamente nel menu delle applicazioni del tuo telefono (a tutto schermo, con icona e notifiche, <strong>senza avvisi di blocco "Origini sconosciute"</strong> e con aggiornamenti automatici!):
+          </p>
+          <div class="sync-buttons-row" style="margin-top: 8px;">
+            <button type="button" class="btn btn-success" id="btnTriggerNativeInstall" style="font-size: 0.96rem; padding: 11px 18px;">
+              📲 Installa App Ora sul Telefono
+            </button>
+          </div>
+          <p id="nativeInstallHint" class="text-muted" style="font-size: 0.8rem; margin-top: 6px;">
+            💡 <em>Suggerimento: se su Chrome non compare subito il popup automatico, tocca i <strong>3 puntini ⋮</strong> in alto a destra nel browser del telefono e premi <strong>"Installa app"</strong> (oppure "Aggiungi a schermata Home").</em>
+          </p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Metodo 2: Download File .APK Classico -->
+        <div class="sync-section">
+          <div class="sync-title-row">
+            <h3>📦 Metodo 2: Scarica il pacchetto <code>ScadenzApp.apk</code> per Android</h3>
+            <span class="badge-sync">Android .APK</span>
+          </div>
+          <p class="text-muted">
+            Preferisci scaricare e installare manualmente il file <strong><code>.APK</code></strong> sul tuo smartphone Android o inviarlo su WhatsApp/Telegram alla tua amica in Romania?
+          </p>
+          <div class="sync-buttons-row" style="margin-top: 8px;">
+            <a href="./ScadenzApp.apk" download="ScadenzApp.apk" class="btn btn-primary" id="btnDownloadApkDirect">
+              ⬇️ Scarica ScadenzApp.apk (Dal tuo Server)
+            </a>
+            <a href="https://github.com/StefanDs01/app_reminder_abonamenti/releases/latest/download/ScadenzApp.apk" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              🐙 Scarica ScadenzApp.apk (Da GitHub Releases)
+            </a>
+          </div>
+          <p class="text-muted" style="font-size: 0.78rem; margin-top: 6px;">
+            Nota: durante l'installazione di un file <code>.apk</code> scaricato fuori dal Play Store, Android potrebbe chiederti <em>"Consenti installazione da questa origine"</em> o mostrare l'avviso di Play Protect (premi <em>"Altri dettagli → Installa comunque"</em>).
+          </p>
         </div>
       </div>
     </div>

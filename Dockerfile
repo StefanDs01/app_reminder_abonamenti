@@ -2,8 +2,8 @@ FROM python:3.12-alpine
 
 WORKDIR /app
 
-# Copia i file dell'applicazione
-COPY index.html styles.css i18n.js data-presets.js app.js sw.js icon.svg manifest.webmanifest server.py ./
+# Copia tutti i file dell'applicazione (inclusi icon-192.png, icon-512.png ed eventuale ScadenzApp.apk)
+COPY . ./
 
 # Crea la directory persistente per i profili utenti
 RUN mkdir -p /app/data/users

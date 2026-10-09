@@ -24,6 +24,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 mimetypes.add_type("image/svg+xml", ".svg")
+mimetypes.add_type("application/vnd.android.package-archive", ".apk")
 
 
 def sanitize_username(username: str) -> str:

@@ -394,6 +394,7 @@
 
     const mapIds = {
       txtAppSubtitle: 'appSubtitle',
+      txtDownloadAppBtn: 'downloadAppBtn',
       txtCalendarIcs: 'calendarIcs',
       txtAddDeadlineBtn: 'addDeadlineBtn',
       txtWhatToMonitor: 'whatToMonitor',
@@ -1986,6 +1987,63 @@
     });
     document.getElementById('btnGhPush').addEventListener('click', () => pushToGitHubGist(false));
     document.getElementById('btnGhPull').addEventListener('click', pullFromGitHubGist);
+
+    // Download App Android Modal & Native WebAPK Install Prompt
+    let deferredInstallPrompt = null;
+    const downloadAppModal = document.getElementById('downloadAppModalBackdrop');
+    const btnOpenDownloadApp = document.getElementById('btnOpenDownloadAppModal');
+    const btnCloseDownloadApp = document.getElementById('btnCloseDownloadAppModal');
+    const btnTriggerNativeInstall = document.getElementById('btnTriggerNativeInstall');
+    const pwaReadyBadge = document.getElementById('pwaInstallReadyBadge');
+
+    // Se l'app è già aperta come App Installata (standalone / APK), nascondiamo il bottone "Scarica App"
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+      if (btnOpenDownloadApp) btnOpenDownloadApp.classList.add('hidden');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (pwaReadyBadge) {
+        pwaReadyBadge.textContent = '⚡ Installazione 1-Click Pronta!';
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      if (downloadAppModal) downloadAppModal.classList.add('hidden');
+      if (btnOpenDownloadApp) btnOpenDownloadApp.classList.add('hidden');
+      showToast('🎉 App installata con successo sul tuo telefono Android!');
+    });
+
+    if (btnOpenDownloadApp && downloadAppModal) {
+      btnOpenDownloadApp.addEventListener('click', () => {
+        downloadAppModal.classList.remove('hidden');
+      });
+    }
+    if (btnCloseDownloadApp && downloadAppModal) {
+      btnCloseDownloadApp.addEventListener('click', () => {
+        downloadAppModal.classList.add('hidden');
+      });
+    }
+    if (btnTriggerNativeInstall) {
+      btnTriggerNativeInstall.addEventListener('click', async () => {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          const { outcome } = await deferredInstallPrompt.userChoice;
+          if (outcome === 'accepted') {
+            deferredInstallPrompt = null;
+            showToast('📲 Installazione App Android avviata!');
+          }
+        } else {
+          showToast(
+            state.lang === 'ro'
+              ? '📲 Pe Android Chrome: apasă pe cele 3 puncte ⋮ sus în dreapta și alege "Instalează aplicația"!'
+              : '📲 Su Android Chrome: tocca i 3 puntini ⋮ in alto a destra e premi "Installa app" (o scarica il file .APK qui sotto)!'
+          );
+        }
+      });
+    }
 
     document.getElementById('btnThemeToggle').addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
