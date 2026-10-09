@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=5" />
+  <link rel="manifest" href="./manifest.webmanifest?v=6" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=5" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 </head>
 <body>
 
@@ -171,19 +171,42 @@
         <div id="emptyState" class="empty-state hidden">
           <div class="empty-icon">✨</div>
           <h3 id="txtEmptyTitle">Non hai ancora collegato nessun abbonamento</h3>
-          <p id="txtEmptyDesc">Tocca uno dei servizi qui sotto (es. Netflix, Disney+, Spotify, Bollo Auto, Luce) per collegare i tuoi veri abbonamenti in 10 secondi!</p>
+          <p id="txtEmptyDesc">Collega la tua Gmail per importare in automatico gli abbonamenti da Google Play, Netflix, Disney+ e bollette, oppure tocca un servizio qui sotto!</p>
           <div class="empty-actions">
-            <button type="button" class="btn btn-primary" id="btnEmptyGoConnect">🔗 Scegli e Collega i tuoi Servizi</button>
-            <button type="button" class="btn btn-outline" id="btnEmptyAdd">＋ Aggiungi Scadenza Personalizzata</button>
+            <button type="button" class="btn btn-primary" id="btnEmptyConnectGmail">📧 Auto-Import da Google / Gmail</button>
+            <button type="button" class="btn btn-outline" id="btnEmptyGoConnect">🔗 Scegli Servizio Manualmente</button>
+            <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Aggiungi Personalizzata</button>
           </div>
         </div>
 
         <!-- PROPOSTE RAPIDE SEMPRE A PORTATA DI MANO ("Collega Netflix, Disney+, Spotify...") -->
         <div class="proposals-strip-section">
+          <!-- CARD SPECIALE: SINCRONIZZAZIONE AUTOMATICA GOOGLE / GMAIL -->
+          <div class="gmail-auto-card" id="gmailAutoSyncBanner">
+            <div class="gmail-auto-left">
+              <div class="gmail-badge-row">
+                <span class="gmail-pill-tag">⚡ NOVITÀ AUTO-SYNC</span>
+                <span class="gmail-status-pill" id="gmailStatusPill">⚪ Non collegato</span>
+              </div>
+              <h3 id="txtGmailBannerTitle">📧 Importa in automatico da Google Play &amp; Gmail</h3>
+              <p id="txtGmailBannerDesc">
+                Fai un abbonamento con Google (Google Play, Netflix, Disney+, Spotify, DAZN, Bollette)? Collega la tua Gmail e ScadenzApp lo rileverà e aggiungerà da solo!
+              </p>
+            </div>
+            <div class="gmail-auto-actions">
+              <button type="button" class="btn btn-primary" id="btnOpenGmailModal">
+                📧 Collega Gmail (Auto-Import)
+              </button>
+              <button type="button" class="btn btn-success hidden" id="btnScanGmailQuick">
+                🔄 Scansiona Ora
+              </button>
+            </div>
+          </div>
+
           <div class="proposals-strip-header">
             <div>
-              <h3 id="txtConnectSectionTitle">🔗 Collega i tuoi Abbonamenti &amp; Bollette</h3>
-              <p class="text-muted" id="txtConnectSectionSub">Tocca un servizio che usi per collegarlo al tuo account e attivare gli avvisi anti-rinnovo:</p>
+              <h3 id="txtConnectSectionTitle">🔗 Oppure collega un servizio con 1 tocco</h3>
+              <p class="text-muted" id="txtConnectSectionSub">Tocca un servizio che usi per scegliere il piano e attivare gli avvisi anti-rinnovo:</p>
             </div>
           </div>
 
@@ -465,11 +488,92 @@
     </div>
   </div>
 
+  <!-- ================= MODALE AUTO-IMPORT GOOGLE PLAY & GMAIL ================= -->
+  <div class="modal-backdrop hidden" id="gmailModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="gmailModalTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="gmailModalTitle">📧 Auto-Import da Google Play &amp; Gmail</h2>
+        <button type="button" class="modal-close" id="btnCloseGmailModal" aria-label="Chiudi">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- SEZIONE 1: CONNESSIONE AUTOMATICA GMAIL IMAP (ANCHE IN BACKGROUND) -->
+        <div class="sync-section vps-highlight-box" style="margin-bottom: 18px;">
+          <div class="sync-title-row">
+            <h3 id="txtGmailModalSec1Title">🤖 1. Sincronizzazione Automatica Gmail (Consigliata)</h3>
+            <span class="badge-pwa" id="gmailModalStatusBadge">Non collegato</span>
+          </div>
+          <p class="text-muted" id="txtGmailModalSec1Desc">
+            Collega la tua casella <strong>@gmail.com</strong>: il server rileverà in automatico le ricevute di <strong>Google Play, Netflix, Disney+, Spotify, Prime, DAZN, YouTube, Apple e Bollette</strong> e aggiungerà da solo i nuovi abbonamenti (controlla anche in background ogni 10 minuti!).
+          </p>
+
+          <div class="gmail-guide-box">
+            <strong>🔐 Come ottenere la "Password per le app" di Google in 15 secondi:</strong>
+            <ol>
+              <li>Clicca sul pulsante qui sotto per aprire la pagina ufficiale di sicurezza Google.</li>
+              <li>Scrivi <code>ScadenzApp</code> come nome dell'app e clicca su <strong>Crea</strong>.</li>
+              <li>Copia il codice di <strong>16 lettere</strong> che ti mostra Google e incollalo qui sotto!</li>
+            </ol>
+            <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline" style="margin-top: 6px; display: inline-flex;">
+              🔑 Apri Google App Passwords (myaccount.google.com) ↗
+            </a>
+          </div>
+
+          <div class="form-grid-2" style="margin-top: 12px;">
+            <div class="form-group">
+              <label for="inputGmailAddress">Il tuo indirizzo Gmail</label>
+              <input type="email" id="inputGmailAddress" placeholder="tuonome@gmail.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="inputGmailAppPassword">Password per le app Google (16 lettere)</label>
+              <input type="password" id="inputGmailAppPassword" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off" />
+            </div>
+          </div>
+
+          <div id="gmailModalAlert" class="auth-alert hidden" style="margin-top: 8px;"></div>
+
+          <div class="sync-buttons-row" style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" id="btnConnectAndScanGmail">
+              🚀 Collega Gmail e Scansiona Ultimi 60 Giorni
+            </button>
+            <button type="button" class="btn btn-success hidden" id="btnRescanGmailModal">
+              🔄 Scansiona Nuove Email Ora
+            </button>
+            <button type="button" class="btn btn-ghost text-danger hidden" id="btnDisconnectGmail">
+              🔌 Scollega Gmail
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- SEZIONE 2: INCOLLA TESTO RICEVUTA / EMAIL (SENZA PASSWORD) -->
+        <div class="sync-section">
+          <div class="sync-title-row">
+            <h3 id="txtGmailModalSec2Title">📋 2. Oppure Incolla il testo di una Ricevuta / Email (Senza Password)</h3>
+            <span class="badge-sync">Istantaneo</span>
+          </div>
+          <p class="text-muted" id="txtGmailModalSec2Desc">
+            Hai ricevuto un'email da Google Play, Netflix o Disney+ o un SMS della banca? Copia e incolla il testo qui sotto e ScadenzApp estrarrà nome, prezzo e data di rinnovo!
+          </p>
+          <div class="form-group" style="margin-top: 8px;">
+            <textarea id="inputPasteReceiptText" rows="3" placeholder="Es: Grazie per il tuo acquisto su Google Play. Abbonamento: Disney+ Mensile. Importo: 9,99 €/mese..." style="width:100%; border-radius:10px; padding:10px; background:rgba(15,23,42,0.75); color:#f8fafc; border:1px solid rgba(148,163,184,0.22); font-family:inherit;"></textarea>
+          </div>
+          <div class="sync-buttons-row" style="margin-top: 8px;">
+            <button type="button" class="btn btn-outline" id="btnParseReceiptText">
+              ✨ Rileva e Aggiungi dalla Ricevuta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=5"></script>
-  <script src="./data-presets.js?v=5"></script>
-  <script src="./app.js?v=5"></script>
+  <script src="./i18n.js?v=6"></script>
+  <script src="./data-presets.js?v=6"></script>
+  <script src="./app.js?v=6"></script>
 </body>
 </html>

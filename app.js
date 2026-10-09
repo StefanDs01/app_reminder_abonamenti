@@ -24,6 +24,7 @@
     mainCurrency: 'EUR', // 'EUR' | 'RON'
     items: [],
     history: [],
+    gmailStatus: { enabled: false, email: '', lastScanAt: '' },
     currentView: 'list', // 'list' | 'calendar' | 'history'
     currentFilter: 'all',
     catalogCategory: 'all',
@@ -217,6 +218,7 @@
       };
       state.items = Array.isArray(data.items) ? data.items : [];
       state.history = Array.isArray(data.history) ? data.history : [];
+      if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
       if (data.lang === 'it' || data.lang === 'ro') state.lang = data.lang;
       if (data.mainCurrency === 'EUR' || data.mainCurrency === 'RON') state.mainCurrency = data.mainCurrency;
 
@@ -493,6 +495,7 @@
   // --- RENDERING DASHBOARD ---
   function renderAll() {
     applyStaticTranslations();
+    renderGmailStatus();
     renderUrgentBanner();
     renderKpis();
     renderCounts();
@@ -1598,6 +1601,253 @@
       localStorage.setItem(STORAGE_KEYS.THEME, next);
       updateThemeButtonIcon(next);
     });
+
+    // Gmail / Google Play Auto-Import Events
+    const btnOpenGmail = document.getElementById('btnOpenGmailModal');
+    const btnEmptyGmail = document.getElementById('btnEmptyConnectGmail');
+    const btnCloseGmail = document.getElementById('btnCloseGmailModal');
+    const btnConnectGmail = document.getElementById('btnConnectAndScanGmail');
+    const btnRescanModal = document.getElementById('btnRescanGmailModal');
+    const btnScanQuick = document.getElementById('btnScanGmailQuick');
+    const btnDisconnectGmail = document.getElementById('btnDisconnectGmail');
+    const btnParseReceipt = document.getElementById('btnParseReceiptText');
+
+    if (btnOpenGmail) btnOpenGmail.addEventListener('click', openGmailModal);
+    if (btnEmptyGmail) btnEmptyGmail.addEventListener('click', openGmailModal);
+    if (btnCloseGmail) btnCloseGmail.addEventListener('click', closeGmailModal);
+    if (btnConnectGmail) btnConnectGmail.addEventListener('click', handleConnectAndScanGmail);
+    if (btnRescanModal) btnRescanModal.addEventListener('click', handleScanGmailNow);
+    if (btnScanQuick) btnScanQuick.addEventListener('click', handleScanGmailNow);
+    if (btnDisconnectGmail) btnDisconnectGmail.addEventListener('click', handleDisconnectGmail);
+    if (btnParseReceipt) btnParseReceipt.addEventListener('click', handleParseReceiptText);
+  }
+
+  // --- GMAIL / GOOGLE PLAY AUTO-IMPORT LOGIC ---
+  function renderGmailStatus() {
+    const pill = document.getElementById('gmailStatusPill');
+    const btnOpen = document.getElementById('btnOpenGmailModal');
+    const btnQuickScan = document.getElementById('btnScanGmailQuick');
+    const modalBadge = document.getElementById('gmailModalStatusBadge');
+    const btnRescanModal = document.getElementById('btnRescanGmailModal');
+    const btnDisconnect = document.getElementById('btnDisconnectGmail');
+    const inputEmail = document.getElementById('inputGmailAddress');
+
+    const isConnected = Boolean(state.gmailStatus && state.gmailStatus.enabled && state.gmailStatus.email);
+
+    if (pill) {
+      if (isConnected) {
+        pill.textContent = `🟢 Attivo: ${state.gmailStatus.email}`;
+        pill.classList.add('connected');
+      } else {
+        pill.textContent = state.lang === 'ro' ? '⚪ Neconectat' : '⚪ Non collegato';
+        pill.classList.remove('connected');
+      }
+    }
+
+    if (btnOpen) {
+      btnOpen.textContent = isConnected
+        ? state.lang === 'ro'
+          ? '⚙️ Gestionează Gmail'
+          : '⚙️ Gestisci Gmail'
+        : state.lang === 'ro'
+        ? '📧 Conectează Gmail (Auto-Import)'
+        : '📧 Collega Gmail (Auto-Import)';
+    }
+
+    if (btnQuickScan) {
+      btnQuickScan.classList.toggle('hidden', !isConnected);
+    }
+
+    if (modalBadge) {
+      modalBadge.textContent = isConnected ? `🟢 ${state.gmailStatus.email}` : 'Non collegato';
+    }
+    if (inputEmail && isConnected && !inputEmail.value) {
+      inputEmail.value = state.gmailStatus.email;
+    }
+    if (btnRescanModal) btnRescanModal.classList.toggle('hidden', !isConnected);
+    if (btnDisconnect) btnDisconnect.classList.toggle('hidden', !isConnected);
+  }
+
+  function openGmailModal() {
+    const modal = document.getElementById('gmailModalBackdrop');
+    const alertEl = document.getElementById('gmailModalAlert');
+    if (alertEl) alertEl.classList.add('hidden');
+    renderGmailStatus();
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeGmailModal() {
+    const modal = document.getElementById('gmailModalBackdrop');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function showGmailModalMessage(msg, isError = true) {
+    const alertEl = document.getElementById('gmailModalAlert');
+    if (!alertEl) return;
+    alertEl.textContent = msg;
+    alertEl.style.background = isError ? 'rgba(239, 68, 68, 0.16)' : 'rgba(16, 185, 129, 0.16)';
+    alertEl.style.borderColor = isError ? 'rgba(239, 68, 68, 0.45)' : 'rgba(16, 185, 129, 0.45)';
+    alertEl.style.color = isError ? '#fca5a5' : '#6ee7b7';
+    alertEl.classList.remove('hidden');
+  }
+
+  async function handleConnectAndScanGmail() {
+    const gmailEmail = (document.getElementById('inputGmailAddress').value || '').trim();
+    const gmailAppPassword = (document.getElementById('inputGmailAppPassword').value || '').trim();
+    const btn = document.getElementById('btnConnectAndScanGmail');
+
+    if (!gmailEmail || !gmailEmail.includes('@')) {
+      showGmailModalMessage('⚠️ Inserisci il tuo indirizzo @gmail.com valido.', true);
+      return;
+    }
+
+    const oldText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Connessione a Gmail e scansione in corso...';
+
+    try {
+      const res = await fetch('/api/gmail/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: state.user.username,
+          password: state.user.password,
+          gmailEmail,
+          gmailAppPassword
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'Errore connessione Gmail');
+      }
+
+      if (Array.isArray(data.items)) state.items = data.items;
+      if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
+      saveUserCacheLocally();
+      renderAll();
+
+      const count = data.addedCount || 0;
+      showGmailModalMessage(
+        count > 0
+          ? `🎉 Gmail collegata! Trovati e importati ${count} nuovi abbonamenti dalle tue email!`
+          : '✅ Gmail collegata con successo! Nessun nuovo abbonamento negli ultimi 60 giorni (il server controllerà in automatico le prossime email).',
+        false
+      );
+      showToast(
+        count > 0
+          ? `🎉 Importati ${count} abbonamenti da Gmail!`
+          : '✅ Gmail collegata! Auto-Import attivo.'
+      );
+    } catch (err) {
+      showGmailModalMessage(`⚠️ ${err.message}`, true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  }
+
+  async function handleScanGmailNow() {
+    const btnQuick = document.getElementById('btnScanGmailQuick');
+    const btnModal = document.getElementById('btnRescanGmailModal');
+    if (btnQuick) {
+      btnQuick.disabled = true;
+      btnQuick.textContent = '⏳ Scansione...';
+    }
+    if (btnModal) {
+      btnModal.disabled = true;
+      btnModal.textContent = '⏳ Scansione in corso...';
+    }
+
+    try {
+      const res = await fetch('/api/gmail/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: state.user.username,
+          password: state.user.password
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'Errore scansione Gmail');
+      }
+
+      if (Array.isArray(data.items)) state.items = data.items;
+      if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
+      saveUserCacheLocally();
+      renderAll();
+
+      const count = data.addedCount || 0;
+      const msg =
+        count > 0
+          ? `🎉 Trovati e aggiunti ${count} nuovi abbonamenti dalle tue email!`
+          : '✅ Scansione completata: nessun nuovo abbonamento trovato.';
+      showGmailModalMessage(msg, false);
+      showToast(msg);
+    } catch (err) {
+      showGmailModalMessage(`⚠️ ${err.message}`, true);
+      showToast(`⚠️ ${err.message}`);
+    } finally {
+      if (btnQuick) {
+        btnQuick.disabled = false;
+        btnQuick.textContent = '🔄 Scansiona Ora';
+      }
+      if (btnModal) {
+        btnModal.disabled = false;
+        btnModal.textContent = '🔄 Scansiona Nuove Email Ora';
+      }
+    }
+  }
+
+  async function handleDisconnectGmail() {
+    try {
+      const res = await fetch('/api/gmail/disconnect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: state.user.username,
+          password: state.user.password
+        })
+      });
+      const data = await res.json();
+      if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
+      document.getElementById('inputGmailAppPassword').value = '';
+      renderAll();
+      showGmailModalMessage('🔌 Gmail scollegata.', false);
+      showToast('🔌 Gmail scollegata.');
+    } catch (_) {}
+  }
+
+  async function handleParseReceiptText() {
+    const rawText = (document.getElementById('inputPasteReceiptText').value || '').trim();
+    if (!rawText) {
+      showGmailModalMessage('⚠️ Incolla prima il testo della ricevuta o dell\'email.', true);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/gmail/parse-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: rawText,
+          mainCurrency: state.mainCurrency
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.item) {
+        throw new Error(data.error || 'Impossibile leggere la ricevuta');
+      }
+
+      state.items.unshift(data.item);
+      document.getElementById('inputPasteReceiptText').value = '';
+      saveUserDataAndSync();
+      renderAll();
+      closeGmailModal();
+      showToast(`✅ Aggiunto in automatico: ${data.item.icon} ${data.item.name} (${formatCurrency(data.item.price, data.item.currency)})`);
+    } catch (err) {
+      showGmailModalMessage(`⚠️ ${err.message}`, true);
+    }
   }
 
   // --- INIT ---
