@@ -1,0 +1,20 @@
+{
+  "name": "ScadenzApp — Abbonamenti, Disdette & Bollette",
+  "short_name": "ScadenzApp",
+  "description": "Gestisci abbonamenti (Netflix, Disney+, prove di 1 mese), bollette e bollo auto. Ricevi avvisi prima del rinnovo automatico per disdire in tempo o pagare puntuale.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "lang": "it-IT",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
