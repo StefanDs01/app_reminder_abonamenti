@@ -4,3 +4,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Private user data stored by VPS server
+data/
+__pycache__/

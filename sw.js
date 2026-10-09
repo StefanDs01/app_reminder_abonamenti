@@ -1,8 +1,9 @@
-const CACHE_NAME = 'scadenzapp-v1.0.0';
+const CACHE_NAME = 'scadenzapp-v2.0.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
+  './i18n.js',
   './data-presets.js',
   './app.js',
   './icon.svg',

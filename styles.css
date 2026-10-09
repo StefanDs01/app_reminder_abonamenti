@@ -1186,6 +1186,30 @@ input:focus {
   margin-bottom: 12px;
 }
 
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lang-currency-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface-elevated);
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.vps-highlight-box {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.06));
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -1305,6 +1329,7 @@ input:focus {
 @media (max-width: 768px) {
   .form-grid-2,
   .form-grid-3,
+  .form-grid-4,
   .form-type-selector {
     grid-template-columns: 1fr;
   }

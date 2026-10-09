@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#4f46e5" />
-  <meta name="description" content="Gestisci abbonamenti (Netflix, Disney+, prove di 1 mese), bollette e bollo auto. Ricevi notifiche prima del rinnovo automatico per disdire in tempo." />
+  <meta name="description" content="Gestisci abbonamenti (Netflix, Disney+, prove di 1 mese), bollette, bollo auto, Rovinietă e RCA. IT & RO, EUR & RON." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
-  <title>ScadenzApp — Gestione Abbonamenti, Disdette, Bollette & Bollo Auto</title>
+  <title>ScadenzApp — Abbonamenti, Disdette, Bollette &amp; Auto (IT 🇮🇹 / RO 🇷🇴)</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
@@ -23,32 +23,42 @@
         <div>
           <div class="brand-title-row">
             <h1>ScadenzApp</h1>
-            <span class="badge-pwa" id="storageStatusBadge" title="Salvataggio automatico in locale attivo">💾 Locale Attivo</span>
+            <span class="badge-pwa" id="storageStatusBadge" title="Stato salvataggio dati">💾 Locale Attivo</span>
           </div>
-          <p class="brand-subtitle">Stop ai rinnovi dimenticati • Abbonamenti, Bollette &amp; Bollo Auto</p>
+          <p class="brand-subtitle" id="txtAppSubtitle">Stop ai rinnovi dimenticati • Abbonamenti, Bollette &amp; Bollo Auto</p>
         </div>
       </div>
 
       <div class="header-actions">
+        <!-- Selettore Rapido Lingua IT / RO -->
+        <div class="lang-currency-group">
+          <button type="button" class="btn btn-ghost btn-sm" id="btnLangToggle" title="Cambia lingua Italiano / Română">
+            🇮🇹 IT
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnCurrencyToggle" title="Cambia valuta principale dei totali (€ EUR / lei RON)">
+            💶 EUR (€)
+          </button>
+        </div>
+
         <button type="button" class="btn btn-ghost btn-sm" id="btnNotificationStatus" title="Configura o testa le notifiche del browser">
           <span id="notifStatusIcon">🔔</span>
-          <span id="notifStatusText">Attiva Notifiche</span>
+          <span id="notifStatusText" class="hide-mobile">Attiva Notifiche</span>
         </button>
 
         <button type="button" class="btn btn-ghost btn-sm" id="btnExportIcsAll" title="Esporta tutte le scadenze su Google/Apple/Outlook Calendar (.ics)">
-          📅 <span class="hide-mobile">Calendario .ics</span>
+          📅 <span class="hide-mobile" id="txtCalendarIcs">Calendario .ics</span>
         </button>
 
-        <button type="button" class="btn btn-ghost btn-sm" id="btnOpenSyncModal" title="Sincronizza con GitHub o esporta/importa backup locale">
-          ☁️ <span id="syncBtnLabel">Locale &amp; GitHub</span>
+        <button type="button" class="btn btn-outline btn-sm" id="btnOpenSyncModal" title="Accedi al tuo profilo personale sulla VPS, sincronizza con GitHub o esporta backup">
+          <span id="syncBtnLabel">👤 Profilo &amp; Cloud</span>
         </button>
 
         <button type="button" class="btn btn-ghost btn-sm icon-only" id="btnThemeToggle" title="Cambia tema Chiaro/Scuro" aria-label="Cambia tema">
-          🌙
+          ☀️
         </button>
 
         <button type="button" class="btn btn-primary" id="btnAddNewMain">
-          <span>＋</span> Aggiungi Scadenza
+          <span id="txtAddDeadlineBtn">＋ Aggiungi Scadenza</span>
         </button>
       </div>
     </div>
@@ -58,29 +68,29 @@
     <!-- Quick Add Strip: 3 Bottoni Rapidi per i 3 casi d'uso principali -->
     <section class="quick-intent-bar" aria-label="Azioni rapide">
       <div class="quick-intent-label">
-        <strong>Cosa vuoi monitorare?</strong>
-        <span>Scegli una modalità rapida:</span>
+        <strong id="txtWhatToMonitor">Cosa vuoi monitorare?</strong>
+        <span id="txtChooseQuickMode">Scegli una modalità rapida:</span>
       </div>
       <div class="quick-intent-buttons">
         <button type="button" class="intent-btn intent-cancel" id="btnQuickTrial">
           <span class="intent-icon">🛑</span>
           <div class="intent-text">
-            <strong>Abbonamento "Solo 1 Mese / Prova"</strong>
-            <small>Avviso prioritario per DISDIRE prima che prelevino soldi</small>
+            <strong id="txtQuickTrialTitle">Abbonamento "Solo 1 Mese / Prova"</strong>
+            <small id="txtQuickTrialDesc">Avviso prioritario per DISDIRE prima che prelevino soldi</small>
           </div>
         </button>
         <button type="button" class="intent-btn intent-sub" id="btnQuickSub">
           <span class="intent-icon">🎬</span>
           <div class="intent-text">
-            <strong>Abbonamento Ricorrente</strong>
-            <small>Netflix, Disney+, Spotify, Prime, Palestra...</small>
+            <strong id="txtQuickSubTitle">Abbonamento Ricorrente</strong>
+            <small id="txtQuickSubDesc">Netflix, Disney+, Spotify, Prime, Palestra...</small>
           </div>
         </button>
         <button type="button" class="intent-btn intent-bill" id="btnQuickBill">
           <span class="intent-icon">🚗</span>
           <div class="intent-text">
-            <strong>Bolletta / Bollo Auto / Tassa</strong>
-            <small>Luce, Gas, Bollo Auto, Assicurazione, TARI, Affitto...</small>
+            <strong id="txtQuickBillTitle">Bolletta / Bollo Auto / Tassa</strong>
+            <small id="txtQuickBillDesc">Luce, Gas, Bollo Auto, DIGI, Rovinietă, RCA...</small>
           </div>
         </button>
       </div>
@@ -106,16 +116,16 @@
     <section class="kpi-grid" aria-label="Riepilogo spese e scadenze">
       <div class="kpi-card kpi-urgent">
         <div class="kpi-top">
-          <span class="kpi-label">Da Disdire / In Scadenza</span>
+          <span class="kpi-label" id="txtKpiUrgentLabel">Da Disdire / In Scadenza</span>
           <span class="kpi-icon">🚨</span>
         </div>
         <div class="kpi-value" id="kpiUrgentCount">0</div>
-        <div class="kpi-sub" id="kpiUrgentSub">Nessuna urgenza imminente</div>
+        <div class="kpi-sub" id="kpiUrgentSub">Tutto sotto controllo!</div>
       </div>
 
       <div class="kpi-card kpi-subs">
         <div class="kpi-top">
-          <span class="kpi-label">Abbonamenti (Media/Mese)</span>
+          <span class="kpi-label" id="txtKpiSubsLabel">Abbonamenti (Media/Mese)</span>
           <span class="kpi-icon">🎬</span>
         </div>
         <div class="kpi-value" id="kpiMonthlySubs">€ 0,00</div>
@@ -124,7 +134,7 @@
 
       <div class="kpi-card kpi-bills">
         <div class="kpi-top">
-          <span class="kpi-label">Bollette &amp; Bollo (Tot. Annuo)</span>
+          <span class="kpi-label" id="txtKpiBillsLabel">Bollette &amp; Auto (Tot. Annuo)</span>
           <span class="kpi-icon">⚡</span>
         </div>
         <div class="kpi-value" id="kpiYearlyBills">€ 0,00</div>
@@ -133,7 +143,7 @@
 
       <div class="kpi-card kpi-saved">
         <div class="kpi-top">
-          <span class="kpi-label">Soldi Salvati (Disdette)</span>
+          <span class="kpi-label" id="txtKpiSavedLabel">Soldi Salvati (Disdette)</span>
           <span class="kpi-icon">🛡️</span>
         </div>
         <div class="kpi-value" id="kpiSavedMoney">€ 0,00</div>
@@ -145,36 +155,38 @@
     <section class="controls-bar">
       <div class="view-tabs" role="tablist">
         <button type="button" class="view-tab active" data-view="list" role="tab" aria-selected="true">
-          📋 Scadenzario (<span id="countAllActive">0</span>)
+          <span id="txtTabList">📋 Scadenzario</span> (<span id="countAllActive">0</span>)
         </button>
         <button type="button" class="view-tab" data-view="calendar" role="tab" aria-selected="false">
-          📅 Vista Calendario
+          <span id="txtTabCalendar">📅 Vista Calendario</span>
         </button>
         <button type="button" class="view-tab" data-view="history" role="tab" aria-selected="false">
-          🧾 Storico Pagamenti &amp; Disdette (<span id="countHistory">0</span>)
+          <span id="txtTabHistory">🧾 Storico Pagamenti &amp; Disdette</span> (<span id="countHistory">0</span>)
         </button>
       </div>
 
       <div class="filter-bar" id="listFiltersContainer">
         <div class="filter-pills" id="categoryFilterPills">
-          <button type="button" class="pill active" data-filter="all">Tutti gli attivi</button>
-          <button type="button" class="pill pill-danger" data-filter="must-cancel">🛑 Da Disdire (<span id="countMustCancel">0</span>)</button>
-          <button type="button" class="pill" data-filter="subscriptions">🎬 Abbonamenti</button>
-          <button type="button" class="pill" data-filter="bills">⚡ Bollette &amp; Utenze</button>
-          <button type="button" class="pill" data-filter="auto">🚗 Bollo Auto &amp; Veicoli</button>
-          <button type="button" class="pill" data-filter="cancelled">✂️ Disdetti / Conclusi</button>
+          <button type="button" class="pill active" data-filter="all" id="txtFilterAll">Tutti gli attivi</button>
+          <button type="button" class="pill pill-danger" data-filter="must-cancel">
+            <span id="txtFilterMustCancel">🛑 Da Disdire</span> (<span id="countMustCancel">0</span>)
+          </button>
+          <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
+          <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette &amp; Utenze</button>
+          <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Bollo Auto &amp; Veicoli</button>
+          <button type="button" class="pill" data-filter="cancelled" id="txtFilterCancelled">✂️ Disdetti / Conclusi</button>
         </div>
 
         <div class="search-and-sort">
           <div class="search-box">
             <span>🔍</span>
-            <input type="search" id="searchInput" placeholder="Cerca Netflix, Bollo, Luce, targa..." aria-label="Cerca scadenza" />
+            <input type="search" id="searchInput" placeholder="Cerca Netflix, Bollo, DIGI, Rovinietă..." aria-label="Cerca scadenza" />
           </div>
           <select id="sortSelect" aria-label="Ordina per">
-            <option value="dueDateAsc">⏳ Scadenza più vicina</option>
-            <option value="cancelFirst">🛑 Prima "Da Disdire"</option>
-            <option value="priceDesc">💶 Importo più alto</option>
-            <option value="nameAsc">🔤 Nome (A-Z)</option>
+            <option value="dueDateAsc" id="optSortDueDate">⏳ Scadenza più vicina</option>
+            <option value="cancelFirst" id="optSortCancelFirst">🛑 Prima "Da Disdire"</option>
+            <option value="priceDesc" id="optSortPriceDesc">💶 Importo più alto</option>
+            <option value="nameAsc" id="optSortNameAsc">🔤 Nome (A-Z)</option>
           </select>
         </div>
       </div>
@@ -187,11 +199,11 @@
       <!-- Empty State -->
       <div id="emptyState" class="empty-state hidden">
         <div class="empty-icon">🛡️</div>
-        <h3>Nessun abbonamento o scadenza in questa vista</h3>
-        <p>Aggiungi i tuoi abbonamenti (anche quelli fatti solo per 1 mese!), le bollette o il Bollo Auto per ricevere un avviso prima che scadano o si rinnovino da soli.</p>
+        <h3 id="txtEmptyTitle">Nessun abbonamento o scadenza in questa vista</h3>
+        <p id="txtEmptyDesc">Aggiungi i tuoi abbonamenti (anche quelli fatti solo per 1 mese!), le bollette o il Bollo Auto per ricevere un avviso prima che scadano o si rinnovino da soli.</p>
         <div class="empty-actions">
           <button type="button" class="btn btn-primary" id="btnEmptyAdd">＋ Aggiungi la tua prima scadenza</button>
-          <button type="button" class="btn btn-outline" id="btnLoadDemoData">✨ Carica esempi dimostrativi (Netflix, Disney+, Bollo Auto, Luce)</button>
+          <button type="button" class="btn btn-outline" id="btnLoadDemoData">✨ Carica esempi dimostrativi</button>
         </div>
       </div>
     </section>
@@ -204,7 +216,7 @@
           <h3 id="calendarMonthTitle">Ottobre 2026</h3>
           <button type="button" class="btn btn-ghost btn-sm" id="btnNextMonth">Mese Succ. ▶</button>
         </div>
-        <div class="calendar-weekdays">
+        <div class="calendar-weekdays" id="calendarWeekdaysRow">
           <div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div>
         </div>
         <div id="calendarGrid" class="calendar-grid"></div>
@@ -216,8 +228,8 @@
       <div class="history-card">
         <div class="history-header">
           <div>
-            <h3>🧾 Registro Storico (Pagamenti effettuati &amp; Abbonamenti disdetti)</h3>
-            <p class="text-muted">Tieni traccia di quando hai pagato bollette/bollo auto e di quanto hai risparmiato disdicendo abbonamenti in tempo.</p>
+            <h3 id="txtHistoryTitle">🧾 Registro Storico (Pagamenti effettuati &amp; Abbonamenti disdetti)</h3>
+            <p class="text-muted" id="txtHistorySubtitle">Tieni traccia di quando hai pagato bollette/bollo auto e di quanto hai risparmiato disdicendo abbonamenti in tempo.</p>
           </div>
           <button type="button" class="btn btn-ghost btn-sm text-danger" id="btnClearHistory">🗑️ Svuota Storico</button>
         </div>
@@ -235,16 +247,16 @@
       </div>
 
       <div class="modal-body">
-        <!-- Scelta rapida dal Catalogo Servizi -->
+        <!-- Scelta rapida dal Catalogo Servizi (Italia + Romania) -->
         <div class="preset-picker-section" id="presetPickerSection">
           <div class="preset-picker-header">
-            <label>⚡ Scelta rapida (clicca un servizio per pre-compilare oppure scrivi sotto):</label>
+            <label id="txtPresetHeaderLabel">⚡ Scelta rapida (clicca un servizio per pre-compilare):</label>
             <div class="preset-tabs">
-              <button type="button" class="preset-tab active" data-preset-cat="all">Tutti</button>
+              <button type="button" class="preset-tab active" data-preset-cat="all">Tutti / Toate</button>
               <button type="button" class="preset-tab" data-preset-cat="streaming">🎬 Streaming</button>
               <button type="button" class="preset-tab" data-preset-cat="software">💻 App &amp; Gaming</button>
-              <button type="button" class="preset-tab" data-preset-cat="bills">⚡ Bollette</button>
-              <button type="button" class="preset-tab" data-preset-cat="auto">🚗 Bollo &amp; Auto</button>
+              <button type="button" class="preset-tab" data-preset-cat="bills">⚡ Bollette / Facturi</button>
+              <button type="button" class="preset-tab" data-preset-cat="auto">🚗 Auto (IT 🇮🇹 / RO 🇷🇴)</button>
             </div>
           </div>
           <div class="preset-chips-scroll" id="presetChipsContainer"></div>
@@ -258,15 +270,15 @@
             <label class="type-radio-card" id="typeCardSub">
               <input type="radio" name="itemType" value="subscription" checked />
               <div>
-                <strong>🔄 Abbonamento con Rinnovo</strong>
-                <small>Netflix, Disney+, Prime, Palestra...</small>
+                <strong id="txtTypeSubTitle">🔄 Abbonamento con Rinnovo</strong>
+                <small id="txtTypeSubDesc">Netflix, Disney+, Voyo, Prime, Palestra...</small>
               </div>
             </label>
             <label class="type-radio-card" id="typeCardBill">
               <input type="radio" name="itemType" value="bill" />
               <div>
-                <strong>💳 Bolletta / Bollo Auto / Tassa</strong>
-                <small>Da pagare entro la data di scadenza</small>
+                <strong id="txtTypeBillTitle">💳 Bolletta / Bollo Auto / Tassa</strong>
+                <small id="txtTypeBillDesc">Da pagare entro la data di scadenza</small>
               </div>
             </label>
           </div>
@@ -275,95 +287,102 @@
           <div class="anti-renewal-Highlight" id="antiRenewalBox">
             <label class="checkbox-switch">
               <input type="checkbox" id="cancelBeforeRenewal" />
-              <span class="switch-slider"></span>
               <div class="switch-text">
-                <strong>🛑 Voglio DISDIRLO prima del rinnovo! (Fatto solo per 1 mese / Prova gratuita)</strong>
-                <small>Attiva questa opzione se non vuoi che ti addebitino il prossimo rinnovo: l'app lo metterà in cima agli avvisi urgenti per fartelo disdire in tempo!</small>
+                <strong id="txtMustCancelSwitchTitle">🛑 Voglio DISDIRLO prima del rinnovo! (Fatto solo per 1 mese / Prova gratuita)</strong>
+                <small id="txtMustCancelSwitchDesc">Attiva questa opzione se non vuoi che ti addebitino il prossimo rinnovo: l'app lo metterà in cima agli avvisi urgenti per fartelo disdire in tempo!</small>
               </div>
             </label>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label for="itemName">Nome Servizio / Bolletta *</label>
+              <label for="itemName" id="txtLabelName">Nome Servizio / Bolletta *</label>
               <div class="input-with-icon">
                 <input type="text" id="itemIcon" class="icon-input" value="🎬" maxlength="4" title="Emoji o icona" />
-                <input type="text" id="itemName" required placeholder="Es. Netflix, Disney+, Bollo Auto Fiesta, Luce..." />
+                <input type="text" id="itemName" required placeholder="Es. Netflix, Disney+, DIGI, Rovinietă, Bollo Auto..." />
               </div>
             </div>
 
             <div class="form-group">
-              <label for="itemCategory">Categoria</label>
+              <label for="itemCategory" id="txtLabelCategory">Categoria</label>
               <select id="itemCategory">
-                <option value="streaming">🎬 Streaming &amp; Intrattenimento</option>
+                <option value="streaming">🎬 Streaming &amp; Media</option>
                 <option value="software">💻 App, Cloud &amp; Gaming</option>
-                <option value="bills">⚡ Bollette &amp; Utenze Casa</option>
-                <option value="auto">🚗 Bollo Auto &amp; Veicoli</option>
+                <option value="bills">⚡ Bollette / Facturi &amp; Utilități</option>
+                <option value="auto">🚗 Auto (Bollo / Rovinietă / RCA / ITP)</option>
                 <option value="other">🏠 Casa, Tasse &amp; Altro</option>
               </select>
             </div>
           </div>
 
-          <div class="form-grid-3">
+          <div class="form-grid-4">
             <div class="form-group">
-              <label for="itemPrice">Importo (€) *</label>
+              <label for="itemPrice" id="txtLabelPrice">Importo *</label>
               <input type="number" id="itemPrice" step="0.01" min="0" required placeholder="Es. 13.99" />
             </div>
 
             <div class="form-group">
-              <label for="itemCycle">Frequenza / Ciclo *</label>
-              <select id="itemCycle">
-                <option value="monthly">Mensile (ogni mese)</option>
-                <option value="bimonthly">Bimestrale (ogni 2 mesi - es. Bollette)</option>
-                <option value="quarterly">Trimestrale (ogni 3 mesi)</option>
-                <option value="semiannual">Semestrale (ogni 6 mesi)</option>
-                <option value="yearly">Annuale (ogni anno - es. Bollo Auto)</option>
-                <option value="Biennial">Biennale (ogni 2 anni - es. Revisione)</option>
-                <option value="once">Singolo Mese / Una Tantum (non si ripete)</option>
+              <label for="itemCurrency" id="txtLabelCurrency">Valuta</label>
+              <select id="itemCurrency">
+                <option value="EUR">€ EUR (Euro)</option>
+                <option value="RON">lei RON (Leu Romeno)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="itemNextDate" id="labelNextDate">Data Prossimo Rinnovo / Scadenza *</label>
+              <label for="itemCycle" id="txtLabelCycle">Frequenza / Ciclo *</label>
+              <select id="itemCycle">
+                <option value="monthly">Mensile / Lunar (1m)</option>
+                <option value="bimonthly">Bimestrale / Bilunar (2m)</option>
+                <option value="quarterly">Trimestrale (3m)</option>
+                <option value="semiannual">Semestrale (6m)</option>
+                <option value="yearly">Annuale / Anual (12m)</option>
+                <option value="Biennial">Biennale / La 2 ani (24m)</option>
+                <option value="once">Singolo Mese / O singură dată</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="itemNextDate" id="labelNextDate">Data Prossimo Rinnovo *</label>
               <input type="date" id="itemNextDate" required />
             </div>
           </div>
 
           <div class="form-grid-3">
             <div class="form-group">
-              <label for="itemRemindDays">🔔 Avvisami prima della scadenza</label>
+              <label for="itemRemindDays" id="txtLabelRemindDays">🔔 Avvisami prima della scadenza</label>
               <select id="itemRemindDays">
-                <option value="1">1 giorno prima</option>
-                <option value="2">2 giorni prima</option>
-                <option value="3" selected>3 giorni prima (Consigliato per streaming)</option>
-                <option value="5">5 giorni prima</option>
-                <option value="7">7 giorni prima (1 settimana prima)</option>
-                <option value="10">10 giorni prima</option>
-                <option value="15">15 giorni prima (Consigliato per Bollo/Bollette)</option>
-                <option value="30">30 giorni prima (1 mese prima)</option>
+                <option value="1">1 giorno / zi prima</option>
+                <option value="2">2 giorni / zile prima</option>
+                <option value="3" selected>3 giorni / zile prima</option>
+                <option value="5">5 giorni / zile prima</option>
+                <option value="7">7 giorni / zile (1 sett.)</option>
+                <option value="10">10 giorni / zile prima</option>
+                <option value="15">15 giorni / zile prima</option>
+                <option value="30">30 giorni / zile (1 mese)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="itemPaymentMethod">Metodo di Addebito / Pagamento</label>
-              <input type="text" id="itemPaymentMethod" placeholder="Es. PayPal, Carta Fineco, Revolut, PagoPA..." />
+              <label for="itemPaymentMethod" id="txtLabelPaymentMethod">Metodo di Addebito / Pagamento</label>
+              <input type="text" id="itemPaymentMethod" placeholder="PayPal, Revolut, Card BT/ING, PagoPA, Ghișeul..." />
             </div>
 
             <div class="form-group">
-              <label for="itemColor">Colore Etichetta</label>
+              <label for="itemColor" id="txtLabelColor">Colore Etichetta</label>
               <input type="color" id="itemColor" value="#4f46e5" class="color-input" />
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label for="itemCancelUrl">🔗 Link Diretto Disdetta o Pagamento (opzionale)</label>
+              <label for="itemCancelUrl" id="txtLabelCancelUrl">🔗 Link Diretto Disdetta o Pagamento (opzionale)</label>
               <input type="url" id="itemCancelUrl" placeholder="https://www.netflix.com/youraccount" />
             </div>
 
             <div class="form-group">
-              <label for="itemNotes">Note / Targa Auto / Codice Cliente</label>
-              <input type="text" id="itemNotes" placeholder="Es. Targa AB123CD, account condiviso, disdire entro il 20..." />
+              <label for="itemNotes" id="txtLabelNotes">Note / Targa Auto / Codice Cliente</label>
+              <input type="text" id="itemNotes" placeholder="Es. Targa / Nr. Auto, codice cliente..." />
             </div>
           </div>
 
@@ -376,19 +395,61 @@
     </div>
   </div>
 
-  <!-- ================= MODALE SALVATAGGIO LOCALE & GITHUB SYNC ================= -->
+  <!-- ================= MODALE PROFILO VPS, LOCALE & GITHUB SYNC ================= -->
   <div class="modal-backdrop hidden" id="syncModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle">
-    <div class="modal-content">
+    <div class="modal-content modal-lg">
       <div class="modal-header">
-        <h2 id="syncModalTitle">💾 Gestione Dati: Locale &amp; Sincronizzazione GitHub</h2>
+        <h2 id="syncModalTitle">👤 Profilo Personale (VPS), Backup Locale &amp; GitHub</h2>
         <button type="button" class="modal-close" id="btnCloseSyncModal" aria-label="Chiudi">✕</button>
       </div>
 
       <div class="modal-body">
-        <!-- Sezione 1: Backup File Locale -->
+        <!-- Sezione 1: Profilo Multi-Utente su Server VPS -->
+        <div class="sync-section vps-highlight-box">
+          <div class="sync-title-row">
+            <h3>1. 🖥️ Account Personale su Server VPS (Multi-Utente per Te e la tua Amica)</h3>
+            <span class="badge-sync" id="vpsSyncBadge">Solo Locale</span>
+          </div>
+          <p class="text-muted">
+            Ognuno può inserire il proprio <strong>Nome Utente</strong> (es. <code>daniel</code> oppure <code>maria</code>) e un <strong>PIN segreto</strong>.
+            I vostri abbonamenti restano <strong>completamente separati</strong> e salvati sul server VPS, così potete accedere sia da Telefono che da PC senza perdere nulla!
+          </p>
+
+          <div class="form-grid-2" style="margin-top: 8px;">
+            <div class="form-group">
+              <label for="vpsUsernameInput">👤 Il tuo Nome Utente / Profilo (es. <code>daniel</code> o <code>ana</code>)</label>
+              <input type="text" id="vpsUsernameInput" placeholder="es. daniel" autocomplete="username" />
+            </div>
+            <div class="form-group">
+              <label for="vpsPinInput">🔐 Il tuo PIN / Password Personale</label>
+              <input type="password" id="vpsPinInput" placeholder="Scegli un PIN o password segreta" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="vpsServerUrlInput">🌐 Indirizzo Server VPS (lascia vuoto se hai aperto l'app direttamente dal link della VPS)</label>
+            <input type="url" id="vpsServerUrlInput" placeholder="Automatico (stesso indirizzo dell'app) oppure https://tuo-dominio-vps.it" />
+          </div>
+
+          <label class="checkbox-inline">
+            <input type="checkbox" id="vpsAutoSync" checked />
+            <span>Sincronizza automaticamente sul Server VPS ad ogni modifica</span>
+          </label>
+
+          <div class="sync-buttons-row" style="margin-top: 12px;">
+            <button type="button" class="btn btn-primary" id="btnVpsPull">🔐 Accedi / Scarica il mio Profilo (Pull)</button>
+            <button type="button" class="btn btn-success" id="btnVpsPush">☁️⬆️ Salva i miei dati su VPS (Push)</button>
+            <button type="button" class="btn btn-ghost btn-sm text-danger" id="btnVpsLogout">🚪 Disconnetti Profilo</button>
+          </div>
+          <p id="vpsStatusMsg" class="sync-status-msg"></p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Sezione 2: Backup File Locale -->
         <div class="sync-section">
-          <h3>1. 💻 Salvataggio Locale (Attivo di default)</h3>
-          <p class="text-muted">I tuoi dati sono salvati istantaneamente nella memoria locale del browser. Puoi scaricare un file di backup <code>.json</code> o importarlo in qualsiasi momento.</p>
+          <h3>2. 💻 Salvataggio sul Dispositivo &amp; File Backup (.json)</h3>
+          <p class="text-muted">I dati sono sempre salvati anche nella memoria locale del tuo telefono/PC per funzionare anche offline.</p>
           <div class="sync-buttons-row">
             <button type="button" class="btn btn-outline" id="btnExportJson">⬇️ Esporta Backup (.json)</button>
             <label class="btn btn-outline file-label">
@@ -400,50 +461,34 @@
 
         <hr class="divider" />
 
-        <!-- Sezione 2: GitHub Cloud Sync (Gist) -->
+        <!-- Sezione 3: GitHub Cloud Sync (Gist) -->
         <div class="sync-section">
           <div class="sync-title-row">
-            <h3>2. 🐙 Sincronizzazione Cloud con GitHub (Gist Privato)</h3>
-            <span class="badge-sync" id="githubSyncBadge">Non collegato</span>
+            <h3>3. 🐙 Backup Opzionale su GitHub (Gist Privato)</h3>
+            <span class="badge-sync" id="githubSyncBadge">Opzionale</span>
           </div>
-          <p class="text-muted">
-            Vuoi salvare i tuoi abbonamenti anche sul tuo account <strong>GitHub</strong> per non perderli mai o sincronizzarli tra PC e Telefono?
-            Inserisci un <a href="https://github.com/settings/tokens/new?description=ScadenzApp-Sync&scopes=gist" target="_blank" rel="noopener noreferrer">Personal Access Token GitHub (con permesso <code>gist</code>)</a>. Il token resta salvato <strong>solo sul tuo dispositivo</strong>.
-          </p>
-
-          <div class="form-group">
-            <label for="ghTokenInput">GitHub Personal Access Token (scope: <code>gist</code>)</label>
-            <input type="password" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
-          </div>
-
-          <div class="form-group">
-            <label for="ghGistIdInput">ID del Gist GitHub (lascia vuoto per crearne uno nuovo in automatico)</label>
-            <input type="text" id="ghGistIdInput" placeholder="Verrà compilato automaticamente al primo salvataggio" />
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="ghTokenInput">GitHub Personal Access Token (scope: <code>gist</code>)</label>
+              <input type="password" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="ghGistIdInput">ID del Gist GitHub (automatico al primo Push)</label>
+              <input type="text" id="ghGistIdInput" placeholder="Compilato automaticamente" />
+            </div>
           </div>
 
           <label class="checkbox-inline">
             <input type="checkbox" id="ghAutoSync" />
-            <span>Sincronizza automaticamente su GitHub ogni volta che aggiungo/modifico una scadenza</span>
+            <span>Sincronizza anche su GitHub Gist ad ogni modifica</span>
           </label>
 
-          <div class="sync-buttons-row" style="margin-top: 14px;">
-            <button type="button" class="btn btn-primary" id="btnGhPush">☁️⬆️ Salva ora su GitHub (Push)</button>
-            <button type="button" class="btn btn-outline" id="btnGhPull">☁️⬇️ Scarica da GitHub (Pull)</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btnSaveGhConfig">💾 Salva Impostazioni</button>
+          <div class="sync-buttons-row" style="margin-top: 8px;">
+            <button type="button" class="btn btn-outline btn-sm" id="btnGhPush">🐙⬆️ Salva su GitHub (Push)</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btnGhPull">🐙⬇️ Scarica da GitHub (Pull)</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnSaveGhConfig">💾 Salva Token</button>
           </div>
           <p id="ghStatusMsg" class="sync-status-msg"></p>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Sezione 3: Orario e Preferenze Notifiche -->
-        <div class="sync-section">
-          <h3>3. 🔔 Preferenze Notifiche</h3>
-          <p class="text-muted">Quando apri l'app (o la tieni in background come Web App installata), riceverai notifiche di sistema per ogni abbonamento da disdire o bolletta in scadenza.</p>
-          <div class="sync-buttons-row">
-            <button type="button" class="btn btn-outline" id="btnRequestNotifPermModal">🔔 Richiedi / Verifica Permesso Notifiche</button>
-            <button type="button" class="btn btn-outline" id="btnTestNotifModal">📣 Invia Notifica di Prova</button>
-          </div>
         </div>
       </div>
     </div>
@@ -452,6 +497,7 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
+  <script src="./i18n.js"></script>
   <script src="./data-presets.js"></script>
   <script src="./app.js"></script>
 </body>

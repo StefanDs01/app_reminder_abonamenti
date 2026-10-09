@@ -1,12 +1,13 @@
-// Catalogo predefinito di Abbonamenti, Bollette, Bollo Auto e Scadenze Ricorrenti
+// Catalogo predefinito di Abbonamenti, Bollette, Bollo Auto e Scadenze Ricorrenti (Italia 🇮🇹 + Romania 🇷🇴)
 window.SERVICE_PRESETS = [
-  // --- STREAMING & INTRATTENIMENTO ---
+  // --- STREAMING & INTRATTENIMENTO (GLOBALI + IT + RO) ---
   {
     id: 'netflix',
     name: 'Netflix',
     category: 'streaming',
-    itemType: 'subscription', // 'subscription' (rinnovo automatico / disdicibile) | 'bill' (da pagare)
+    itemType: 'subscription',
     defaultPrice: 13.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#E50914',
@@ -20,25 +21,55 @@ window.SERVICE_PRESETS = [
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 9.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#0063E5',
     icon: '✨',
-    cancelUrl: 'https://www.disneyplus.com/it-it/account/subscription',
-    notesPlaceholder: 'Piano Standard con o senza pubblicità'
+    cancelUrl: 'https://www.disneyplus.com/account/subscription',
+    notesPlaceholder: 'Standard / Premium'
+  },
+  {
+    id: 'max-hbo',
+    name: 'Max (HBO)',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 34.90,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#002BE7',
+    icon: '🎥',
+    cancelUrl: 'https://auth.max.com/',
+    notesPlaceholder: 'Max Streaming (EUR / RON)'
+  },
+  {
+    id: 'voyo-ro',
+    name: 'VOYO.ro 🇷🇴',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 4.76,
+    defaultCurrency: 'EUR',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#E11D48',
+    icon: '📺',
+    cancelUrl: 'https://voyo.protv.ro/profilul-meu',
+    notesPlaceholder: 'Abonament VOYO Romania'
   },
   {
     id: 'amazon-prime',
-    name: 'Amazon Prime',
+    name: 'Amazon Prime / Prime Video',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 4.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 5,
     color: '#00A8E1',
     icon: '📦',
-    cancelUrl: 'https://www.amazon.it/mc',
-    notesPlaceholder: 'Prime Video + Spedizioni'
+    cancelUrl: 'https://www.primevideo.com/settings',
+    notesPlaceholder: 'Prime Video (14 RON in RO / 4.99€ in IT)'
   },
   {
     id: 'spotify',
@@ -46,19 +77,35 @@ window.SERVICE_PRESETS = [
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 10.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#1DB954',
     icon: '🎧',
-    cancelUrl: 'https://www.spotify.com/it/account/subscription/',
-    notesPlaceholder: 'Individual / Duo / Family'
+    cancelUrl: 'https://www.spotify.com/account/subscription/',
+    notesPlaceholder: 'Individual / Duo / Family (24 RON in RO)'
+  },
+  {
+    id: 'youtube-premium',
+    name: 'YouTube Premium',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 11.99,
+    defaultCurrency: 'EUR',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#FF0000',
+    icon: '▶️',
+    cancelUrl: 'https://www.youtube.com/paid_memberships',
+    notesPlaceholder: 'YouTube senza pubblicità (29 RON in RO)'
   },
   {
     id: 'dazn',
-    name: 'DAZN',
+    name: 'DAZN 🇮🇹',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 34.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 7,
     color: '#1E1E1E',
@@ -68,10 +115,11 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'nowtv',
-    name: 'NOW TV',
+    name: 'NOW TV 🇮🇹',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 14.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#00D66C',
@@ -80,69 +128,18 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'Pass Cinema / Entertainment / Sport'
   },
   {
-    id: 'youtube-premium',
-    name: 'YouTube Premium',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 11.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#FF0000',
-    icon: '▶️',
-    cancelUrl: 'https://www.youtube.com/paid_memberships',
-    notesPlaceholder: 'YouTube senza pubblicità + Music'
-  },
-  {
     id: 'apple-tv',
     name: 'Apple TV+',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 9.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#334155',
     icon: '🍎',
-    cancelUrl: 'https://support.apple.com/it-it/HT202039',
+    cancelUrl: 'https://support.apple.com/HT202039',
     notesPlaceholder: 'Gestibile da Impostazioni ID Apple'
-  },
-  {
-    id: 'paramount',
-    name: 'Paramount+',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 7.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#0064FF',
-    icon: '🏔️',
-    cancelUrl: 'https://www.paramountplus.com/account/',
-    notesPlaceholder: 'Abbonamento mensile'
-  },
-  {
-    id: 'crunchyroll',
-    name: 'Crunchyroll',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 4.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#F47521',
-    icon: '🍥',
-    cancelUrl: 'https://www.crunchyroll.com/acct/membership',
-    notesPlaceholder: 'Fan / Mega Fan'
-  },
-  {
-    id: 'audible',
-    name: 'Audible',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 9.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#F8991D',
-    icon: '📖',
-    cancelUrl: 'https://www.audible.it/account/overview',
-    notesPlaceholder: 'Audiolibri mensili'
   },
 
   // --- GAMING, SOFTWARE & AI ---
@@ -152,6 +149,7 @@ window.SERVICE_PRESETS = [
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 22.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#10A37F',
@@ -165,6 +163,7 @@ window.SERVICE_PRESETS = [
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 14.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#107C10',
@@ -178,6 +177,7 @@ window.SERVICE_PRESETS = [
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 8.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#00439C',
@@ -191,11 +191,12 @@ window.SERVICE_PRESETS = [
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 2.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#0EA5E9',
     icon: '☁️',
-    cancelUrl: 'https://support.apple.com/it-it/108047',
+    cancelUrl: 'https://support.apple.com/108047',
     notesPlaceholder: '50GB / 200GB / 2TB'
   },
   {
@@ -204,6 +205,7 @@ window.SERVICE_PRESETS = [
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 1.99,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 3,
     color: '#4285F4',
@@ -211,53 +213,29 @@ window.SERVICE_PRESETS = [
     cancelUrl: 'https://one.google.com/settings',
     notesPlaceholder: 'Spazio archiviazione Google'
   },
-  {
-    id: 'adobe',
-    name: 'Adobe Creative Cloud',
-    category: 'software',
-    itemType: 'subscription',
-    defaultPrice: 24.39,
-    billingCycle: 'monthly',
-    remindDaysBefore: 7,
-    color: '#FF0000',
-    icon: '🎨',
-    cancelUrl: 'https://account.adobe.com/plans',
-    notesPlaceholder: 'Attenzione a eventuali penali annuali'
-  },
-  {
-    id: 'nordvpn',
-    name: 'NordVPN / VPN',
-    category: 'software',
-    itemType: 'subscription',
-    defaultPrice: 12.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 5,
-    color: '#4687FF',
-    icon: '🛡️',
-    cancelUrl: 'https://my.nordaccount.com/',
-    notesPlaceholder: 'Servizio VPN'
-  },
 
-  // --- BOLLETTE & UTENZE ---
+  // --- BOLLETTE & UTENZE ITALIA 🇮🇹 ---
   {
     id: 'bolletta-luce',
-    name: 'Bolletta Luce (Elettricità)',
+    name: 'Bolletta Luce 🇮🇹',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 85.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'bimonthly',
     remindDaysBefore: 7,
     color: '#F59E0B',
     icon: '⚡',
     cancelUrl: '',
-    notesPlaceholder: 'Fornitore (es. Enel, Plenitude, A2A, Edison...)'
+    notesPlaceholder: 'Fornitore (Enel, Plenitude, A2A, Edison...)'
   },
   {
     id: 'bolletta-gas',
-    name: 'Bolletta Gas',
+    name: 'Bolletta Gas 🇮🇹',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 95.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'bimonthly',
     remindDaysBefore: 7,
     color: '#EF4444',
@@ -266,24 +244,12 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'Fornitore Gas / Lettura contatore'
   },
   {
-    id: 'bolletta-acqua',
-    name: 'Bolletta Acqua',
-    category: 'bills',
-    itemType: 'bill',
-    defaultPrice: 45.00,
-    billingCycle: 'quarterly',
-    remindDaysBefore: 7,
-    color: '#06B6D4',
-    icon: '💧',
-    cancelUrl: '',
-    notesPlaceholder: 'Gestore idrico locale'
-  },
-  {
     id: 'fibra-casa',
-    name: 'Internet Fibra / Casa',
+    name: 'Internet Fibra Casa 🇮🇹',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 27.90,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 5,
     color: '#6366F1',
@@ -292,24 +258,12 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'TIM / Vodafone / Fastweb / Iliad / WindTre'
   },
   {
-    id: 'sim-mobile',
-    name: 'Offerta SIM Mobile',
-    category: 'bills',
-    itemType: 'subscription',
-    defaultPrice: 9.99,
-    billingCycle: 'monthly',
-    remindDaysBefore: 2,
-    color: '#8B5CF6',
-    icon: '📱',
-    cancelUrl: '',
-    notesPlaceholder: 'Ricarica per rinnovo offerta mensile'
-  },
-  {
     id: 'tari',
-    name: 'TARI (Tassa Rifiuti)',
+    name: 'TARI (Tassa Rifiuti) 🇮🇹',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 180.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'yearly',
     remindDaysBefore: 14,
     color: '#10B981',
@@ -317,27 +271,87 @@ window.SERVICE_PRESETS = [
     cancelUrl: '',
     notesPlaceholder: 'Rata TARI Comunale / PagoPA'
   },
+
+  // --- FACTURI & UTILITĂȚI ROMANIA 🇷🇴 ---
   {
-    id: 'condominio',
-    name: 'Spese Condominiali',
+    id: 'digi-ro',
+    name: 'DIGI (RCS & RDS) 🇷🇴',
     category: 'bills',
     itemType: 'bill',
-    defaultPrice: 100.00,
+    defaultPrice: 95.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 5,
+    color: '#0284C7',
+    icon: '🌐',
+    cancelUrl: 'https://www.digi.ro/my-digi',
+    notesPlaceholder: 'Internet Fibra + TV + Mobil (Contul Meu DIGI)'
+  },
+  {
+    id: 'curent-ro',
+    name: 'Curent Electric (PPC / Hidroelectrica / Electrica) 🇷🇴',
+    category: 'bills',
+    itemType: 'bill',
+    defaultPrice: 180.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 7,
+    color: '#F59E0B',
+    icon: '⚡',
+    cancelUrl: '',
+    notesPlaceholder: 'Factură energie electrică + transmitere index'
+  },
+  {
+    id: 'gaze-ro',
+    name: 'Gaze Naturale (Engie / E.ON) 🇷🇴',
+    category: 'bills',
+    itemType: 'bill',
+    defaultPrice: 220.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 7,
+    color: '#EF4444',
+    icon: '🔥',
+    cancelUrl: '',
+    notesPlaceholder: 'Factură gaze + autocitire index'
+  },
+  {
+    id: 'intretinere-ro',
+    name: 'Întreținere Bloc (e-Bloc / Pago) 🇷🇴',
+    category: 'bills',
+    itemType: 'bill',
+    defaultPrice: 350.00,
+    defaultCurrency: 'RON',
     billingCycle: 'monthly',
     remindDaysBefore: 7,
     color: '#64748B',
     icon: '🏢',
+    cancelUrl: 'https://www.e-bloc.ro/',
+    notesPlaceholder: 'Asociația de proprietari / Apă rece & caldă'
+  },
+  {
+    id: 'mobil-ro',
+    name: 'Orange / Vodafone / YOXO 🇷🇴',
+    category: 'bills',
+    itemType: 'subscription',
+    defaultPrice: 39.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#F97316',
+    icon: '📱',
     cancelUrl: '',
-    notesPlaceholder: 'Rata ordinaria / straordinaria condominio'
+    notesPlaceholder: 'Abonament telefon mobil Romania'
   },
 
-  // --- AUTO & VEICOLI ---
+  // --- AUTO & VEICOLI (ITALIA 🇮🇹 + ROMANIA 🇷🇴) ---
   {
     id: 'bollo-auto',
-    name: 'Bollo Auto',
+    name: 'Bollo Auto 🇮🇹',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 210.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'yearly',
     remindDaysBefore: 15,
     color: '#DC2626',
@@ -347,10 +361,11 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'assicurazione-auto',
-    name: 'Assicurazione Auto (RCA)',
+    name: 'Assicurazione Auto (RCA) 🇮🇹',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 480.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'yearly',
     remindDaysBefore: 15,
     color: '#2563EB',
@@ -359,52 +374,84 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'Compagnia assicurativa + Targa'
   },
   {
-    id: 'revisione-auto',
-    name: 'Revisione Auto',
+    id: 'rovinieta-ro',
+    name: 'Rovinietă Auto (CNAIR) 🇷🇴',
     category: 'auto',
     itemType: 'bill',
-    defaultPrice: 79.00,
+    defaultPrice: 139.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'yearly',
+    remindDaysBefore: 10,
+    color: '#DC2626',
+    icon: '🛣️',
+    cancelUrl: 'https://www.erovinieta.ro/',
+    notesPlaceholder: 'Număr înmatriculare • Rovinietă 12 luni / 30 zile'
+  },
+  {
+    id: 'rca-ro',
+    name: 'Asigurare RCA Auto 🇷🇴',
+    category: 'auto',
+    itemType: 'bill',
+    defaultPrice: 950.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'yearly',
+    remindDaysBefore: 15,
+    color: '#2563EB',
+    icon: '🛡️',
+    cancelUrl: '',
+    notesPlaceholder: 'Poliță RCA obligatorie + Număr auto'
+  },
+  {
+    id: 'impozit-auto-ro',
+    name: 'Impozit Auto & Locuință (Ghișeul.ro) 🇷🇴',
+    category: 'auto',
+    itemType: 'bill',
+    defaultPrice: 200.00,
+    defaultCurrency: 'RON',
+    billingCycle: 'yearly',
+    remindDaysBefore: 15,
+    color: '#059669',
+    icon: '🏛️',
+    cancelUrl: 'https://www.ghiseul.ro/',
+    notesPlaceholder: 'Impozit anual cu reducere până la 31 Martie'
+  },
+  {
+    id: 'itp-ro',
+    name: 'ITP Auto (Inspecția Tehnică) 🇷🇴',
+    category: 'auto',
+    itemType: 'bill',
+    defaultPrice: 180.00,
+    defaultCurrency: 'RON',
     billingCycle: 'Biennial',
     remindDaysBefore: 20,
     color: '#D97706',
     icon: '🔧',
-    cancelUrl: 'https://www.ilportaledellautomobilista.it/',
-    notesPlaceholder: 'Scadenza revisione ministeriale (ogni 2 anni)'
-  },
-  {
-    id: 'telepass',
-    name: 'Telepass / UnipolMove',
-    category: 'auto',
-    itemType: 'subscription',
-    defaultPrice: 3.90,
-    billingCycle: 'monthly',
-    remindDaysBefore: 5,
-    color: '#FACC15',
-    icon: '🛣️',
-    cancelUrl: '',
-    notesPlaceholder: 'Canone + addebito pedaggi'
+    cancelUrl: 'https://www.rarom.ro/',
+    notesPlaceholder: 'Expirare ITP RAR'
   },
 
   // --- CASA, SALUTE & ALTRO ---
   {
     id: 'palestra',
-    name: 'Abbonamento Palestra',
+    name: 'Abbonamento Palestra / Sală Fitness',
     category: 'other',
     itemType: 'subscription',
     defaultPrice: 45.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 7,
     color: '#EC4899',
     icon: '🏋️',
     cancelUrl: '',
-    notesPlaceholder: 'Mensile / Annuale + scadenza certificato medico'
+    notesPlaceholder: 'Palestra / 7card / ESX / World Class'
   },
   {
     id: 'affitto-mutuo',
-    name: 'Affitto / Rata Mutuo',
+    name: 'Affitto / Mutuo / Chirie / Rată',
     category: 'other',
     itemType: 'bill',
-    defaultPrice: 650.00,
+    defaultPrice: 600.00,
+    defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 5,
     color: '#4F46E5',
@@ -415,19 +462,19 @@ window.SERVICE_PRESETS = [
 ];
 
 window.CATEGORY_META = {
-  streaming: { label: 'Streaming & Media', icon: '🎬', badgeColor: '#E50914' },
-  software: { label: 'App, Gaming & Cloud', icon: '💻', badgeColor: '#10A37F' },
-  bills: { label: 'Bollette & Utenze', icon: '⚡', badgeColor: '#F59E0B' },
-  auto: { label: 'Bollo Auto & Veicoli', icon: '🚗', badgeColor: '#DC2626' },
-  other: { label: 'Casa, Tasse & Altro', icon: '🏠', badgeColor: '#8B5CF6' }
+  streaming: { label: 'Streaming & Media', label_ro: 'Streaming & Media', icon: '🎬', badgeColor: '#E50914' },
+  software: { label: 'App, Gaming & Cloud', label_ro: 'App, Gaming & Cloud', icon: '💻', badgeColor: '#10A37F' },
+  bills: { label: 'Bollette & Utenze', label_ro: 'Facturi & Utilități', icon: '⚡', badgeColor: '#F59E0B' },
+  auto: { label: 'Bollo Auto & Veicoli', label_ro: 'Auto, Rovinietă & RCA', icon: '🚗', badgeColor: '#DC2626' },
+  other: { label: 'Casa, Tasse & Altro', label_ro: 'Casă, Taxe & Altele', icon: '🏠', badgeColor: '#8B5CF6' }
 };
 
 window.BILLING_CYCLES = {
-  monthly: { label: 'Mensile', months: 1, short: '/mese' },
-  bimonthly: { label: 'Bimestrale (ogni 2 mesi)', months: 2, short: '/2 mesi' },
-  quarterly: { label: 'Trimestrale (ogni 3 mesi)', months: 3, short: '/3 mesi' },
-  semiannual: { label: 'Semestrale (ogni 6 mesi)', months: 6, short: '/6 mesi' },
-  yearly: { label: 'Annuale (ogni anno)', months: 12, short: '/anno' },
-  Biennial: { label: 'Biennale (ogni 2 anni)', months: 24, short: '/2 anni' },
-  once: { label: 'Singola Scadenza (1 solo mese / Una tantum)', months: 0, short: 'una tantum' }
+  monthly: { label: 'Mensile', label_ro: 'Lunar', months: 1, short: '/mese', short_ro: '/lună' },
+  bimonthly: { label: 'Bimestrale (ogni 2 mesi)', label_ro: 'Bilunar (la 2 luni)', months: 2, short: '/2 mesi', short_ro: '/2 luni' },
+  quarterly: { label: 'Trimestrale (ogni 3 mesi)', label_ro: 'Trimestrial (la 3 luni)', months: 3, short: '/3 mesi', short_ro: '/3 luni' },
+  semiannual: { label: 'Semestrale (ogni 6 mesi)', label_ro: 'Semestrial (la 6 luni)', months: 6, short: '/6 mesi', short_ro: '/6 luni' },
+  yearly: { label: 'Annuale (ogni anno)', label_ro: 'Anual (în fiecare an)', months: 12, short: '/anno', short_ro: '/an' },
+  Biennial: { label: 'Biennale (ogni 2 anni)', label_ro: 'La 2 ani (Bienal)', months: 24, short: '/2 anni', short_ro: '/2 ani' },
+  once: { label: 'Singola Scadenza (1 solo mese)', label_ro: 'O singură dată (1 lună)', months: 0, short: '1 mese', short_ro: 'o dată' }
 };
