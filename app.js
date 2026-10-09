@@ -784,25 +784,39 @@
         const itemCurrency = item.currency || 'EUR';
 
         let countdownClass = 'countdown-ok';
+        let progressColor = '#10b981';
         let countdownLabel = state.lang === 'ro' ? `Peste ${days} zile` : `Tra ${days} giorni`;
 
         if (isCancelled) {
           countdownLabel = t('tagCancelled');
+          progressColor = '#64748b';
         } else if (days < 0) {
           countdownClass = 'countdown-danger';
+          progressColor = '#f43f5e';
           countdownLabel = state.lang === 'ro' ? `⚠️ Expirat (${Math.abs(days)}z)` : `⚠️ Scaduto da ${Math.abs(days)} gg`;
         } else if (days === 0) {
           countdownClass = 'countdown-danger';
+          progressColor = '#f43f5e';
           countdownLabel = state.lang === 'ro' ? '🚨 SCADENT AZI!' : '🚨 SCADE OGGI!';
         } else if (days === 1) {
           countdownClass = 'countdown-danger';
+          progressColor = '#f43f5e';
           countdownLabel = state.lang === 'ro' ? '⏰ Scadent MÂINE!' : '⏰ Scade DOMANI!';
         } else if (days <= item.remindDaysBefore || (item.cancelBeforeRenewal && days <= 7)) {
           countdownClass = 'countdown-danger';
+          progressColor = '#f43f5e';
           countdownLabel = state.lang === 'ro' ? `⏳ Mai sunt ${days} zile` : `⏳ Mancano ${days} giorni`;
         } else if (days <= 14) {
           countdownClass = 'countdown-warning';
+          progressColor = '#f59e0b';
         }
+
+        // Percentuale barra di avanzamento verso la scadenza (su ciclo 30gg)
+        const progressPct = isCancelled
+          ? 0
+          : days <= 0
+          ? 100
+          : Math.max(12, Math.min(100, Math.round(((30 - Math.min(days, 30)) / 30) * 100)));
 
         const recommendedCancelDate = formatLocalizedDate(
           formatDateInput(addDays(parseLocalDate(item.nextDate), -Math.max(1, Math.min(item.remindDaysBefore, 3))))
@@ -811,47 +825,53 @@
         const cycleShort = state.lang === 'ro' ? cycleMeta.short_ro || cycleMeta.short : cycleMeta.short;
 
         return `
-          <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}">
-            <div class="card-stripe" style="background-color: ${escapeAttr(item.color || '#6366f1')}"></div>
-
+          <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}" data-card-expand="${item.id}">
             <div class="card-head">
               <div class="card-service-info">
-                <div class="service-avatar" style="background: ${escapeAttr(item.color || '#6366f1')}">
+                <div class="service-avatar" style="background: ${escapeAttr(item.color || '#f97316')}">
                   ${escapeHtml(item.icon || '🎬')}
                 </div>
                 <div>
-                  <h3 class="service-title">${escapeHtml(item.name)}</h3>
-                  ${
-                    item.accountEmail
-                      ? `<div class="account-email-badge">👤 ${escapeHtml(item.accountEmail)}</div>`
-                      : ''
-                  }
-                  <div class="service-meta">
+                  <div class="service-title-row">
+                    <h3 class="service-title">${escapeHtml(item.name)}</h3>
                     ${
                       isCancelled
                         ? `<span class="tag tag-cancelled">${t('tagCancelled')}</span>`
                         : item.cancelBeforeRenewal
-                        ? `<span class="tag tag-must-cancel">${t('tagMustCancelLong')}</span>`
+                        ? `<span class="tag tag-must-cancel">${t('tagMustCancel')}</span>`
                         : isBill
-                        ? `<span class="tag tag-bill">${t('tagBillLong')}</span>`
-                        : `<span class="tag tag-sub">${t('tagSubLong')}</span>`
+                        ? `<span class="tag tag-bill">${t('tagBill')}</span>`
+                        : ''
                     }
+                  </div>
+                  <div class="card-subline">
+                    <span class="countdown-badge ${countdownClass}">${countdownLabel}</span>
+                    <span>• ${formatLocalizedDate(item.nextDate)}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="card-price-box">
-                <div class="card-price">${formatCurrency(item.price, itemCurrency)}</div>
-                <div class="card-cycle">${escapeHtml(cycleShort)}</div>
+              <div class="card-right-col">
+                <div>
+                  <div class="card-price">${formatCurrency(item.price, itemCurrency)}</div>
+                  <div class="card-cycle">${escapeHtml(cycleShort)}</div>
+                </div>
+                <div class="card-expand-chevron" aria-hidden="true">▾</div>
               </div>
             </div>
 
-            <div class="card-deadline-box">
-              <div class="deadline-row">
-                <span>${isBill ? t('duePaymentLabel') : t('nextRenewalLabel')} <strong>${formatLocalizedDate(item.nextDate)}</strong></span>
-                <span class="countdown-badge ${countdownClass}">${countdownLabel}</span>
-              </div>
-              <div class="deadline-row" style="font-size: 0.76rem; color: var(--text-muted);">
+            <div class="card-progress-track">
+              <div class="card-progress-fill" style="width: ${progressPct}%; background: ${progressColor};"></div>
+            </div>
+
+            <!-- Cassetto dettagli che si apre toccando la card -->
+            <div class="card-expandable-body">
+              ${
+                item.accountEmail
+                  ? `<div class="account-email-badge">👤 ${escapeHtml(item.accountEmail)}</div>`
+                  : ''
+              }
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 12px; flex-wrap: wrap;">
                 <span>🔔 ${t('remindBeforeLabel')} ${item.remindDaysBefore} ${t('daysBefore')}</span>
                 ${item.paymentMethod ? `<span>💳 ${escapeHtml(item.paymentMethod)}</span>` : ''}
               </div>
@@ -862,49 +882,48 @@
                      </div>`
                   : ''
               }
-            </div>
+              ${item.notes ? `<div class="card-notes">💡 ${escapeHtml(item.notes)}</div>` : ''}
 
-            ${item.notes ? `<div class="card-notes">📝 ${escapeHtml(item.notes)}</div>` : ''}
+              <div class="card-footer-actions">
+                <div class="card-primary-actions">
+                  ${
+                    !isCancelled
+                      ? `
+                        ${
+                          item.itemType === 'subscription' || item.cancelBeforeRenewal
+                            ? `<button type="button" class="btn btn-xs ${item.cancelBeforeRenewal ? 'btn-danger' : 'btn-outline'}" data-action="mark-cancelled" data-id="${item.id}">
+                                 ${t('btnMarkCancelled')}
+                               </button>`
+                            : ''
+                        }
+                        <button type="button" class="btn btn-xs btn-success" data-action="mark-paid" data-id="${item.id}">
+                          ${isBill ? t('btnMarkPaid') : t('btnMarkRenewed')}
+                        </button>
+                        ${
+                          item.itemType === 'subscription'
+                            ? `<button type="button" class="btn btn-xs btn-ghost" data-action="toggle-must-cancel" data-id="${item.id}">
+                                 ${item.cancelBeforeRenewal ? t('btnKeepActive') : t('btnWantToCancel')}
+                               </button>`
+                            : ''
+                        }
+                      `
+                      : `
+                        <button type="button" class="btn btn-xs btn-primary" data-action="reactivate" data-id="${item.id}">
+                          ${t('btnReactivate')}
+                        </button>
+                      `
+                  }
+                </div>
 
-            <div class="card-footer-actions">
-              <div class="card-primary-actions">
-                ${
-                  !isCancelled
-                    ? `
-                      ${
-                        item.itemType === 'subscription' || item.cancelBeforeRenewal
-                          ? `<button type="button" class="btn btn-xs ${item.cancelBeforeRenewal ? 'btn-danger' : 'btn-outline'}" data-action="mark-cancelled" data-id="${item.id}">
-                               ${t('btnMarkCancelled')}
-                             </button>`
-                          : ''
-                      }
-                      <button type="button" class="btn btn-xs btn-success" data-action="mark-paid" data-id="${item.id}">
-                        ${isBill ? t('btnMarkPaid') : t('btnMarkRenewed')}
-                      </button>
-                      ${
-                        item.itemType === 'subscription'
-                          ? `<button type="button" class="btn btn-xs btn-ghost" data-action="toggle-must-cancel" data-id="${item.id}">
-                               ${item.cancelBeforeRenewal ? t('btnKeepActive') : t('btnWantToCancel')}
-                             </button>`
-                          : ''
-                      }
-                    `
-                    : `
-                      <button type="button" class="btn btn-xs btn-primary" data-action="reactivate" data-id="${item.id}">
-                        ${t('btnReactivate')}
-                      </button>
-                    `
-                }
-              </div>
-
-              <div class="card-secondary-actions">
-                ${
-                  item.cancelUrl
-                    ? `<a href="${escapeAttr(item.cancelUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline">${t('btnManageAccount')}</a>`
-                    : ''
-                }
-                <button type="button" class="btn btn-xs btn-ghost" data-action="edit" data-id="${item.id}" title="Modifica">✏️</button>
-                <button type="button" class="btn btn-xs btn-ghost text-danger" data-action="delete" data-id="${item.id}" title="Elimina">🗑️</button>
+                <div class="card-secondary-actions">
+                  ${
+                    item.cancelUrl
+                      ? `<a href="${escapeAttr(item.cancelUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline">${t('btnManageAccount')}</a>`
+                      : ''
+                  }
+                  <button type="button" class="btn btn-xs btn-ghost" data-action="edit" data-id="${item.id}" title="Modifica">✏️</button>
+                  <button type="button" class="btn btn-xs btn-ghost text-danger" data-action="delete" data-id="${item.id}" title="Elimina">🗑️</button>
+                </div>
               </div>
             </div>
           </article>
@@ -942,7 +961,7 @@
         const shownCurrency = useRon && preset.defaultPriceRON ? 'RON' : preset.defaultCurrency;
 
         return `
-          <div class="proposal-card ${isAlreadyConnected ? 'is-already-connected' : ''}">
+          <div class="proposal-card ${isAlreadyConnected ? 'is-already-connected' : ''}" data-connect-preset="${preset.id}">
             <div class="proposal-top">
               <div class="brand-badge-logo" style="background-color: ${escapeAttr(preset.color)}">
                 ${escapeHtml(preset.brandTag || preset.icon)}
@@ -1173,7 +1192,7 @@
           notes
         };
       }
-      showToast(`✅ "${name}" aggiornato!`);
+      showToast(state.lang === 'ro' ? `✅ "${name}" actualizat!` : `✅ "${name}" aggiornato!`);
     } else {
       state.items.push({
         id: generateId(),
@@ -1195,11 +1214,13 @@
         status: 'active',
         createdAt: new Date().toISOString()
       });
-      showToast(`🔗 "${name}" collegato al tuo account!`);
+      showToast(state.lang === 'ro' ? `🔗 "${name}" adăugat în contul tău!` : `🔗 "${name}" collegato al tuo account!`);
     }
 
     saveUserDataAndSync();
     closeItemModal();
+    const navHomeBtn = document.querySelector('.bottom-nav-item[data-nav="list"]');
+    if (navHomeBtn) navHomeBtn.click();
     renderAll();
     checkAndSendDueNotifications(false);
   }
@@ -1535,36 +1556,55 @@
     // Logout
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
+    // Helper per cambiare vista in modo fluido e pulito
+    const switchMainView = (target) => {
+      state.currentView = target;
+      document.querySelectorAll('.bottom-nav-item').forEach((b) => {
+        b.classList.toggle('active', b.dataset.nav === target);
+      });
+      const vList = document.getElementById('viewList');
+      const vConn = document.getElementById('viewConnect');
+      const vCal = document.getElementById('viewCalendar');
+      const vHist = document.getElementById('viewHistory');
+      if (vList) vList.classList.toggle('hidden', target !== 'list');
+      if (vConn) vConn.classList.toggle('hidden', target !== 'connect');
+      if (vCal) vCal.classList.toggle('hidden', target !== 'calendar');
+      if (vHist) vHist.classList.toggle('hidden', target !== 'history');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     // Bottom Navigation Bar
     document.querySelectorAll('.bottom-nav-item').forEach((navBtn) => {
       navBtn.addEventListener('click', () => {
-        const target = navBtn.dataset.nav;
-        document.querySelectorAll('.bottom-nav-item').forEach((b) => b.classList.toggle('active', b === navBtn));
-
-        if (target === 'connect') {
-          state.currentView = 'list';
-          document.getElementById('viewList').classList.remove('hidden');
-          document.getElementById('viewCalendar').classList.add('hidden');
-          document.getElementById('viewHistory').classList.add('hidden');
-          const strip = document.querySelector('.proposals-strip-section');
-          if (strip) strip.scrollIntoView({ behavior: 'smooth' });
-          return;
-        }
-
-        state.currentView = target;
-        document.getElementById('viewList').classList.toggle('hidden', target !== 'list');
-        document.getElementById('viewCalendar').classList.toggle('hidden', target !== 'calendar');
-        document.getElementById('viewHistory').classList.toggle('hidden', target !== 'history');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        switchMainView(navBtn.dataset.nav);
       });
     });
 
     // Add Custom / Connect buttons
     document.getElementById('btnAddNewMain').addEventListener('click', () => openCustomItemModal('create'));
     document.getElementById('btnEmptyAdd').addEventListener('click', () => openCustomItemModal('create'));
-    document.getElementById('btnEmptyGoConnect').addEventListener('click', () => {
-      const strip = document.querySelector('.proposals-strip-section');
-      if (strip) strip.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('btnEmptyGoConnect').addEventListener('click', () => switchMainView('connect'));
+    const btnHeroQuick = document.getElementById('btnHeroQuickAdd');
+    if (btnHeroQuick) {
+      btnHeroQuick.addEventListener('click', () => switchMainView('connect'));
+    }
+
+    // Pillole KPI Interattive nella Hero Card
+    document.querySelectorAll('[data-quick-filter]').forEach((kpiBtn) => {
+      kpiBtn.addEventListener('click', () => {
+        const filterVal = kpiBtn.dataset.quickFilter;
+        state.currentFilter = state.currentFilter === filterVal ? 'all' : filterVal;
+        document.querySelectorAll('#categoryFilterPills .pill').forEach((p) => {
+          p.classList.toggle('active', p.dataset.filter === state.currentFilter);
+        });
+        renderItemsList();
+      });
+    });
+
+    document.querySelectorAll('[data-quick-nav]').forEach((kpiNav) => {
+      kpiNav.addEventListener('click', () => {
+        switchMainView(kpiNav.dataset.quickNav);
+      });
     });
 
     // Catalog Category Filter Tabs
@@ -1577,8 +1617,11 @@
       });
     });
 
-    // Delegated clicks for Service Proposals ("Collega Netflix"), Plans, and Item Cards
+    // Delegated clicks for Service Proposals ("Collega Netflix"), Plans, and Interactive Item Cards
     document.body.addEventListener('click', (e) => {
+      // Se clicca su un link esterno (<a>), lascia fare al browser
+      if (e.target.closest('a')) return;
+
       // 1. Click on "Collega [Service]" proposal card
       const connectBtn = e.target.closest('[data-connect-preset]');
       if (connectBtn) {
@@ -1599,19 +1642,27 @@
 
       // 3. Click on Card actions (Disdetto, Pagato, Modifica, Elimina)
       const actionBtn = e.target.closest('[data-action]');
-      if (!actionBtn) return;
+      if (actionBtn) {
+        e.stopPropagation();
+        const action = actionBtn.dataset.action;
+        const id = actionBtn.dataset.id;
 
-      const action = actionBtn.dataset.action;
-      const id = actionBtn.dataset.id;
+        if (action === 'mark-cancelled') handleMarkCancelled(id);
+        else if (action === 'mark-paid') handleMarkPaidOrRenewed(id);
+        else if (action === 'toggle-must-cancel') handleToggleMustCancel(id);
+        else if (action === 'reactivate') handleReactivateItem(id);
+        else if (action === 'delete') handleDeleteItem(id);
+        else if (action === 'edit') {
+          const item = state.items.find((i) => i.id === id);
+          if (item) openCustomItemModal('edit', item);
+        }
+        return;
+      }
 
-      if (action === 'mark-cancelled') handleMarkCancelled(id);
-      else if (action === 'mark-paid') handleMarkPaidOrRenewed(id);
-      else if (action === 'toggle-must-cancel') handleToggleMustCancel(id);
-      else if (action === 'reactivate') handleReactivateItem(id);
-      else if (action === 'delete') handleDeleteItem(id);
-      else if (action === 'edit') {
-        const item = state.items.find((i) => i.id === id);
-        if (item) openCustomItemModal('edit', item);
+      // 4. Tap-to-Expand sulla Card di un abbonamento per aprire/chiudere i dettagli in modo fluido!
+      const expandableCard = e.target.closest('.sub-card[data-card-expand]');
+      if (expandableCard) {
+        expandableCard.classList.toggle('expanded');
       }
     });
 

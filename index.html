@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#090d16" />
+  <meta name="theme-color" content="#181311" />
   <meta name="description" content="ScadenzApp — Gestisci i tuoi abbonamenti reali (Netflix, Disney+, prove di 1 mese), bollette e bollo auto." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=7" />
+  <link rel="manifest" href="./manifest.webmanifest?v=8" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=7" />
+  <link rel="stylesheet" href="./styles.css?v=8" />
 </head>
 <body>
 
   <!-- =====================================================================
-       1. SCHERMATA DI LOGIN / REGISTRAZIONE ALL'INGRESSO
+       1. SCHERMATA DI LOGIN / REGISTRAZIONE (Design Caldo & Accogliente)
        ===================================================================== -->
   <div id="authScreen" class="auth-screen">
+    <div class="auth-ambient-glow"></div>
+
     <div class="auth-top-bar">
       <button type="button" class="chip-btn" id="btnAuthLangToggle">🇮🇹 Italiano (€)</button>
-      <button type="button" class="chip-btn chip-green" id="btnAuthDownloadApp" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')">
+      <button type="button" class="chip-btn chip-warm" id="btnAuthDownloadApp" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')">
         📲 Scarica App
       </button>
     </div>
@@ -66,10 +68,10 @@
   </div>
 
   <!-- =====================================================================
-       2. APPLICAZIONE PRINCIPALE (Visibile solo dopo il Login)
+       2. APPLICAZIONE PRINCIPALE (Pulita, Calda e Divisa in Schermate)
        ===================================================================== -->
   <div id="appScreen" class="app-screen hidden">
-    <!-- HEADER COMPATTO STILE APP MOBILE -->
+    <!-- HEADER MINIMALISTA E CALDO -->
     <header class="app-header">
       <div class="header-inner">
         <div class="user-profile-pill">
@@ -81,154 +83,161 @@
         </div>
 
         <div class="header-controls">
-          <button type="button" class="chip-btn chip-green" id="btnOpenDownloadAppModal" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')">
+          <button type="button" class="chip-btn chip-warm" id="btnOpenDownloadAppModal" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')">
             <span id="txtDownloadAppBtn">📲 App</span>
           </button>
           <button type="button" class="chip-btn" id="btnLangToggle" title="IT / RO">🇮🇹 IT</button>
           <button type="button" class="chip-btn" id="btnCurrencyToggle" title="EUR / RON">💶 EUR</button>
           <button type="button" class="chip-btn" id="btnNotificationStatus" title="Notifiche">🔔</button>
-          <button type="button" class="chip-btn" id="btnThemeToggle" title="Tema">🌙</button>
+          <button type="button" class="chip-btn" id="btnThemeToggle" title="Tema Caldo Chiaro / Scuro">☀️</button>
           <button type="button" class="chip-btn chip-danger" id="btnLogout" title="Esci">
-            <span id="txtLogoutBtn">🚪 Esci</span>
+            <span id="txtLogoutBtn">🚪</span>
           </button>
         </div>
       </div>
     </header>
 
     <main class="main-container">
-      <!-- HERO WALLET CARD (Riepilogo Spesa Reale Mensile & Scadenze) -->
-      <section class="hero-wallet-card">
-        <div class="hero-wallet-top">
-          <div>
-            <span class="hero-wallet-label" id="txtHeroMonthlyTitle">Spesa Mensile Attiva (Abbonamenti)</span>
-            <div class="hero-big-amount" id="kpiMonthlySubs">€ 0,00</div>
-            <span class="hero-sub-amount" id="kpiYearlySubs">Proiezione annua: € 0,00</span>
+
+      <!-- ================= VISTA 1: HOME — SOLO I TUOI ABBONAMENTI ATTIVI ================= -->
+      <section id="viewList" class="view-section view-animate">
+        <!-- HERO CARD CALDA & INTERATTIVA -->
+        <div class="hero-wallet-card">
+          <div class="hero-wallet-top">
+            <div>
+              <span class="hero-wallet-label" id="txtHeroMonthlyTitle">Spesa Mensile Attiva</span>
+              <div class="hero-big-amount" id="kpiMonthlySubs">€ 0,00</div>
+              <span class="hero-sub-amount" id="kpiYearlySubs">Proiezione annua: € 0,00</span>
+            </div>
+            <button type="button" class="btn-hero-connect" id="btnHeroQuickAdd" title="Collega servizio">
+              <span>✨</span>
+            </button>
           </div>
-          <button type="button" class="btn-hero-add" id="btnHeroQuickAdd" onclick="document.getElementById('btnAddNewMain').click()">
-            ＋
-          </button>
+
+          <!-- 3 Pillole Interattive (Cliccabili per filtrare al volo!) -->
+          <div class="hero-mini-kpis">
+            <button type="button" class="mini-kpi mini-kpi-urgent" data-quick-filter="must-cancel">
+              <span class="mini-kpi-label" id="txtKpiUrgentLabel">Da Disdire</span>
+              <strong class="mini-kpi-val" id="kpiUrgentCount">0</strong>
+              <small id="kpiUrgentSub">Nessuna urgenza</small>
+            </button>
+            <button type="button" class="mini-kpi" data-quick-filter="bills">
+              <span class="mini-kpi-label" id="txtKpiBillsLabel">Bollette (Anno)</span>
+              <strong class="mini-kpi-val" id="kpiYearlyBills">€ 0,00</strong>
+              <small id="kpiMonthlyBills">€ 0,00/m</small>
+            </button>
+            <button type="button" class="mini-kpi mini-kpi-saved" data-quick-nav="history">
+              <span class="mini-kpi-label" id="txtKpiSavedLabel">Risparmiati</span>
+              <strong class="mini-kpi-val" id="kpiSavedMoney">€ 0,00</strong>
+              <small id="kpiSavedCount">0</small>
+            </button>
+          </div>
         </div>
 
-        <div class="hero-mini-kpis">
-          <div class="mini-kpi mini-kpi-urgent">
-            <span class="mini-kpi-label" id="txtKpiUrgentLabel">Da Disdire / In Scadenza</span>
-            <strong class="mini-kpi-val" id="kpiUrgentCount">0</strong>
-            <small id="kpiUrgentSub">Nessuna urgenza</small>
+        <!-- BANNER AVVISI URGENTI (Visibile solo quando c'è davvero una scadenza imminente) -->
+        <div id="urgentAlertsSection" class="urgent-alerts-section hidden" aria-live="polite">
+          <div class="urgent-header">
+            <div class="urgent-title">
+              <span class="pulse-dot"></span>
+              <h2 id="urgentSectionTitle">🚨 In Scadenza</h2>
+            </div>
+            <button type="button" class="btn btn-xs btn-outline" id="btnTriggerBrowserNotif">🔔 Testa</button>
           </div>
-          <div class="mini-kpi">
-            <span class="mini-kpi-label" id="txtKpiBillsLabel">Bollette &amp; Auto (Anno)</span>
-            <strong class="mini-kpi-val" id="kpiYearlyBills">€ 0,00</strong>
-            <small id="kpiMonthlyBills">€ 0,00/m</small>
-          </div>
-          <div class="mini-kpi mini-kpi-saved">
-            <span class="mini-kpi-label" id="txtKpiSavedLabel">Risparmiati (Disdette)</span>
-            <strong class="mini-kpi-val" id="kpiSavedMoney">€ 0,00</strong>
-            <small id="kpiSavedCount">0</small>
-          </div>
+          <div id="urgentAlertsList" class="urgent-alerts-grid"></div>
         </div>
-      </section>
 
-      <!-- BANNER AVVISI URGENTI -->
-      <section id="urgentAlertsSection" class="urgent-alerts-section hidden" aria-live="polite">
-        <div class="urgent-header">
-          <div class="urgent-title">
-            <span class="pulse-dot"></span>
-            <h2 id="urgentSectionTitle">🚨 Avvisi Prioritari</h2>
+        <!-- FILTRI MORBIDI SCORREVOLI + RICERCA COMPATTA -->
+        <div class="home-toolbar">
+          <div class="filter-pills" id="categoryFilterPills">
+            <button type="button" class="pill active" data-filter="all" id="txtFilterAll">Tutti</button>
+            <button type="button" class="pill pill-danger" data-filter="must-cancel">
+              <span id="txtFilterMustCancel">🛑 Da Disdire</span> (<span id="countMustCancel">0</span>)
+            </button>
+            <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
+            <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette</button>
+            <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Auto</button>
+            <button type="button" class="pill" data-filter="cancelled" id="txtFilterCancelled">✂️ Disdetti</button>
           </div>
-          <button type="button" class="btn btn-xs btn-outline" id="btnTriggerBrowserNotif">🔔 Testa Notifica</button>
-        </div>
-        <div id="urgentAlertsList" class="urgent-alerts-grid"></div>
-      </section>
 
-      <!-- ================= VISTA 1: I MIEI ABBONAMENTI & SCADENZE REALI ================= -->
-      <section id="viewList" class="view-section">
-        <div class="section-header-row">
-          <h2 id="txtMyActiveTitle">📋 I Tuoi Abbonamenti &amp; Scadenze Reali</h2>
-          <div class="search-and-sort">
+          <div class="search-and-sort-compact">
             <div class="search-box">
               <span>🔍</span>
-              <input type="search" id="searchInput" placeholder="Cerca nei tuoi abbonamenti..." />
+              <input type="search" id="searchInput" placeholder="Cerca..." />
             </div>
             <select id="sortSelect" aria-label="Ordina per">
-              <option value="dueDateAsc" id="optSortDueDate">⏳ Scadenza vicina</option>
-              <option value="cancelFirst" id="optSortCancelFirst">🛑 Prima "Da Disdire"</option>
-              <option value="priceDesc" id="optSortPriceDesc">💶 Importo più alto</option>
-              <option value="nameAsc" id="optSortNameAsc">🔤 Nome (A-Z)</option>
+              <option value="dueDateAsc" id="optSortDueDate">⏳ Scadenza</option>
+              <option value="cancelFirst" id="optSortCancelFirst">🛑 Da Disdire</option>
+              <option value="priceDesc" id="optSortPriceDesc">💶 Prezzo</option>
+              <option value="nameAsc" id="optSortNameAsc">🔤 A-Z</option>
             </select>
           </div>
         </div>
 
-        <div class="filter-pills" id="categoryFilterPills">
-          <button type="button" class="pill active" data-filter="all" id="txtFilterAll">Tutti gli attivi</button>
-          <button type="button" class="pill pill-danger" data-filter="must-cancel">
-            <span id="txtFilterMustCancel">🛑 Da Disdire (1 Mese)</span> (<span id="countMustCancel">0</span>)
-          </button>
-          <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
-          <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette</button>
-          <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Auto &amp; Bollo</button>
-          <button type="button" class="pill" data-filter="cancelled" id="txtFilterCancelled">✂️ Disdetti</button>
-        </div>
+        <h2 id="txtMyActiveTitle" class="sr-only">📋 I Tuoi Abbonamenti</h2>
 
-        <!-- Griglia dei veri abbonamenti dell'utente -->
+        <!-- LISTA DEGLI ABBONAMENTI (Card interattive che si espandono al tocco!) -->
         <div id="itemsGrid" class="items-grid"></div>
 
-        <!-- Stato Vuoto quando l'utente non ha ancora collegato nessun abbonamento -->
+        <!-- STATO VUOTO ACCOGLIENTE (Quando hai 0 abbonamenti) -->
         <div id="emptyState" class="empty-state hidden">
-          <div class="empty-icon">✨</div>
-          <h3 id="txtEmptyTitle">Non hai ancora collegato nessun abbonamento</h3>
-          <p id="txtEmptyDesc">Collega la tua Gmail per importare in automatico gli abbonamenti da Google Play, Netflix, Disney+ e bollette, oppure tocca un servizio qui sotto!</p>
+          <div class="empty-illustration">🌅</div>
+          <h3 id="txtEmptyTitle">Il tuo spazio è ancora vuoto</h3>
+          <p id="txtEmptyDesc">Collega i tuoi abbonamenti (Netflix, Disney+, Spotify, Bollette) o importa automaticamente da Gmail per ricevere promemoria prima di ogni rinnovo.</p>
           <div class="empty-actions">
-            <button type="button" class="btn btn-primary" id="btnEmptyConnectGmail">📧 Auto-Import da Google / Gmail</button>
-            <button type="button" class="btn btn-outline" id="btnEmptyGoConnect">🔗 Scegli Servizio Manualmente</button>
-            <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Aggiungi Personalizzata</button>
+            <button type="button" class="btn btn-primary btn-lg" id="btnEmptyGoConnect">✨ Esplora e Collega Servizi</button>
+            <button type="button" class="btn btn-outline" id="btnEmptyConnectGmail">📧 Auto-Import da Gmail</button>
+            <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Crea Manualmente</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VISTA 2: COLLEGA SERVIZI & AUTO-IMPORT GMAIL (Schermata dedicata!) ================= -->
+      <section id="viewConnect" class="view-section view-animate hidden">
+        <!-- CARD AUTO-SYNC GOOGLE / GMAIL -->
+        <div class="gmail-auto-card" id="gmailAutoSyncBanner">
+          <div class="gmail-auto-left">
+            <div class="gmail-badge-row">
+              <span class="gmail-pill-tag" id="txtGmailTagNew">⚡ AUTO-SYNC GOOGLE &amp; EMAIL</span>
+              <span class="gmail-status-pill" id="gmailStatusPill">⚪ Non collegato</span>
+            </div>
+            <h3 id="txtGmailBannerTitle">📧 Importa in automatico da Google Play &amp; Gmail</h3>
+            <p id="txtGmailBannerDesc">
+              Fai un abbonamento con Google (Google Play, Netflix, Disney+, Spotify, Bollette)? Collega la tua Gmail e ScadenzApp lo aggiungerà da solo!
+            </p>
+          </div>
+          <div class="gmail-auto-actions">
+            <button type="button" class="btn btn-primary" id="btnOpenGmailModal">
+              📧 Collega Gmail (Auto-Import)
+            </button>
+            <button type="button" class="btn btn-success hidden" id="btnScanGmailQuick">
+              🔄 Scansiona Ora
+            </button>
           </div>
         </div>
 
-        <!-- PROPOSTE RAPIDE SEMPRE A PORTATA DI MANO ("Collega Netflix, Disney+, Spotify...") -->
+        <!-- CATALOGO INTERATTIVO SERVIZI -->
         <div class="proposals-strip-section">
-          <!-- CARD SPECIALE: SINCRONIZZAZIONE AUTOMATICA GOOGLE / GMAIL -->
-          <div class="gmail-auto-card" id="gmailAutoSyncBanner">
-            <div class="gmail-auto-left">
-              <div class="gmail-badge-row">
-                <span class="gmail-pill-tag" id="txtGmailTagNew">⚡ AUTO-SYNC GOOGLE &amp; EMAIL</span>
-                <span class="gmail-status-pill" id="gmailStatusPill">⚪ Non collegato</span>
-              </div>
-              <h3 id="txtGmailBannerTitle">📧 Importa in automatico da Google Play &amp; Gmail</h3>
-              <p id="txtGmailBannerDesc">
-                Fai un abbonamento con Google (Google Play, Netflix, Disney+, Spotify, DAZN, Bollette)? Collega la tua Gmail e ScadenzApp lo rileverà e aggiungerà da solo!
-              </p>
-            </div>
-            <div class="gmail-auto-actions">
-              <button type="button" class="btn btn-primary" id="btnOpenGmailModal">
-                📧 Collega Gmail (Auto-Import)
-              </button>
-              <button type="button" class="btn btn-success hidden" id="btnScanGmailQuick">
-                🔄 Scansiona Ora
-              </button>
-            </div>
-          </div>
-
           <div class="proposals-strip-header">
             <div>
-              <h3 id="txtConnectSectionTitle">🔗 Oppure collega un servizio (Netflix, Disney+, Bollette...)</h3>
-              <p class="text-muted" id="txtConnectSectionSub">Tocca un servizio che usi per aprire il tuo account, rilevare costo e scadenza e sapere subito come disdire:</p>
+              <h3 id="txtConnectSectionTitle">✨ Tocca un servizio per collegarlo</h3>
+              <p class="text-muted" id="txtConnectSectionSub">Scegli Netflix, Disney+, Spotify o le tue bollette per rilevare costo, scadenza e come disdire:</p>
             </div>
           </div>
 
-          <div class="preset-tabs" id="catalogFilterTabs" style="margin-bottom: 14px;">
-            <button type="button" class="preset-tab active" data-catalog-cat="all" id="txtCatTabAll">✨ Tutti i Servizi</button>
-            <button type="button" class="preset-tab" data-catalog-cat="streaming" id="txtCatTabStreaming">🎬 Streaming (Netflix, Disney+...)</button>
-            <button type="button" class="preset-tab" data-catalog-cat="software" id="txtCatTabSoftware">💻 App, AI &amp; Gaming</button>
-            <button type="button" class="preset-tab" data-catalog-cat="bills" id="txtCatTabBills">⚡ Bollette / Facturi</button>
-            <button type="button" class="preset-tab" data-catalog-cat="auto" id="txtCatTabAuto">🚗 Bollo Auto / Rovinietă / RCA</button>
+          <div class="preset-tabs" id="catalogFilterTabs">
+            <button type="button" class="preset-tab active" data-catalog-cat="all" id="txtCatTabAll">✨ Tutti</button>
+            <button type="button" class="preset-tab" data-catalog-cat="streaming" id="txtCatTabStreaming">🎬 Streaming</button>
+            <button type="button" class="preset-tab" data-catalog-cat="software" id="txtCatTabSoftware">💻 App &amp; Gaming</button>
+            <button type="button" class="preset-tab" data-catalog-cat="bills" id="txtCatTabBills">⚡ Bollette</button>
+            <button type="button" class="preset-tab" data-catalog-cat="auto" id="txtCatTabAuto">🚗 Auto &amp; Tasse</button>
           </div>
 
           <div id="serviceProposalsGrid" class="proposals-grid"></div>
         </div>
       </section>
 
-      <!-- ================= VISTA 2: CALENDARIO MENSILE ================= -->
-      <section id="viewCalendar" class="view-section hidden">
+      <!-- ================= VISTA 3: CALENDARIO MENSILE ================= -->
+      <section id="viewCalendar" class="view-section view-animate hidden">
         <div class="calendar-card">
           <div class="calendar-header">
             <button type="button" class="btn btn-ghost btn-sm" id="btnPrevMonth">◀ Prec.</button>
@@ -242,8 +251,8 @@
         </div>
       </section>
 
-      <!-- ================= VISTA 3: STORICO & STRUMENTI ================= -->
-      <section id="viewHistory" class="view-section hidden">
+      <!-- ================= VISTA 4: STORICO & BACKUP ================= -->
+      <section id="viewHistory" class="view-section view-animate hidden">
         <div class="history-card">
           <div class="history-header">
             <div>
@@ -251,10 +260,10 @@
               <p class="text-muted" id="txtHistorySubtitle">Registro delle bollette pagate e dei soldi risparmiati disdicendo in tempo.</p>
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button type="button" class="btn btn-outline btn-sm" id="btnExportIcsAll">📅 Esporta Calendario (.ics)</button>
-              <button type="button" class="btn btn-outline btn-sm" id="btnExportJson">⬇️ Backup (.json)</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnExportIcsAll">📅 Calendario (.ics)</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnExportJson">⬇️ Backup</button>
               <label class="btn btn-outline btn-sm" style="cursor:pointer;">
-                <span id="txtBtnImportJson">⬆️ Importa (.json)</span>
+                <span id="txtBtnImportJson">⬆️ Importa</span>
                 <input type="file" id="inputImportJson" accept=".json,application/json" hidden />
               </label>
               <button type="button" class="btn btn-ghost btn-sm text-danger" id="btnClearHistory">🗑️ Svuota</button>
@@ -265,14 +274,14 @@
       </section>
     </main>
 
-    <!-- BARRA DI NAVIGAZIONE FISSA IN BASSO (Stile Vera App Mobile) -->
+    <!-- BARRA DI NAVIGAZIONE FISSA IN BASSO (Stile App Mobile Fluida) -->
     <nav class="bottom-nav" aria-label="Navigazione principale">
       <button type="button" class="bottom-nav-item active" data-nav="list">
         <span class="nav-icon">🏠</span>
         <span class="nav-label"><span id="txtNavMySubsLabel">I Miei</span> (<span id="countAllActive">0</span>)</span>
       </button>
       <button type="button" class="bottom-nav-item" data-nav="connect">
-        <span class="nav-icon">🔗</span>
+        <span class="nav-icon">✨</span>
         <span class="nav-label" id="txtNavConnect">Collega Servizi</span>
       </button>
       <button type="button" class="bottom-nav-fab" id="btnAddNewMain" aria-label="Aggiungi Scadenza">
@@ -303,10 +312,10 @@
         <!-- BOX SPECIALE AUTO-RILEVAMENTO DAL SITO UFFICIALE (NETFLIX, DISNEY+, SPOTIFY, ECC.) -->
         <div id="servicePlanSelectorBox" class="service-plan-box hidden">
           <div class="auto-detect-site-box" id="officialAccountRow">
-            <strong id="txtAutoDetectBoxTitle" style="display:block; margin-bottom:4px; color:#f8fafc;">
+            <strong id="txtAutoDetectBoxTitle" style="display:block; margin-bottom:4px;">
               ⚡ Rileva Costo e Scadenza dal tuo account ufficiale:
             </strong>
-            <p id="txtAutoDetectStepHelp" style="font-size:0.81rem; color:var(--text-secondary); margin-bottom:10px; line-height:1.4;">
+            <p id="txtAutoDetectStepHelp" style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:10px; line-height:1.45;">
               1️⃣ Clicca su "Apri Account" (dove sei già loggato), copia la riga con il prezzo/data di rinnovo e torna qui: l'app compilerà tutto in automatico!
             </p>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
@@ -321,7 +330,7 @@
               </a>
             </div>
             <!-- Box istruzioni "Come disdire" -->
-            <div id="howToCancelCallout" class="cancel-limit-callout hidden" style="margin-top:6px; margin-bottom:10px; background:rgba(99,102,241,0.14); border-left-color:#6366f1; color:var(--text-main);"></div>
+            <div id="howToCancelCallout" class="cancel-limit-callout hidden" style="margin-top:6px; margin-bottom:10px;"></div>
           </div>
 
           <label class="plan-picker-title" id="txtChooseRealPlan">Oppure tocca il tuo piano per impostare subito il costo:</label>
@@ -453,7 +462,7 @@
             </div>
           </div>
 
-          <input type="hidden" id="itemColor" value="#4f46e5" />
+          <input type="hidden" id="itemColor" value="#f97316" />
 
           <div class="modal-footer">
             <button type="button" class="btn btn-ghost" id="btnCancelModal">Annulla</button>
@@ -486,7 +495,7 @@
               📲 Installa App Ora sul Telefono
             </button>
           </div>
-          <div id="nativeInstallStepGuide" class="cancel-limit-callout hidden" style="margin-top: 10px; font-size: 0.86rem; background: rgba(16, 185, 129, 0.15); border-left-color: #10b981; color: var(--text-main);">
+          <div id="nativeInstallStepGuide" class="cancel-limit-callout hidden" style="margin-top: 10px; font-size: 0.86rem;">
             📲 <strong>Chrome Android:</strong> Tocca i <strong>3 puntini <code>⋮</code></strong> in alto a destra → Tocca <strong>"Installa app"</strong> / <strong>"Instalează aplicația"</strong>!
           </div>
         </div>
@@ -577,7 +586,7 @@
             Hai aperto la pagina di Netflix/Disney+ o hai una ricevuta Google Play? Copia e incolla il testo qui sotto e ScadenzApp estrarrà costo, scadenza e link di disdetta!
           </p>
           <div class="form-group" style="margin-top: 8px;">
-            <textarea id="inputPasteReceiptText" rows="3" placeholder="Es: Piano Standard 13,99 €/mese - Prossima data di fatturazione: 18 novembre 2026..." style="width:100%; border-radius:10px; padding:10px; background:rgba(15,23,42,0.75); color:#f8fafc; border:1px solid rgba(148,163,184,0.22); font-family:inherit;"></textarea>
+            <textarea id="inputPasteReceiptText" rows="3" placeholder="Es: Piano Standard 13,99 €/mese - Prossima data di fatturazione: 18 novembre 2026..."></textarea>
           </div>
           <div class="sync-buttons-row" style="margin-top: 8px;">
             <button type="button" class="btn btn-outline" id="btnParseReceiptText">
@@ -592,8 +601,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=7"></script>
-  <script src="./data-presets.js?v=7"></script>
-  <script src="./app.js?v=7"></script>
+  <script src="./i18n.js?v=8"></script>
+  <script src="./data-presets.js?v=8"></script>
+  <script src="./app.js?v=8"></script>
 </body>
 </html>

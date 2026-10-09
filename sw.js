@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scadenzapp-v7.0.0';
+const CACHE_NAME = 'scadenzapp-v8.0.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
