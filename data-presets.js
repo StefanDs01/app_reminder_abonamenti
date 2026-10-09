@@ -1,9 +1,10 @@
-// Catalogo predefinito di Abbonamenti, Bollette, Bollo Auto e Scadenze Ricorrenti (Italia 🇮🇹 + Romania 🇷🇴)
+// Catalogo Servizi Ufficiali & Piani Reali per Collegamento Rapido (Italia 🇮🇹 + Romania 🇷🇴)
 window.SERVICE_PRESETS = [
-  // --- STREAMING & INTRATTENIMENTO (GLOBALI + IT + RO) ---
+  // --- STREAMING & INTRATTENIMENTO ---
   {
     id: 'netflix',
     name: 'Netflix',
+    brandTag: 'N',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 13.99,
@@ -13,11 +14,18 @@ window.SERVICE_PRESETS = [
     color: '#E50914',
     icon: '🎬',
     cancelUrl: 'https://www.netflix.com/youraccount',
-    notesPlaceholder: 'Piano Standard / Premium'
+    notesPlaceholder: 'Piano Standard / Premium',
+    plans: [
+      { label: 'Standard con pubblicità (6,99 €)', price: 6.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Standard Full HD (13,99 €)', price: 13.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Premium 4K UHD (19,99 €)', price: 19.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'RO Basic / Standard (49,99 lei)', price: 49.99, currency: 'RON', cycle: 'monthly' }
+    ]
   },
   {
     id: 'disneyplus',
     name: 'Disney+',
+    brandTag: 'D+',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 9.99,
@@ -27,53 +35,18 @@ window.SERVICE_PRESETS = [
     color: '#0063E5',
     icon: '✨',
     cancelUrl: 'https://www.disneyplus.com/account/subscription',
-    notesPlaceholder: 'Standard / Premium'
-  },
-  {
-    id: 'max-hbo',
-    name: 'Max (HBO)',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 34.90,
-    defaultCurrency: 'RON',
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#002BE7',
-    icon: '🎥',
-    cancelUrl: 'https://auth.max.com/',
-    notesPlaceholder: 'Max Streaming (EUR / RON)'
-  },
-  {
-    id: 'voyo-ro',
-    name: 'VOYO.ro 🇷🇴',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 4.76,
-    defaultCurrency: 'EUR',
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#E11D48',
-    icon: '📺',
-    cancelUrl: 'https://voyo.protv.ro/profilul-meu',
-    notesPlaceholder: 'Abonament VOYO Romania'
-  },
-  {
-    id: 'amazon-prime',
-    name: 'Amazon Prime / Prime Video',
-    category: 'streaming',
-    itemType: 'subscription',
-    defaultPrice: 4.99,
-    defaultCurrency: 'EUR',
-    billingCycle: 'monthly',
-    remindDaysBefore: 5,
-    color: '#00A8E1',
-    icon: '📦',
-    cancelUrl: 'https://www.primevideo.com/settings',
-    notesPlaceholder: 'Prime Video (14 RON in RO / 4.99€ in IT)'
+    notesPlaceholder: 'Standard / Premium',
+    plans: [
+      { label: 'Standard con pubblicità (5,99 €)', price: 5.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Standard Full HD (9,99 €)', price: 9.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Premium 4K (13,99 €)', price: 13.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'RO Standard (36,99 lei)', price: 36.99, currency: 'RON', cycle: 'monthly' }
+    ]
   },
   {
     id: 'spotify',
     name: 'Spotify Premium',
+    brandTag: 'SP',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 10.99,
@@ -83,11 +56,38 @@ window.SERVICE_PRESETS = [
     color: '#1DB954',
     icon: '🎧',
     cancelUrl: 'https://www.spotify.com/account/subscription/',
-    notesPlaceholder: 'Individual / Duo / Family (24 RON in RO)'
+    notesPlaceholder: 'Individual / Duo / Family',
+    plans: [
+      { label: 'Individual (10,99 €)', price: 10.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Duo 2 Account (14,99 €)', price: 14.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Family 6 Account (17,99 €)', price: 17.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'RO Individual (24,00 lei)', price: 24.00, currency: 'RON', cycle: 'monthly' }
+    ]
+  },
+  {
+    id: 'amazon-prime',
+    name: 'Amazon Prime',
+    brandTag: 'PR',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 4.99,
+    defaultCurrency: 'EUR',
+    billingCycle: 'monthly',
+    remindDaysBefore: 5,
+    color: '#00A8E1',
+    icon: '📦',
+    cancelUrl: 'https://www.amazon.it/mc',
+    notesPlaceholder: 'Prime Video + Spedizioni',
+    plans: [
+      { label: 'Prime Mensile IT (4,99 €/mese)', price: 4.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Prime Annuale IT (49,90 €/anno)', price: 49.90, currency: 'EUR', cycle: 'yearly' },
+      { label: 'Prime Video RO (13,99 lei/lună)', price: 13.99, currency: 'RON', cycle: 'monthly' }
+    ]
   },
   {
     id: 'youtube-premium',
     name: 'YouTube Premium',
+    brandTag: 'YT',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 11.99,
@@ -97,25 +97,75 @@ window.SERVICE_PRESETS = [
     color: '#FF0000',
     icon: '▶️',
     cancelUrl: 'https://www.youtube.com/paid_memberships',
-    notesPlaceholder: 'YouTube senza pubblicità (29 RON in RO)'
+    notesPlaceholder: 'YouTube senza pubblicità + Music',
+    plans: [
+      { label: 'Individuale IT (11,99 €)', price: 11.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Famiglia IT (17,99 €)', price: 17.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Individual RO (29,00 lei)', price: 29.00, currency: 'RON', cycle: 'monthly' }
+    ]
   },
   {
     id: 'dazn',
-    name: 'DAZN 🇮🇹',
+    name: 'DAZN',
+    brandTag: 'DZ',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 34.99,
     defaultCurrency: 'EUR',
     billingCycle: 'monthly',
     remindDaysBefore: 7,
-    color: '#1E1E1E',
+    color: '#18181B',
     icon: '⚽',
     cancelUrl: 'https://www.dazn.com/it-IT/myaccount',
-    notesPlaceholder: 'Attenzione al preavviso di disdetta!'
+    notesPlaceholder: 'Attenzione al preavviso di disdetta!',
+    plans: [
+      { label: 'DAZN Start (14,99 €)', price: 14.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'DAZN Standard (34,99 €)', price: 34.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'DAZN Plus (59,99 €)', price: 59.99, currency: 'EUR', cycle: 'monthly' }
+    ]
+  },
+  {
+    id: 'max-hbo',
+    name: 'Max (HBO)',
+    brandTag: 'MX',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 34.90,
+    defaultCurrency: 'RON',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#002BE7',
+    icon: '🎥',
+    cancelUrl: 'https://auth.max.com/',
+    notesPlaceholder: 'Max Streaming',
+    plans: [
+      { label: 'Max Standard RO (34,90 lei)', price: 34.90, currency: 'RON', cycle: 'monthly' },
+      { label: 'Max Standard EUR (9,99 €)', price: 9.99, currency: 'EUR', cycle: 'monthly' }
+    ]
+  },
+  {
+    id: 'voyo-ro',
+    name: 'VOYO.ro 🇷🇴',
+    brandTag: 'VY',
+    category: 'streaming',
+    itemType: 'subscription',
+    defaultPrice: 4.76,
+    defaultCurrency: 'EUR',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#E11D48',
+    icon: '📺',
+    cancelUrl: 'https://voyo.protv.ro/profilul-meu',
+    notesPlaceholder: 'Abonament VOYO Romania',
+    plans: [
+      { label: 'Abonament Lunar (4,76 €)', price: 4.76, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Abonament Lunar (~24 lei)', price: 24.00, currency: 'RON', cycle: 'monthly' }
+    ]
   },
   {
     id: 'nowtv',
     name: 'NOW TV 🇮🇹',
+    brandTag: 'NW',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 14.99,
@@ -130,6 +180,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'apple-tv',
     name: 'Apple TV+',
+    brandTag: 'TV+',
     category: 'streaming',
     itemType: 'subscription',
     defaultPrice: 9.99,
@@ -139,13 +190,14 @@ window.SERVICE_PRESETS = [
     color: '#334155',
     icon: '🍎',
     cancelUrl: 'https://support.apple.com/HT202039',
-    notesPlaceholder: 'Gestibile da Impostazioni ID Apple'
+    notesPlaceholder: 'ID Apple'
   },
 
   // --- GAMING, SOFTWARE & AI ---
   {
     id: 'chatgpt',
     name: 'ChatGPT Plus',
+    brandTag: 'AI',
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 22.00,
@@ -158,8 +210,29 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'OpenAI Plus'
   },
   {
+    id: 'ps-plus',
+    name: 'PlayStation Plus',
+    brandTag: 'PS+',
+    category: 'software',
+    itemType: 'subscription',
+    defaultPrice: 8.99,
+    defaultCurrency: 'EUR',
+    billingCycle: 'monthly',
+    remindDaysBefore: 3,
+    color: '#00439C',
+    icon: '🕹️',
+    cancelUrl: 'https://store.playstation.com/',
+    notesPlaceholder: 'Essential / Extra / Premium',
+    plans: [
+      { label: 'Essential 1 Mese (8,99 €)', price: 8.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Extra 1 Mese (13,99 €)', price: 13.99, currency: 'EUR', cycle: 'monthly' },
+      { label: 'Premium 1 Mese (16,99 €)', price: 16.99, currency: 'EUR', cycle: 'monthly' }
+    ]
+  },
+  {
     id: 'xbox-gamepass',
     name: 'Xbox Game Pass',
+    brandTag: 'XB',
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 14.99,
@@ -172,22 +245,9 @@ window.SERVICE_PRESETS = [
     notesPlaceholder: 'PC / Console / Ultimate'
   },
   {
-    id: 'ps-plus',
-    name: 'PlayStation Plus',
-    category: 'software',
-    itemType: 'subscription',
-    defaultPrice: 8.99,
-    defaultCurrency: 'EUR',
-    billingCycle: 'monthly',
-    remindDaysBefore: 3,
-    color: '#00439C',
-    icon: '🕹️',
-    cancelUrl: 'https://store.playstation.com/',
-    notesPlaceholder: 'Essential / Extra / Premium'
-  },
-  {
     id: 'icloud',
     name: 'iCloud+',
+    brandTag: 'iC',
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 2.99,
@@ -197,11 +257,17 @@ window.SERVICE_PRESETS = [
     color: '#0EA5E9',
     icon: '☁️',
     cancelUrl: 'https://support.apple.com/108047',
-    notesPlaceholder: '50GB / 200GB / 2TB'
+    notesPlaceholder: '50GB / 200GB / 2TB',
+    plans: [
+      { label: '50 GB (0,99 €)', price: 0.99, currency: 'EUR', cycle: 'monthly' },
+      { label: '200 GB (2,99 €)', price: 2.99, currency: 'EUR', cycle: 'monthly' },
+      { label: '2 TB (9,99 €)', price: 9.99, currency: 'EUR', cycle: 'monthly' }
+    ]
   },
   {
     id: 'google-one',
     name: 'Google One',
+    brandTag: 'G1',
     category: 'software',
     itemType: 'subscription',
     defaultPrice: 1.99,
@@ -211,13 +277,14 @@ window.SERVICE_PRESETS = [
     color: '#4285F4',
     icon: '🌈',
     cancelUrl: 'https://one.google.com/settings',
-    notesPlaceholder: 'Spazio archiviazione Google'
+    notesPlaceholder: '100GB / 2TB / AI Premium'
   },
 
   // --- BOLLETTE & UTENZE ITALIA 🇮🇹 ---
   {
     id: 'bolletta-luce',
     name: 'Bolletta Luce 🇮🇹',
+    brandTag: 'LUCE',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 85.00,
@@ -227,11 +294,12 @@ window.SERVICE_PRESETS = [
     color: '#F59E0B',
     icon: '⚡',
     cancelUrl: '',
-    notesPlaceholder: 'Fornitore (Enel, Plenitude, A2A, Edison...)'
+    notesPlaceholder: 'Enel, Plenitude, A2A, Edison, Sorgenia...'
   },
   {
     id: 'bolletta-gas',
     name: 'Bolletta Gas 🇮🇹',
+    brandTag: 'GAS',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 95.00,
@@ -246,6 +314,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'fibra-casa',
     name: 'Internet Fibra Casa 🇮🇹',
+    brandTag: 'WIFI',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 27.90,
@@ -260,6 +329,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'tari',
     name: 'TARI (Tassa Rifiuti) 🇮🇹',
+    brandTag: 'TARI',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 180.00,
@@ -276,6 +346,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'digi-ro',
     name: 'DIGI (RCS & RDS) 🇷🇴',
+    brandTag: 'DIGI',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 95.00,
@@ -289,7 +360,8 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'curent-ro',
-    name: 'Curent Electric (PPC / Hidroelectrica / Electrica) 🇷🇴',
+    name: 'Curent Electric (PPC / Hidroelectrica) 🇷🇴',
+    brandTag: 'PPC',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 180.00,
@@ -304,6 +376,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'gaze-ro',
     name: 'Gaze Naturale (Engie / E.ON) 🇷🇴',
+    brandTag: 'GAZ',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 220.00,
@@ -318,6 +391,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'intretinere-ro',
     name: 'Întreținere Bloc (e-Bloc / Pago) 🇷🇴',
+    brandTag: 'BLOC',
     category: 'bills',
     itemType: 'bill',
     defaultPrice: 350.00,
@@ -332,6 +406,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'mobil-ro',
     name: 'Orange / Vodafone / YOXO 🇷🇴',
+    brandTag: 'SIM',
     category: 'bills',
     itemType: 'subscription',
     defaultPrice: 39.00,
@@ -348,6 +423,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'bollo-auto',
     name: 'Bollo Auto 🇮🇹',
+    brandTag: 'ACI',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 210.00,
@@ -362,6 +438,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'assicurazione-auto',
     name: 'Assicurazione Auto (RCA) 🇮🇹',
+    brandTag: 'RCA',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 480.00,
@@ -376,6 +453,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'rovinieta-ro',
     name: 'Rovinietă Auto (CNAIR) 🇷🇴',
+    brandTag: 'ROV',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 139.00,
@@ -390,6 +468,7 @@ window.SERVICE_PRESETS = [
   {
     id: 'rca-ro',
     name: 'Asigurare RCA Auto 🇷🇴',
+    brandTag: 'RCA',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 950.00,
@@ -403,7 +482,8 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'impozit-auto-ro',
-    name: 'Impozit Auto & Locuință (Ghișeul.ro) 🇷🇴',
+    name: 'Impozit Auto (Ghișeul.ro) 🇷🇴',
+    brandTag: 'TAX',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 200.00,
@@ -417,7 +497,8 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'itp-ro',
-    name: 'ITP Auto (Inspecția Tehnică) 🇷🇴',
+    name: 'ITP Auto (RAR) 🇷🇴',
+    brandTag: 'ITP',
     category: 'auto',
     itemType: 'bill',
     defaultPrice: 180.00,
@@ -433,7 +514,8 @@ window.SERVICE_PRESETS = [
   // --- CASA, SALUTE & ALTRO ---
   {
     id: 'palestra',
-    name: 'Abbonamento Palestra / Sală Fitness',
+    name: 'Palestra / Sală Fitness',
+    brandTag: 'GYM',
     category: 'other',
     itemType: 'subscription',
     defaultPrice: 45.00,
@@ -447,7 +529,8 @@ window.SERVICE_PRESETS = [
   },
   {
     id: 'affitto-mutuo',
-    name: 'Affitto / Mutuo / Chirie / Rată',
+    name: 'Affitto / Mutuo / Chirie',
+    brandTag: 'HOME',
     category: 'other',
     itemType: 'bill',
     defaultPrice: 600.00,
