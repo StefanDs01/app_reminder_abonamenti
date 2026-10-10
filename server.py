@@ -779,14 +779,16 @@ class ScadenzAppHandler(SimpleHTTPRequestHandler):
 
             user_file = DATA_DIR / f"{username}.json"
             incoming_hash = hash_password(username, password)
-            display_name = body.get("displayName", username)
+            incoming_display = (body.get("displayName") or "").strip()
+            display_name = incoming_display or username
             gmail_config = {"enabled": False, "email": "", "appPassword": "", "lastScanAt": ""}
 
             if user_file.exists():
                 existing = json.loads(user_file.read_text(encoding="utf-8"))
                 if existing.get("pinHash") and existing.get("pinHash") != incoming_hash:
                     return self._send_json(401, {"ok": False, "error": "Password errata!"})
-                display_name = existing.get("displayName", display_name)
+                if not incoming_display:
+                    display_name = existing.get("displayName", display_name)
                 gmail_config = existing.get("gmailConfig", gmail_config)
 
             record = {

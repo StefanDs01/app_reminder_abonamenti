@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=9" />
+  <link rel="manifest" href="./manifest.webmanifest?v=10" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=9" />
+  <link rel="stylesheet" href="./styles.css?v=10" />
 </head>
 <body>
 
@@ -74,13 +74,14 @@
     <!-- HEADER MINIMALISTA E CALDO -->
     <header class="app-header">
       <div class="header-inner">
-        <div class="user-profile-pill">
+        <button type="button" class="user-profile-pill" id="btnEditProfileName" title="Tocca per cambiare il tuo nome profilo">
           <div class="user-avatar" id="userAvatarInitial">D</div>
           <div class="user-meta">
             <span class="user-greeting" id="txtHeroGreeting">Ciao</span>
             <strong id="loggedUsernameDisplay">Utente</strong>
           </div>
-        </div>
+          <span class="profile-edit-pencil" aria-hidden="true">✏️</span>
+        </button>
 
         <div class="header-controls">
           <button type="button" class="chip-btn chip-warm" id="btnOpenDownloadAppModal" onclick="document.getElementById('downloadAppModalBackdrop').classList.remove('hidden')">
@@ -623,11 +624,33 @@
     </div>
   </div>
 
+  <!-- ================= MODALE MODIFICA NOME PROFILO ================= -->
+  <div class="modal-backdrop hidden" id="profileModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 id="profileModalTitle">✏️ Modifica Nome Profilo</h2>
+        <button type="button" class="modal-close" id="btnCloseProfileModal" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="profileForm">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="inputProfileDisplayName" id="txtLabelProfileName">Come vuoi essere chiamato nell'app?</label>
+            <input type="text" id="inputProfileDisplayName" required maxlength="40" placeholder="Es. Daniel" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" id="btnCancelProfileModal">Annulla</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveProfileName">✅ Salva Nome</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=9"></script>
-  <script src="./data-presets.js?v=9"></script>
-  <script src="./app.js?v=9"></script>
+  <script src="./i18n.js?v=10"></script>
+  <script src="./data-presets.js?v=10"></script>
+  <script src="./app.js?v=10"></script>
 </body>
 </html>

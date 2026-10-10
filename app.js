@@ -1628,6 +1628,55 @@
     // Logout
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
+    // Modifica Nome Profilo (Toccando il nome/avatar in alto a sinistra)
+    const btnEditProfile = document.getElementById('btnEditProfileName');
+    const profileModal = document.getElementById('profileModalBackdrop');
+    const inputProfileName = document.getElementById('inputProfileDisplayName');
+    const closeProfileModal = () => {
+      if (profileModal) profileModal.classList.add('hidden');
+    };
+
+    if (btnEditProfile && profileModal && inputProfileName) {
+      btnEditProfile.addEventListener('click', () => {
+        inputProfileName.value = state.user.displayName || state.user.username || '';
+        const titleEl = document.getElementById('profileModalTitle');
+        const lblEl = document.getElementById('txtLabelProfileName');
+        const btnCancelEl = document.getElementById('btnCancelProfileModal');
+        const btnSaveEl = document.getElementById('btnSaveProfileName');
+        if (titleEl) titleEl.textContent = state.lang === 'ro' ? '✏️ Modifică Numele Profilului' : '✏️ Modifica Nome Profilo';
+        if (lblEl) lblEl.textContent = state.lang === 'ro' ? 'Cum vrei să te numim în aplicație?' : "Come vuoi essere chiamato nell'app?";
+        if (btnCancelEl) btnCancelEl.textContent = t('btnCancel');
+        if (btnSaveEl) btnSaveEl.textContent = state.lang === 'ro' ? '✅ Salvează Numele' : '✅ Salva Nome';
+
+        profileModal.classList.remove('hidden');
+        setTimeout(() => inputProfileName.focus(), 60);
+      });
+    }
+
+    const btnCloseProf = document.getElementById('btnCloseProfileModal');
+    const btnCancelProf = document.getElementById('btnCancelProfileModal');
+    const profileForm = document.getElementById('profileForm');
+    if (btnCloseProf) btnCloseProf.addEventListener('click', closeProfileModal);
+    if (btnCancelProf) btnCancelProf.addEventListener('click', closeProfileModal);
+    if (profileForm) {
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newName = (inputProfileName.value || '').trim();
+        if (!newName) return;
+        state.user.displayName = newName;
+        document.getElementById('loggedUsernameDisplay').textContent = newName;
+        document.getElementById('userAvatarInitial').textContent = newName.charAt(0).toUpperCase();
+        localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(state.user));
+        saveUserDataAndSync();
+        closeProfileModal();
+        showToast(
+          state.lang === 'ro'
+            ? `✨ Numele profilului a fost schimbat în "${newName}"!`
+            : `✨ Nome profilo aggiornato in "${newName}"!`
+        );
+      });
+    }
+
     // Helper per cambiare vista in modo fluido e pulito
     const switchMainView = (target) => {
       state.currentView = target;
