@@ -738,18 +738,79 @@
     if (btnAddSubHero) btnAddSubHero.textContent = state.lang === 'ro' ? 'Conectează Serviciu' : 'Collega Servizio';
   }
 
+  function getNextUpcomingYearlyDate(dateStr) {
+    if (!dateStr) return dateStr;
+    const d = parseLocalDate(dateStr);
+    const today = getTodayMidnight();
+    let targetYear = today.getFullYear();
+    let candidate = new Date(targetYear, d.getMonth(), d.getDate());
+    if (candidate < today) {
+      targetYear += 1;
+      candidate = new Date(targetYear, d.getMonth(), d.getDate());
+    }
+    return formatDateInput(candidate);
+  }
+
+  function buildGoogleCalendarUrl(item) {
+    if (!item || !item.nextDate) return 'https://calendar.google.com/';
+    const cleanDate = item.nextDate.replace(/-/g, '');
+    let datesParam = '';
+
+    if (item.eventTime && /^\d{2}:\d{2}$/.test(item.eventTime)) {
+      const [hhStr, mmStr] = item.eventTime.split(':');
+      const hh = parseInt(hhStr, 10) || 0;
+      const mm = parseInt(mmStr, 10) || 0;
+      const endHh = (hh + 1) % 24;
+      const startIso = `${cleanDate}T${String(hh).padStart(2, '0')}${String(mm).padStart(2, '0')}00`;
+      const endIso = `${cleanDate}T${String(endHh).padStart(2, '0')}${String(mm).padStart(2, '0')}00`;
+      datesParam = `${startIso}/${endIso}`;
+    } else {
+      const nextDayStr = formatDateInput(addDays(parseLocalDate(item.nextDate), 1)).replace(/-/g, '');
+      datesParam = `${cleanDate}/${nextDayStr}`;
+    }
+
+    const isPersonal = item.itemType === 'birthday' || item.itemType === 'event';
+    const priceSuffix = !isPersonal && Number(item.price) > 0 ? ` (${formatCurrency(item.price, item.currency || 'EUR')})` : '';
+    const title = `${item.icon || '📅'} ${item.name}${priceSuffix}`;
+
+    const detailLines = [];
+    if (item.eventTime) detailLines.push(`⏰ Orario: ${item.eventTime}`);
+    if (item.notes) detailLines.push(`💡 Note: ${item.notes}`);
+    if (item.accountEmail) detailLines.push(`👤 Account: ${item.accountEmail}`);
+    if (item.cancelUrl) detailLines.push(`🔗 Link: ${item.cancelUrl}`);
+    detailLines.push('📲 Creato con ScadenzApp');
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: title,
+      dates: datesParam,
+      details: detailLines.join('\n')
+    });
+
+    if (item.itemType === 'birthday' || item.billingCycle === 'yearly') {
+      params.append('recur', 'RRULE:FREQ=YEARLY');
+    }
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  }
+
   function renderCounts() {
     const activeCount = state.items.filter((i) => i.status === 'active').length;
     const mustCancelCount = state.items.filter((i) => i.status === 'active' && i.cancelBeforeRenewal).length;
+    const eventsCount = state.items.filter(
+      (i) => i.status === 'active' && (i.itemType === 'birthday' || i.itemType === 'event' || i.category === 'events')
+    ).length;
     const elAll = document.getElementById('countAllActive');
     const elMust = document.getElementById('countMustCancel');
+    const elEvents = document.getElementById('countEvents');
     const elHist = document.getElementById('countHistory');
     if (elAll) elAll.textContent = String(activeCount);
     if (elMust) elMust.textContent = String(mustCancelCount);
+    if (elEvents) elEvents.textContent = String(eventsCount);
     if (elHist) elHist.textContent = String(state.history.length);
   }
 
-  // --- RENDER REAL USER SUBSCRIPTIONS ---
+  // --- RENDER REAL USER SUBSCRIPTIONS, BILLS, BIRTHDAYS & EVENTS ---
   function getFilteredAndSortedItems() {
     let list = [...state.items];
 
@@ -759,6 +820,8 @@
       list = list.filter((i) => i.status === 'active');
       if (state.currentFilter === 'must-cancel') {
         list = list.filter((i) => i.cancelBeforeRenewal);
+      } else if (state.currentFilter === 'events') {
+        list = list.filter((i) => i.itemType === 'birthday' || i.itemType === 'event' || i.category === 'events');
       } else if (state.currentFilter === 'subscriptions') {
         list = list.filter((i) => i.itemType === 'subscription');
       } else if (state.currentFilter === 'bills') {
@@ -823,11 +886,14 @@
           short_ro: '/lună'
         };
         const isBill = item.itemType === 'bill';
+        const isBirthday = item.itemType === 'birthday';
+        const isEvent = item.itemType === 'event';
+        const isPersonalEvent = isBirthday || isEvent;
         const isCancelled = item.status === 'cancelled';
         const itemCurrency = item.currency || 'EUR';
 
         // Calcolo Anello Circolare di Scadenza (Opzione 3) con Colori Opzione 2 (Warm Olive, Honey Gold, Coral Red)
-        let ringColor = '#65a30d'; // Warm Olive Green
+        let ringColor = isBirthday ? '#db2777' : isEvent ? '#0284c7' : '#65a30d';
         let ringTextColor = 'var(--text-main)';
         let ringMainText = '';
         let ringSubText = '';
@@ -843,32 +909,32 @@
           ringTextColor = '#e11d48';
           ringPct = 100;
           ringMainText = `-${Math.abs(days)}`;
-          ringSubText = state.lang === 'ro' ? 'EXPIRAT' : 'SCADUTO';
+          ringSubText = state.lang === 'ro' ? 'TRECUT' : 'SCADUTO';
         } else if (days === 0) {
-          ringColor = '#e11d48';
-          ringTextColor = '#e11d48';
+          ringColor = isBirthday ? '#db2777' : '#e11d48';
+          ringTextColor = isBirthday ? '#db2777' : '#e11d48';
           ringPct = 100;
           ringMainText = state.lang === 'ro' ? 'AZI' : 'OGGI';
-          ringSubText = '!';
+          ringSubText = item.eventTime ? item.eventTime : '🎉';
         } else if (days === 1) {
           ringColor = '#e11d48';
           ringTextColor = '#e11d48';
           ringPct = 90;
           ringMainText = '1';
-          ringSubText = state.lang === 'ro' ? 'ZI' : 'GIORNO';
+          ringSubText = state.lang === 'ro' ? 'MÂINE' : 'DOMANI';
         } else {
           ringMainText = String(days);
           ringSubText = state.lang === 'ro' ? 'ZILE' : 'GIORNI';
           if (item.cancelBeforeRenewal || days <= item.remindDaysBefore || days <= 3) {
-            ringColor = '#e11d48'; // Coral Red urgente
-            ringTextColor = '#e11d48';
+            ringColor = isBirthday ? '#db2777' : '#e11d48';
+            ringTextColor = isBirthday ? '#db2777' : '#e11d48';
             ringPct = Math.max(18, Math.min(95, Math.round((Math.min(days, 30) / 30) * 100)));
           } else if (days <= 10) {
             ringColor = '#d97706'; // Honey Gold attenzione
             ringTextColor = '#d97706';
             ringPct = Math.max(25, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
           } else {
-            ringColor = '#65a30d'; // Warm Olive tranquillo
+            ringColor = isBirthday ? '#db2777' : isEvent ? '#0284c7' : '#65a30d';
             ringPct = Math.max(30, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
           }
         }
@@ -880,11 +946,38 @@
         );
 
         const cycleShort = state.lang === 'ro' ? cycleMeta.short_ro || cycleMeta.short : cycleMeta.short;
-        const renewsLabelText = isCancelled
-          ? state.lang === 'ro'
-            ? 'Anulat'
-            : 'Disdetto'
-          : `${isBill ? (state.lang === 'ro' ? 'Scadent' : 'Scade') : (state.lang === 'ro' ? 'Reînnoire' : 'Rinnovo')}: ${formatLocalizedDate(item.nextDate)}`;
+        let renewsLabelText = '';
+        if (isCancelled) {
+          renewsLabelText = state.lang === 'ro' ? 'Anulat' : 'Completato';
+        } else if (isBirthday) {
+          renewsLabelText = `🎂 ${formatLocalizedDate(item.nextDate)}`;
+        } else if (isEvent) {
+          renewsLabelText = `${item.eventTime ? `⏰ ${item.eventTime} • ` : '📅 '}${formatLocalizedDate(item.nextDate)}`;
+        } else {
+          renewsLabelText = `${isBill ? (state.lang === 'ro' ? 'Scadent' : 'Scade') : (state.lang === 'ro' ? 'Reînnoire' : 'Rinnovo')}: ${formatLocalizedDate(item.nextDate)}`;
+        }
+
+        let priceOrMetaHtml = '';
+        if (isBirthday && (!item.price || Number(item.price) === 0)) {
+          priceOrMetaHtml = `
+            <span class="card-price" style="font-size: 0.92rem; color: #be185d;">
+              🎂 ${state.lang === 'ro' ? 'Aniversare Anuală' : 'Compleanno Annuale'}${item.eventTime ? ` • ⏰ ${escapeHtml(item.eventTime)}` : ''}
+            </span>
+          `;
+        } else if (isEvent && (!item.price || Number(item.price) === 0)) {
+          priceOrMetaHtml = `
+            <span class="card-price" style="font-size: 0.92rem; color: #0369a1;">
+              ${item.eventTime ? `⏰ Ore ${escapeHtml(item.eventTime)}` : `📅 ${formatLocalizedDate(item.nextDate)}`}
+            </span>
+          `;
+        } else {
+          priceOrMetaHtml = `
+            <span class="card-price">${formatCurrency(item.price, itemCurrency)}</span>
+            <span class="card-cycle">${escapeHtml(cycleShort)}${item.eventTime ? ` • ⏰ ${escapeHtml(item.eventTime)}` : ''}</span>
+          `;
+        }
+
+        const googleCalUrl = buildGoogleCalendarUrl(item);
 
         return `
           <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}" data-card-expand="${item.id}">
@@ -901,17 +994,20 @@
                         ? `<span class="tag tag-cancelled">${t('tagCancelled')}</span>`
                         : item.cancelBeforeRenewal
                         ? `<span class="tag tag-must-cancel">${t('tagMustCancel')}</span>`
+                        : isBirthday
+                        ? `<span class="tag tag-birthday">🎂 ${state.lang === 'ro' ? 'Zi de naștere' : 'Compleanno'}</span>`
+                        : isEvent
+                        ? `<span class="tag tag-event">⏰ ${state.lang === 'ro' ? 'Eveniment' : 'Evento / Appuntamento'}</span>`
                         : isBill
                         ? `<span class="tag tag-bill">${t('tagBill')}</span>`
                         : ''
                     }
                   </div>
                   <div class="card-price-inline">
-                    <span class="card-price">${formatCurrency(item.price, itemCurrency)}</span>
-                    <span class="card-cycle">${escapeHtml(cycleShort)}</span>
+                    ${priceOrMetaHtml}
                   </div>
                   <div class="card-manage-pill">
-                    <span>${state.lang === 'ro' ? 'Gestionează' : 'Gestisci'} ▾</span>
+                    <span>${state.lang === 'ro' ? 'Detalii & Calendar' : 'Dettagli & Calendario'} ▾</span>
                   </div>
                 </div>
               </div>
@@ -944,6 +1040,7 @@
               }
               <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 12px; flex-wrap: wrap;">
                 <span>🔔 ${t('remindBeforeLabel')} ${item.remindDaysBefore} ${t('daysBefore')}</span>
+                ${item.eventTime ? `<span>⏰ Ore <strong>${escapeHtml(item.eventTime)}</strong></span>` : ''}
                 ${item.paymentMethod ? `<span>💳 ${escapeHtml(item.paymentMethod)}</span>` : ''}
               </div>
               ${
@@ -968,7 +1065,15 @@
                             : ''
                         }
                         <button type="button" class="btn btn-xs btn-success" data-action="mark-paid" data-id="${item.id}">
-                          ${isBill ? t('btnMarkPaid') : t('btnMarkRenewed')}
+                          ${
+                            isPersonalEvent
+                              ? state.lang === 'ro'
+                                ? '✅ Marcat ca Făcut'
+                                : '✅ Segna Fatto / Anno Prossimo'
+                              : isBill
+                              ? t('btnMarkPaid')
+                              : t('btnMarkRenewed')
+                          }
                         </button>
                         ${
                           item.itemType === 'subscription'
@@ -987,6 +1092,12 @@
                 </div>
 
                 <div class="card-secondary-actions">
+                  <a href="${escapeAttr(googleCalUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline" title="Aggiungi a Google Calendar">
+                    📅 Google Cal
+                  </a>
+                  <button type="button" class="btn btn-xs btn-outline" data-action="export-single-ics" data-id="${item.id}" title="Salva nel Calendario del Telefono (.ics)">
+                    📲 .ics
+                  </button>
                   ${
                     item.cancelUrl
                       ? `<a href="${escapeAttr(item.cancelUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline">${t('btnManageAccount')}</a>`
@@ -1096,6 +1207,8 @@
     document.getElementById('itemCancelUrl').value = preset.directCancelUrl || preset.cancelUrl || '';
     document.getElementById('itemNotes').value = howToCancelText || '';
     document.getElementById('itemNextDate').value = addMonthsKeepDay(formatDateInput(getTodayMidnight()), 1);
+    const timeEl = document.getElementById('itemEventTime');
+    if (timeEl) timeEl.value = '';
 
     if (state.gmailStatus && state.gmailStatus.email) {
       document.getElementById('itemAccountEmail').value = state.gmailStatus.email;
@@ -1159,14 +1272,17 @@
     backdrop.classList.remove('hidden');
   }
 
-  function openCustomItemModal(mode = 'create', item = null) {
+  function openCustomItemModal(mode = 'create', item = null, prefillDate = null, prefillType = null) {
     const backdrop = document.getElementById('itemModalBackdrop');
     const form = document.getElementById('itemForm');
     const title = document.getElementById('modalTitle');
     const planBox = document.getElementById('servicePlanSelectorBox');
+    const timeEl = document.getElementById('itemEventTime');
+    const gcalSyncEl = document.getElementById('syncToGoogleCalOnSave');
 
     form.reset();
     planBox.classList.add('hidden');
+    if (gcalSyncEl) gcalSyncEl.checked = false;
 
     if (mode === 'edit' && item) {
       title.textContent = `${t('modalEditPrefix')} ${item.name}`;
@@ -1175,13 +1291,14 @@
       document.getElementById('itemIcon').value = item.icon || '🎬';
       document.getElementById('itemAccountEmail').value = item.accountEmail || '';
       document.getElementById('itemCategory').value = item.category || 'streaming';
-      document.getElementById('itemPrice').value = item.price;
+      document.getElementById('itemPrice').value = item.price !== undefined ? item.price : 0;
       document.getElementById('itemCurrency').value = item.currency || 'EUR';
       document.getElementById('itemCycle').value = item.billingCycle || 'monthly';
       document.getElementById('itemNextDate').value = item.nextDate;
+      if (timeEl) timeEl.value = item.eventTime || '';
       document.getElementById('itemRemindDays').value = String(item.remindDaysBefore || 3);
       document.getElementById('itemPaymentMethod').value = item.paymentMethod || '';
-      document.getElementById('itemColor').value = item.color || '#4f46e5';
+      document.getElementById('itemColor').value = item.color || '#d97706';
       document.getElementById('itemCancelUrl').value = item.cancelUrl || '';
       document.getElementById('itemNotes').value = item.notes || '';
 
@@ -1190,16 +1307,49 @@
       updateFormVisibilityByType(item.itemType || 'subscription');
       document.getElementById('cancelBeforeRenewal').checked = Boolean(item.cancelBeforeRenewal);
     } else {
-      title.textContent = t('modalNewTitle');
+      const targetType = prefillType || 'subscription';
+      if (prefillDate) {
+        title.textContent = `📅 Nuovo Evento il ${formatLocalizedDate(prefillDate)}`;
+      } else if (targetType === 'birthday') {
+        title.textContent = state.lang === 'ro' ? '🎂 Adaugă Zi de Naștere / Eveniment' : '🎂 Aggiungi Compleanno / Evento';
+      } else {
+        title.textContent = t('modalNewTitle');
+      }
+
       document.getElementById('itemId').value = '';
-      document.getElementById('itemNextDate').value = addMonthsKeepDay(formatDateInput(getTodayMidnight()), 1);
+      document.getElementById('itemNextDate').value =
+        prefillDate || addMonthsKeepDay(formatDateInput(getTodayMidnight()), 1);
       document.getElementById('itemCurrency').value = state.mainCurrency || 'EUR';
-      document.getElementById('itemColor').value = '#6366f1';
-      document.querySelector('input[name="itemType"][value="subscription"]').checked = true;
-      updateFormVisibilityByType('subscription');
+      document.getElementById('itemPrice').value = targetType === 'birthday' || targetType === 'event' ? '0' : '';
+      if (timeEl) timeEl.value = targetType === 'event' ? '10:00' : '';
+
+      if (targetType === 'birthday') {
+        document.getElementById('itemIcon').value = '🎂';
+        document.getElementById('itemColor').value = '#db2777';
+        document.getElementById('itemCategory').value = 'events';
+        document.getElementById('itemCycle').value = 'yearly';
+        document.getElementById('itemRemindDays').value = '3';
+      } else if (targetType === 'event') {
+        document.getElementById('itemIcon').value = '⏰';
+        document.getElementById('itemColor').value = '#0284c7';
+        document.getElementById('itemCategory').value = 'events';
+        document.getElementById('itemCycle').value = 'once';
+        document.getElementById('itemRemindDays').value = '1';
+      } else {
+        document.getElementById('itemIcon').value = '🎬';
+        document.getElementById('itemColor').value = '#d97706';
+      }
+
+      const radio = document.querySelector(`input[name="itemType"][value="${targetType}"]`);
+      if (radio) radio.checked = true;
+      updateFormVisibilityByType(targetType);
     }
 
     backdrop.classList.remove('hidden');
+    setTimeout(() => {
+      const nameInput = document.getElementById('itemName');
+      if (nameInput && mode === 'create') nameInput.focus();
+    }, 80);
   }
 
   function closeItemModal() {
@@ -1208,14 +1358,60 @@
 
   function updateFormVisibilityByType(itemType) {
     const antiRenewalBox = document.getElementById('antiRenewalBox');
+    const quickPresetsBox = document.getElementById('quickEventPresetsBox');
     const labelNextDate = document.getElementById('labelNextDate');
-    if (itemType === 'bill') {
+    const labelItemName = document.getElementById('labelItemName');
+    const inputItemName = document.getElementById('itemName');
+    const groupPayment = document.getElementById('groupPaymentMethod');
+    const groupCancelUrl = document.getElementById('groupCancelUrl');
+    const groupAccountEmail = document.getElementById('groupAccountEmail');
+
+    const isPersonal = itemType === 'birthday' || itemType === 'event';
+
+    if (quickPresetsBox) {
+      quickPresetsBox.classList.toggle('hidden', !isPersonal);
+    }
+    if (groupPayment) groupPayment.classList.toggle('hidden', isPersonal);
+    if (groupCancelUrl) groupCancelUrl.classList.toggle('hidden', isPersonal);
+    if (groupAccountEmail) groupAccountEmail.classList.toggle('hidden', isPersonal);
+
+    if (itemType === 'birthday') {
+      antiRenewalBox.classList.add('hidden');
+      document.getElementById('cancelBeforeRenewal').checked = false;
+      labelNextDate.textContent = state.lang === 'ro' ? '🎂 Data Zilei de Naștere *' : '🎂 Data del Compleanno *';
+      if (labelItemName) labelItemName.textContent = state.lang === 'ro' ? 'Nume sărbătorit *' : 'Chi compie gli anni? *';
+      if (inputItemName) inputItemName.placeholder = 'Es. Compleanno Mamma, Marco, Maria...';
+      if (!document.getElementById('itemId').value) {
+        document.getElementById('itemIcon').value = '🎂';
+        document.getElementById('itemCategory').value = 'events';
+        document.getElementById('itemCycle').value = 'yearly';
+        document.getElementById('itemColor').value = '#db2777';
+        if (!document.getElementById('itemPrice').value) document.getElementById('itemPrice').value = '0';
+      }
+    } else if (itemType === 'event') {
+      antiRenewalBox.classList.add('hidden');
+      document.getElementById('cancelBeforeRenewal').checked = false;
+      labelNextDate.textContent = state.lang === 'ro' ? '📅 Data Evenimentului *' : '📅 Data Evento / Appuntamento *';
+      if (labelItemName) labelItemName.textContent = state.lang === 'ro' ? 'Titlu Eveniment / Zbor / Întâlnire *' : 'Cosa devi ricordare? (Appuntamento / Volo) *';
+      if (inputItemName) inputItemName.placeholder = 'Es. Appuntamento con Tizio, Volo per Romania...';
+      if (!document.getElementById('itemId').value) {
+        if (document.getElementById('itemIcon').value === '🎬' || document.getElementById('itemIcon').value === '🎂') {
+          document.getElementById('itemIcon').value = '⏰';
+        }
+        document.getElementById('itemCategory').value = 'events';
+        document.getElementById('itemCycle').value = 'once';
+        document.getElementById('itemColor').value = '#0284c7';
+        if (!document.getElementById('itemPrice').value) document.getElementById('itemPrice').value = '0';
+      }
+    } else if (itemType === 'bill') {
       antiRenewalBox.classList.add('hidden');
       document.getElementById('cancelBeforeRenewal').checked = false;
       labelNextDate.textContent = t('labelNextDateBill');
+      if (labelItemName) labelItemName.textContent = t('labelItemName');
     } else {
       antiRenewalBox.classList.remove('hidden');
       labelNextDate.textContent = t('labelNextDateSub');
+      if (labelItemName) labelItemName.textContent = t('labelItemName');
     }
   }
 
@@ -1225,21 +1421,36 @@
     const id = document.getElementById('itemId').value;
     const itemType = document.querySelector('input[name="itemType"]:checked').value;
     const name = document.getElementById('itemName').value.trim();
-    const icon = document.getElementById('itemIcon').value.trim() || (itemType === 'bill' ? '⚡' : '🎬');
+    const defaultIcon = itemType === 'birthday' ? '🎂' : itemType === 'event' ? '⏰' : itemType === 'bill' ? '⚡' : '🎬';
+    const icon = document.getElementById('itemIcon').value.trim() || defaultIcon;
     const accountEmail = document.getElementById('itemAccountEmail').value.trim();
-    const category = document.getElementById('itemCategory').value;
+    const category =
+      itemType === 'birthday' || itemType === 'event'
+        ? 'events'
+        : document.getElementById('itemCategory').value;
     const price = parseFloat(document.getElementById('itemPrice').value) || 0;
     const currency = document.getElementById('itemCurrency').value || 'EUR';
-    const billingCycle = document.getElementById('itemCycle').value;
-    const nextDate = document.getElementById('itemNextDate').value;
-    const remindDaysBefore = parseInt(document.getElementById('itemRemindDays').value, 10) || 3;
+    const billingCycle =
+      itemType === 'birthday' ? 'yearly' : document.getElementById('itemCycle').value;
+    let nextDate = document.getElementById('itemNextDate').value;
+    const eventTimeEl = document.getElementById('itemEventTime');
+    const eventTime = eventTimeEl ? eventTimeEl.value.trim() : '';
+    const remindDaysBefore = parseInt(document.getElementById('itemRemindDays').value, 10) || 1;
     const cancelBeforeRenewal = itemType === 'subscription' && document.getElementById('cancelBeforeRenewal').checked;
     const paymentMethod = document.getElementById('itemPaymentMethod').value.trim();
-    const color = document.getElementById('itemColor').value || '#6366f1';
+    const color = document.getElementById('itemColor').value || '#d97706';
     const cancelUrl = document.getElementById('itemCancelUrl').value.trim();
     const notes = document.getElementById('itemNotes').value.trim();
+    const syncToGoogleCal = document.getElementById('syncToGoogleCalOnSave')?.checked;
 
     if (!name || !nextDate) return;
+
+    // Se è un compleanno e l'utente ha inserito l'anno di nascita o una data già passata quest'anno, calcola il prossimo compleanno!
+    if (itemType === 'birthday') {
+      nextDate = getNextUpcomingYearlyDate(nextDate);
+    }
+
+    let savedObj = null;
 
     if (id) {
       const idx = state.items.findIndex((i) => i.id === id);
@@ -1255,6 +1466,7 @@
           currency,
           billingCycle,
           nextDate,
+          eventTime,
           remindDaysBefore,
           cancelBeforeRenewal,
           paymentMethod,
@@ -1262,10 +1474,11 @@
           cancelUrl,
           notes
         };
+        savedObj = state.items[idx];
       }
       showToast(state.lang === 'ro' ? `✅ "${name}" actualizat!` : `✅ "${name}" aggiornato!`);
     } else {
-      state.items.push({
+      savedObj = {
         id: generateId(),
         name,
         icon,
@@ -1276,6 +1489,7 @@
         currency,
         billingCycle,
         nextDate,
+        eventTime,
         remindDaysBefore,
         cancelBeforeRenewal,
         paymentMethod,
@@ -1284,14 +1498,25 @@
         notes,
         status: 'active',
         createdAt: new Date().toISOString()
-      });
-      showToast(state.lang === 'ro' ? `🔗 "${name}" adăugat în contul tău!` : `🔗 "${name}" collegato al tuo account!`);
+      };
+      state.items.push(savedObj);
+      showToast(
+        itemType === 'birthday'
+          ? `🎂 Compleanno "${name}" salvato per il ${formatLocalizedDate(nextDate)}!`
+          : itemType === 'event'
+          ? `⏰ Promemoria "${name}" salvato (${formatLocalizedDate(nextDate)}${eventTime ? ' ore ' + eventTime : ''})!`
+          : state.lang === 'ro'
+          ? `🔗 "${name}" adăugat în contul tău!`
+          : `🔗 "${name}" collegato al tuo account!`
+      );
+    }
+
+    if (syncToGoogleCal && savedObj) {
+      window.open(buildGoogleCalendarUrl(savedObj), '_blank', 'noopener');
     }
 
     saveUserDataAndSync();
     closeItemModal();
-    const navHomeBtn = document.querySelector('.bottom-nav-item[data-nav="list"]');
-    if (navHomeBtn) navHomeBtn.click();
     renderAll();
     checkAndSendDueNotifications(false);
   }
@@ -1341,7 +1566,9 @@
       details: `${formatLocalizedDate(oldDueDate)}`
     });
 
-    if (!cycleMeta || cycleMeta.months === 0) {
+    if (item.itemType === 'birthday') {
+      item.nextDate = addMonthsKeepDay(item.nextDate, 12);
+    } else if (!cycleMeta || cycleMeta.months === 0) {
       item.status = 'cancelled';
     } else {
       item.nextDate = addMonthsKeepDay(item.nextDate, cycleMeta.months);
@@ -1379,7 +1606,7 @@
     renderAll();
   }
 
-  // --- CALENDAR & HISTORY ---
+  // --- INTERACTIVE CALENDAR & HISTORY ---
   function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
     const title = document.getElementById('calendarMonthTitle');
@@ -1408,23 +1635,44 @@
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const mmDd = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dateStr = `${year}-${mmDd}`;
       const isToday = dateStr === todayStr;
-      const dayEvents = activeItems.filter((item) => item.nextDate === dateStr);
+
+      // Mostra sia eventi/scadenze con data esatta sia compleanni annuali che cadono in quel giorno/mese
+      const dayEvents = activeItems.filter((item) => {
+        if (item.nextDate === dateStr) return true;
+        if ((item.itemType === 'birthday' || item.billingCycle === 'yearly') && item.nextDate && item.nextDate.slice(5) === mmDd) {
+          return true;
+        }
+        return false;
+      });
 
       const eventsHtml = dayEvents
-        .map(
-          (ev) => `
-          <div class="cal-event ${ev.cancelBeforeRenewal ? 'must-cancel' : ''}" data-action="edit" data-id="${ev.id}">
-            ${escapeHtml(ev.icon)} ${escapeHtml(ev.name)}
-          </div>
-        `
-        )
+        .map((ev) => {
+          const extraClass =
+            ev.itemType === 'birthday'
+              ? 'is-birthday'
+              : ev.itemType === 'event'
+              ? 'is-event'
+              : ev.cancelBeforeRenewal
+              ? 'must-cancel'
+              : '';
+          const timeBadge = ev.eventTime ? `<strong>${escapeHtml(ev.eventTime)}</strong> ` : '';
+          return `
+            <div class="cal-event ${extraClass}" data-action="edit" data-id="${ev.id}" title="Tocca per modificare: ${escapeAttr(ev.name)}">
+              ${escapeHtml(ev.icon)} ${timeBadge}${escapeHtml(ev.name)}
+            </div>
+          `;
+        })
         .join('');
 
       cellsHtml += `
-        <div class="cal-day ${isToday ? 'is-today' : ''}">
-          <div class="cal-day-num">${day}</div>
+        <div class="cal-day clickable-day ${isToday ? 'is-today' : ''}" data-cal-date="${dateStr}" title="Tocca per aggiungere compleanno, appuntamento o volo il ${day}/${month + 1}/${year}">
+          <div class="cal-day-top">
+            <span class="cal-day-num">${day}</span>
+            <span class="cal-day-add-hint">＋</span>
+          </div>
           ${eventsHtml}
         </div>
       `;
@@ -1465,7 +1713,7 @@
   async function initServiceWorkerAndNotifications() {
     if ('serviceWorker' in navigator) {
       try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=9');
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=11');
         if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }
@@ -1511,38 +1759,92 @@
       const k = `${state.user.username}_${item.id}_${item.nextDate}_${todayKey}`;
       if (!force && log[k]) return;
       const days = getDaysRemaining(item.nextDate);
+      const isPersonal = item.itemType === 'birthday' || item.itemType === 'event';
       const title = item.cancelBeforeRenewal
         ? `🛑 ${t('tagMustCancel')} ${item.name}`
+        : isPersonal
+        ? `${item.icon || '🎂'} ${item.name}${item.eventTime ? ' (Ore ' + item.eventTime + ')' : ''}`
         : `🔔 ${item.name} (${formatCurrency(item.price, item.currency)})`;
-      sendNativeNotification(title, `${formatLocalizedDate(item.nextDate)} (${days} gg)`, item.id);
+      sendNativeNotification(title, `${formatLocalizedDate(item.nextDate)} (${days === 0 ? 'OGGI!' : days + ' gg'})`, item.id);
       log[k] = true;
     });
     localStorage.setItem(STORAGE_KEYS.NOTIFIED_LOG, JSON.stringify(log));
   }
 
-  // --- EXPORT .ICS & .JSON ---
-  function exportToIcs(itemsToExport) {
-    if (!itemsToExport || itemsToExport.length === 0) return;
+  // --- EXPORT .ICS (WITH EXACT TIME, RRULE & PHONE ALARM REMINDERS) & .JSON ---
+  function exportToIcs(itemsToExport, customFilename = 'scadenzapp-calendario.ics') {
+    if (!itemsToExport || itemsToExport.length === 0) {
+      showToast('⚠️ Nessun evento o scadenza da esportare.');
+      return;
+    }
     const fmt = (s) => s.replace(/-/g, '');
-    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ScadenzApp//IT-RO//EN'];
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//ScadenzApp//IT-RO//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'X-WR-CALNAME:ScadenzApp Promemoria & Compleanni'
+    ];
+
     itemsToExport.forEach((item) => {
+      if (!item.nextDate) return;
       const d1 = fmt(item.nextDate);
-      const d2 = fmt(formatDateInput(addDays(parseLocalDate(item.nextDate), 1)));
+      const isPersonal = item.itemType === 'birthday' || item.itemType === 'event';
+      const priceStr = !isPersonal && Number(item.price) > 0 ? ` (${formatCurrency(item.price, item.currency)})` : '';
+      const summary = `${item.icon || '📅'} ${item.name}${priceStr}`;
+      const remindDays = Math.max(1, parseInt(item.remindDaysBefore, 10) || 1);
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${item.id}@scadenzapp`);
+
+      if (item.eventTime && /^\d{2}:\d{2}$/.test(item.eventTime)) {
+        const [hhStr, mmStr] = item.eventTime.split(':');
+        const hh = parseInt(hhStr, 10) || 0;
+        const mm = parseInt(mmStr, 10) || 0;
+        const endHh = (hh + 1) % 24;
+        lines.push(`DTSTART:${d1}T${String(hh).padStart(2, '0')}${String(mm).padStart(2, '0')}00`);
+        lines.push(`DTEND:${d1}T${String(endHh).padStart(2, '0')}${String(mm).padStart(2, '0')}00`);
+      } else {
+        const d2 = fmt(formatDateInput(addDays(parseLocalDate(item.nextDate), 1)));
+        lines.push(`DTSTART;VALUE=DATE:${d1}`);
+        lines.push(`DTEND;VALUE=DATE:${d2}`);
+      }
+
+      if (item.itemType === 'birthday' || item.billingCycle === 'yearly') {
+        lines.push('RRULE:FREQ=YEARLY');
+      } else if (item.billingCycle === 'monthly') {
+        lines.push('RRULE:FREQ=MONTHLY');
+      }
+
+      lines.push(`SUMMARY:${summary}`);
+      if (item.notes) {
+        lines.push(`DESCRIPTION:${item.notes.replace(/\r?\n/g, '\\n')}`);
+      }
+
+      // Promemoria nativo sul telefono X giorni prima + 1 ora prima
       lines.push(
-        'BEGIN:VEVENT',
-        `UID:${item.id}@scadenzapp`,
-        `DTSTART;VALUE=DATE:${d1}`,
-        `DTEND;VALUE=DATE:${d2}`,
-        `SUMMARY:${item.name} (${formatCurrency(item.price, item.currency)})`,
+        'BEGIN:VALARM',
+        `TRIGGER:-P${remindDays}D`,
+        'ACTION:DISPLAY',
+        `DESCRIPTION:Promemoria ScadenzApp: ${summary}`,
+        'END:VALARM',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT1H',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:Tra 1 ora: ${summary}`,
+        'END:VALARM',
         'END:VEVENT'
       );
     });
+
     lines.push('END:VCALENDAR');
     const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'scadenzapp-calendario.ics';
+    a.download = customFilename;
     a.click();
+    showToast('📲 File Calendario (.ics) pronto! Aprilo per aggiungerlo al Calendario del Telefono o Google.');
   }
 
   function exportBackupJson() {
@@ -1701,13 +2003,61 @@
       });
     });
 
-    // Add Custom / Connect buttons
+    // Add Custom / Connect / Birthday buttons
     document.getElementById('btnAddNewMain').addEventListener('click', () => openCustomItemModal('create'));
     document.getElementById('btnEmptyAdd').addEventListener('click', () => openCustomItemModal('create'));
     document.getElementById('btnEmptyGoConnect').addEventListener('click', () => switchMainView('connect'));
+    const btnEmptyBirthday = document.getElementById('btnEmptyAddBirthday');
+    if (btnEmptyBirthday) {
+      btnEmptyBirthday.addEventListener('click', () => openCustomItemModal('create', null, null, 'birthday'));
+    }
+    const btnQuickBirthdayCal = document.getElementById('btnQuickAddBirthdayCal');
+    if (btnQuickBirthdayCal) {
+      btnQuickBirthdayCal.addEventListener('click', () => openCustomItemModal('create', null, null, 'birthday'));
+    }
     const btnHeroQuick = document.getElementById('btnHeroQuickAdd');
     if (btnHeroQuick) {
       btnHeroQuick.addEventListener('click', () => switchMainView('connect'));
+    }
+
+    // Calendar Sync Modal (Google Calendar & Phone Native Calendar)
+    const calSyncModal = document.getElementById('calSyncModalBackdrop');
+    const btnOpenCalSync = document.getElementById('btnOpenCalSyncModal');
+    const btnCloseCalSync = document.getElementById('btnCloseCalSyncModal');
+    const btnDownloadPhoneIcs = document.getElementById('btnDownloadPhoneCalendarIcs');
+    const btnCopyLiveCal = document.getElementById('btnCopyLiveCalUrl');
+    const inputLiveCalUrl = document.getElementById('inputLiveCalFeedUrl');
+
+    if (btnOpenCalSync && calSyncModal) {
+      btnOpenCalSync.addEventListener('click', () => {
+        if (inputLiveCalUrl && state.user && state.user.username) {
+          const origin = window.location.origin;
+          inputLiveCalUrl.value = `${origin}/api/calendar/${encodeURIComponent(state.user.username)}.ics`;
+        }
+        calSyncModal.classList.remove('hidden');
+      });
+    }
+    if (btnCloseCalSync && calSyncModal) {
+      btnCloseCalSync.addEventListener('click', () => calSyncModal.classList.add('hidden'));
+    }
+    if (btnDownloadPhoneIcs) {
+      btnDownloadPhoneIcs.addEventListener('click', () => {
+        exportToIcs(state.items.filter((i) => i.status === 'active'));
+      });
+    }
+    if (btnCopyLiveCal && inputLiveCalUrl) {
+      btnCopyLiveCal.addEventListener('click', async () => {
+        const url = inputLiveCalUrl.value;
+        if (!url) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast('📋 Link Calendario Live copiato! Incollalo su Google Calendar o Calendario iPhone/Android.');
+        } catch (_) {
+          inputLiveCalUrl.select();
+          document.execCommand('copy');
+          showToast('📋 Link Calendario Live copiato!');
+        }
+      });
     }
 
     // Pillole KPI Interattive nella Hero Card
@@ -1738,7 +2088,7 @@
       });
     });
 
-    // Delegated clicks for Service Proposals ("Collega Netflix"), Plans, and Interactive Item Cards
+    // Delegated clicks for Service Proposals, Plans, Quick Event Presets, Calendar Days, and Interactive Item Cards
     document.body.addEventListener('click', (e) => {
       // Se clicca su un link esterno (<a>), lascia fare al browser
       if (e.target.closest('a')) return;
@@ -1761,7 +2111,37 @@
         return;
       }
 
-      // 3. Click on Card actions (Disdetto, Pagato, Modifica, Elimina)
+      // 2b. Click on a Quick Event Preset chip (🎂 Compleanno, 🤝 Appuntamento 10:00, ✈️ Volo 15:00...)
+      const quickEventChip = e.target.closest('.event-quick-chip');
+      if (quickEventChip) {
+        const qType = quickEventChip.dataset.quickType || 'event';
+        const qIcon = quickEventChip.dataset.quickIcon || '⏰';
+        const qTime = quickEventChip.dataset.quickTime || '';
+        const qCycle = quickEventChip.dataset.quickCycle || 'once';
+        const qPrefix = quickEventChip.dataset.quickPrefix || '';
+
+        const radio = document.querySelector(`input[name="itemType"][value="${qType}"]`);
+        if (radio) radio.checked = true;
+        updateFormVisibilityByType(qType);
+
+        document.getElementById('itemIcon').value = qIcon;
+        document.getElementById('itemCycle').value = qCycle;
+        document.getElementById('itemCategory').value = 'events';
+        document.getElementById('itemPrice').value = '0';
+        const timeEl = document.getElementById('itemEventTime');
+        if (timeEl) timeEl.value = qTime;
+
+        const nameInput = document.getElementById('itemName');
+        if (nameInput) {
+          if (!nameInput.value.trim()) {
+            nameInput.value = qPrefix;
+          }
+          nameInput.focus();
+        }
+        return;
+      }
+
+      // 3. Click on Card actions (Disdetto, Pagato, Modifica, Elimina, Esporta .ics singolo)
       const actionBtn = e.target.closest('[data-action]');
       if (actionBtn) {
         e.stopPropagation();
@@ -1773,9 +2153,25 @@
         else if (action === 'toggle-must-cancel') handleToggleMustCancel(id);
         else if (action === 'reactivate') handleReactivateItem(id);
         else if (action === 'delete') handleDeleteItem(id);
-        else if (action === 'edit') {
+        else if (action === 'export-single-ics') {
+          const item = state.items.find((i) => i.id === id);
+          if (item) {
+            const safeSlug = (item.name || 'evento').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            exportToIcs([item], `scadenzapp-${safeSlug}.ics`);
+          }
+        } else if (action === 'edit') {
           const item = state.items.find((i) => i.id === id);
           if (item) openCustomItemModal('edit', item);
+        }
+        return;
+      }
+
+      // 3b. Click su un giorno del Calendario per aggiungere al volo un Compleanno / Appuntamento / Volo in quella data!
+      const calDayCell = e.target.closest('.cal-day.clickable-day[data-cal-date]');
+      if (calDayCell) {
+        const clickedDate = calDayCell.dataset.calDate;
+        if (clickedDate) {
+          openCustomItemModal('create', null, clickedDate, 'event');
         }
         return;
       }

@@ -645,10 +645,113 @@ class ScadenzAppHandler(SimpleHTTPRequestHandler):
                 "timestamp": datetime.now(timezone.utc).isoformat()
             })
 
+        if self.path.startswith("/api/calendar/") and ".ics" in self.path:
+            return self._handle_calendar_ics_feed()
+
         if self.path.startswith("/data/") or self.path == "/data":
             return self._send_json(403, {"ok": False, "error": "Accesso negato"})
 
         return super().do_GET()
+
+    def _handle_calendar_ics_feed(self):
+        try:
+            raw_part = self.path.split("/api/calendar/", 1)[1].split("?")[0]
+            if raw_part.endswith(".ics"):
+                raw_part = raw_part[:-4]
+            username = sanitize_username(raw_part)
+            user_file = DATA_DIR / f"{username}.json"
+            if not username or not user_file.exists():
+                return self._send_json(404, {"ok": False, "error": "Calendario utente non trovato"})
+
+            stored = json.loads(user_file.read_text(encoding="utf-8"))
+            items = [i for i in stored.get("items", []) if i.get("status") == "active"]
+
+            lines = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//ScadenzApp//Calendar Sync IT-RO//IT",
+                "CALSCALE:GREGORIAN",
+                "METHOD:PUBLISH",
+                f"X-WR-CALNAME:ScadenzApp - {stored.get('displayName', username)}",
+                "X-WR-TIMEZONE:Europe/Rome",
+            ]
+
+            now_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+            for item in items:
+                next_date = (item.get("nextDate") or "").strip()
+                if not re.match(r"^\d{4}-\d{2}-\d{2}$", next_date):
+                    continue
+                d_clean = next_date.replace("-", "")
+                event_time = (item.get("eventTime") or "").strip()
+                item_type = item.get("itemType") or "subscription"
+                icon = item.get("icon") or "📅"
+                name = item.get("name") or "Promemoria"
+                notes = item.get("notes") or ""
+                price = float(item.get("price") or 0)
+                curr = item.get("currency") or "EUR"
+
+                summary = f"{icon} {name}"
+                if item_type in ("subscription", "bill") and price > 0:
+                    summary += f" ({price:.2f} {curr})"
+
+                lines.append("BEGIN:VEVENT")
+                lines.append(f"UID:{item.get('id', uuid.uuid4().hex)}@scadenzapp")
+                lines.append(f"DTSTAMP:{now_stamp}")
+
+                if event_time and re.match(r"^\d{2}:\d{2}$", event_time):
+                    hh, mm = event_time.split(":")
+                    dt_start = f"{d_clean}T{hh}{mm}00"
+                    end_h = (int(hh) + 1) % 24
+                    dt_end = f"{d_clean}T{end_h:02d}{mm}00"
+                    lines.append(f"DTSTART:{dt_start}")
+                    lines.append(f"DTEND:{dt_end}")
+                else:
+                    try:
+                        dt_obj = datetime.strptime(next_date, "%Y-%m-%d") + timedelta(days=1)
+                        d_next = dt_obj.strftime("%Y%m%d")
+                    except Exception:
+                        d_next = d_clean
+                    lines.append(f"DTSTART;VALUE=DATE:{d_clean}")
+                    lines.append(f"DTEND;VALUE=DATE:{d_next}")
+
+                if item_type == "birthday" or item.get("billingCycle") == "yearly":
+                    lines.append("RRULE:FREQ=YEARLY")
+                elif item_type == "subscription" and item.get("billingCycle") == "monthly":
+                    lines.append("RRULE:FREQ=MONTHLY")
+
+                lines.append(f"SUMMARY:{summary}")
+                if notes:
+                    clean_notes = notes.replace("\n", " ").replace("\r", "")
+                    lines.append(f"DESCRIPTION:{clean_notes}")
+
+                # Allarme nativo sul telefono / Google Calendar
+                remind_days = int(item.get("remindDaysBefore") or 1)
+                lines.extend([
+                    "BEGIN:VALARM",
+                    "ACTION:DISPLAY",
+                    f"DESCRIPTION:Promemoria ScadenzApp: {summary}",
+                    f"TRIGGER:-P{max(1, remind_days)}D",
+                    "END:VALARM",
+                    "BEGIN:VALARM",
+                    "ACTION:DISPLAY",
+                    f"DESCRIPTION:Oggi: {summary}",
+                    "TRIGGER:-PT1H",
+                    "END:VALARM",
+                    "END:VEVENT"
+                ])
+
+            lines.append("END:VCALENDAR")
+            ics_bytes = "\r\n".join(lines).encode("utf-8")
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/calendar; charset=utf-8")
+            self.send_header("Content-Disposition", f'attachment; filename="scadenzapp-{username}.ics"')
+            self.send_header("Content-Length", str(len(ics_bytes)))
+            self.end_headers()
+            self.wfile.write(ics_bytes)
+        except Exception as exc:
+            return self._send_json(500, {"ok": False, "error": str(exc)})
 
     def do_POST(self):
         if self.path == "/api/auth/register":

@@ -9,10 +9,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=10" />
+  <link rel="manifest" href="./manifest.webmanifest?v=11" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=10" />
+  <link rel="stylesheet" href="./styles.css?v=11" />
 </head>
 <body>
 
@@ -179,6 +179,9 @@
             <button type="button" class="pill pill-danger" data-filter="must-cancel">
               <span id="txtFilterMustCancel">🛑 Da Disdire</span> (<span id="countMustCancel">0</span>)
             </button>
+            <button type="button" class="pill" data-filter="events">
+              <span id="txtFilterEvents">🎂 Compleanni &amp; Eventi</span> (<span id="countEvents">0</span>)
+            </button>
             <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
             <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette</button>
             <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Auto</button>
@@ -208,9 +211,10 @@
         <div id="emptyState" class="empty-state hidden">
           <div class="empty-illustration">🌅</div>
           <h3 id="txtEmptyTitle">Il tuo spazio è ancora vuoto</h3>
-          <p id="txtEmptyDesc">Collega i tuoi abbonamenti (Netflix, Disney+, Spotify, Bollette) o importa automaticamente da Gmail per ricevere promemoria prima di ogni rinnovo.</p>
+          <p id="txtEmptyDesc">Collega i tuoi abbonamenti (Netflix, Disney+, Spotify, Bollette) o aggiungi compleanni, voli e appuntamenti per ricevere promemoria puntuali.</p>
           <div class="empty-actions">
             <button type="button" class="btn btn-primary btn-lg" id="btnEmptyGoConnect">✨ Esplora e Collega Servizi</button>
+            <button type="button" class="btn btn-outline" id="btnEmptyAddBirthday">🎂 Aggiungi Compleanno / Evento</button>
             <button type="button" class="btn btn-outline" id="btnEmptyConnectGmail">📧 Auto-Import da Gmail</button>
             <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Crea Manualmente</button>
           </div>
@@ -262,9 +266,24 @@
         </div>
       </section>
 
-      <!-- ================= VISTA 3: CALENDARIO MENSILE ================= -->
+      <!-- ================= VISTA 3: CALENDARIO INTERATTIVO (Compleanni, Voli, Appuntamenti & Scadenze) ================= -->
       <section id="viewCalendar" class="view-section view-animate hidden">
         <div class="calendar-card">
+          <div class="calendar-interactive-banner">
+            <div class="cal-banner-text">
+              <strong id="txtCalInteractiveTitle">👆 Tocca qualsiasi giorno per aggiungere un evento!</strong>
+              <span id="txtCalInteractiveSub">Aggiungi 🎂 Compleanni, 🤝 Appuntamenti (es. ore 10:00) o ✈️ Voli (es. ore 15:00) e sincronizzali col telefono.</span>
+            </div>
+            <div class="cal-banner-actions">
+              <button type="button" class="btn btn-sm btn-primary" id="btnQuickAddBirthdayCal">
+                🎂 + Compleanno / Evento
+              </button>
+              <button type="button" class="btn btn-sm btn-outline" id="btnOpenCalSyncModal">
+                📲 Sincronizza Google / Telefono
+              </button>
+            </div>
+          </div>
+
           <div class="calendar-header">
             <button type="button" class="btn btn-ghost btn-sm" id="btnPrevMonth">◀ Prec.</button>
             <h3 id="calendarMonthTitle">Ottobre 2026</h3>
@@ -367,8 +386,8 @@
           <input type="hidden" id="itemId" />
           <input type="hidden" id="itemHowToCancel" />
 
-          <!-- Selettore Tipo Scadenza -->
-          <div class="form-type-selector">
+          <!-- Selettore Tipo Scadenza / Compleanno / Evento -->
+          <div class="form-type-selector form-type-grid-4">
             <label class="type-radio-card" id="typeCardSub">
               <input type="radio" name="itemType" value="subscription" checked />
               <div>
@@ -379,10 +398,49 @@
             <label class="type-radio-card" id="typeCardBill">
               <input type="radio" name="itemType" value="bill" />
               <div>
-                <strong id="txtTypeBillTitle">💳 Bolletta / Bollo / Tassa</strong>
-                <small id="txtTypeBillDesc">Pagamento entro scadenza</small>
+                <strong id="txtTypeBillTitle">💳 Bolletta / Tassa</strong>
+                <small id="txtTypeBillDesc">Pagamento entro data</small>
               </div>
             </label>
+            <label class="type-radio-card" id="typeCardBirthday">
+              <input type="radio" name="itemType" value="birthday" />
+              <div>
+                <strong id="txtTypeBirthdayTitle">🎂 Compleanno</strong>
+                <small id="txtTypeBirthdayDesc">Ricorrenza ogni anno</small>
+              </div>
+            </label>
+            <label class="type-radio-card" id="typeCardEvent">
+              <input type="radio" name="itemType" value="event" />
+              <div>
+                <strong id="txtTypeEventTitle">⏰ Evento / Volo</strong>
+                <small id="txtTypeEventDesc">Appuntamento con ora</small>
+              </div>
+            </label>
+          </div>
+
+          <!-- SCELTA RAPIDA TIPO DI EVENTO / COMPLEANNO (Visibile per Compleanni & Eventi) -->
+          <div id="quickEventPresetsBox" class="service-plan-box hidden">
+            <label class="plan-picker-title" id="txtQuickEventTitle">✨ Tocca per impostare rapidamente il tipo di promemoria:</label>
+            <div class="service-plans-grid">
+              <button type="button" class="event-quick-chip" data-ev-type="birthday" data-ev-icon="🎂" data-ev-time="09:00" data-ev-placeholder="Es. Compleanno Mamma, Compleanno Marco...">
+                🎂 Compleanno
+              </button>
+              <button type="button" class="event-quick-chip" data-ev-type="event" data-ev-icon="🤝" data-ev-time="10:00" data-ev-placeholder="Es. Appuntamento con Tizio...">
+                🤝 Appuntamento (10:00)
+              </button>
+              <button type="button" class="event-quick-chip" data-ev-type="event" data-ev-icon="✈️" data-ev-time="15:00" data-ev-placeholder="Es. Volo verso Romania...">
+                ✈️ Volo / Viaggio (15:00)
+              </button>
+              <button type="button" class="event-quick-chip" data-ev-type="event" data-ev-icon="🏥" data-ev-time="09:30" data-ev-placeholder="Es. Visita medica / Dentista...">
+                🏥 Visita Medica
+              </button>
+              <button type="button" class="event-quick-chip" data-ev-type="birthday" data-ev-icon="🎉" data-ev-time="09:00" data-ev-placeholder="Es. Anniversario / Onomastico...">
+                🎉 Anniversario
+              </button>
+              <button type="button" class="event-quick-chip" data-ev-type="event" data-ev-icon="📌" data-ev-time="12:00" data-ev-placeholder="Es. Cosa importante da ricordare...">
+                📌 Promemoria
+              </button>
+            </div>
           </div>
 
           <!-- BOX SPECIALE ANTI-RINNOVO ("SOLO 1 MESE / RICORDAMI DI DISDIRE") -->
@@ -398,26 +456,26 @@
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label for="itemName" id="txtLabelName">Nome Servizio / Scadenza *</label>
+              <label for="itemName" id="txtLabelName">Nome Servizio / Evento / Compleanno *</label>
               <div class="input-with-icon">
                 <input type="text" id="itemIcon" class="icon-input" value="🎬" maxlength="4" />
-                <input type="text" id="itemName" required placeholder="Es. Netflix, Disney+, Bollo Auto..." />
+                <input type="text" id="itemName" required placeholder="Es. Compleanno Marco, Volo Romania, Netflix..." />
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="itemAccountEmail" id="txtLabelAccountEmail">Email / Account collegato (es. tuaemail@gmail.com)</label>
-              <input type="text" id="itemAccountEmail" placeholder="Per ricordare con quale email sei registrato" />
+            <div class="form-group" id="groupEventTime">
+              <label for="itemEventTime" id="txtLabelEventTime">⏰ Orario (opzionale, es. 10:00 o 15:00)</label>
+              <input type="time" id="itemEventTime" />
             </div>
           </div>
 
-          <div class="form-grid-4">
-            <div class="form-group">
-              <label for="itemPrice" id="txtLabelPrice">Importo Reale *</label>
-              <input type="number" id="itemPrice" step="0.01" min="0" required placeholder="13.99" />
+          <div class="form-grid-4" id="priceAndCycleGrid">
+            <div class="form-group" id="groupPrice">
+              <label for="itemPrice" id="txtLabelPrice">Importo Reale</label>
+              <input type="number" id="itemPrice" step="0.01" min="0" value="0" placeholder="0.00" />
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="groupCurrency">
               <label for="itemCurrency" id="txtLabelCurrency">Valuta</label>
               <select id="itemCurrency">
                 <option value="EUR">€ EUR</option>
@@ -425,7 +483,7 @@
               </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="groupCycle">
               <label for="itemCycle" id="txtLabelCycle">Frequenza *</label>
               <select id="itemCycle">
                 <option value="monthly" id="optCycleMonthly">Mensile (ogni mese)</option>
@@ -434,12 +492,12 @@
                 <option value="semiannual" id="optCycleSemiannual">Semestrale (ogni 6 mesi)</option>
                 <option value="yearly" id="optCycleYearly">Annuale (ogni anno)</option>
                 <option value="Biennial" id="optCycleBiennial">Biennale (ogni 2 anni)</option>
-                <option value="once" id="optCycleOnce">Singolo Mese (Una tantum)</option>
+                <option value="once" id="optCycleOnce">Singolo Evento (Una tantum)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="itemNextDate" id="labelNextDate">Data Prossimo Rinnovo *</label>
+              <label for="itemNextDate" id="labelNextDate">Data *</label>
               <input type="date" id="itemNextDate" required />
             </div>
           </div>
@@ -448,6 +506,7 @@
             <div class="form-group">
               <label for="itemRemindDays" id="txtLabelRemindDays">🔔 Quanti giorni prima vuoi la notifica?</label>
               <select id="itemRemindDays">
+                <option value="0" id="optRemind0">Lo stesso giorno (Oggi)</option>
                 <option value="1" id="optRemind1">1 giorno prima</option>
                 <option value="2" id="optRemind2">2 giorni prima</option>
                 <option value="3" id="optRemind3" selected>3 giorni prima</option>
@@ -459,36 +518,53 @@
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="itemPaymentMethod" id="txtLabelPaymentMethod">Metodo di Pagamento (Carta, PayPal...)</label>
-              <input type="text" id="itemPaymentMethod" placeholder="Revolut, PayPal, Carta, PagoPA..." />
+            <div class="form-group" id="groupPaymentMethod">
+              <label for="itemPaymentMethod" id="txtLabelPaymentMethod">Metodo di Pagamento / Luogo</label>
+              <input type="text" id="itemPaymentMethod" placeholder="Revolut, PayPal, Aeroporto..." />
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="groupCategory">
               <label for="itemCategory" id="txtLabelCategory">Categoria</label>
               <select id="itemCategory">
                 <option value="streaming" id="optCatStreaming">🎬 Streaming &amp; Media</option>
                 <option value="software" id="optCatSoftware">💻 App, Cloud &amp; Gaming</option>
                 <option value="bills" id="optCatBills">⚡ Bollette / Facturi</option>
                 <option value="auto" id="optCatAuto">🚗 Auto, Bollo &amp; RCA</option>
+                <option value="events" id="optCatEvents">🎂 Compleanni, Voli &amp; Eventi</option>
                 <option value="other" id="optCatOther">🏠 Casa &amp; Altro</option>
               </select>
             </div>
           </div>
 
           <div class="form-grid-2">
-            <div class="form-group">
-              <label for="itemCancelUrl" id="txtLabelCancelUrl">🔗 Link pagina Account / Disdetta</label>
-              <input type="url" id="itemCancelUrl" placeholder="https://www.netflix.com/CancelPlan" />
+            <div class="form-group" id="groupAccountEmail">
+              <label for="itemAccountEmail" id="txtLabelAccountEmail">Email / Contatto associato</label>
+              <input type="text" id="itemAccountEmail" placeholder="Email account o numero di telefono..." />
             </div>
 
             <div class="form-group">
-              <label for="itemNotes" id="txtLabelNotes">Note / Come disdire / Targa Auto</label>
-              <input type="text" id="itemNotes" placeholder="Note aggiuntive o istruzioni disdetta..." />
+              <label for="itemNotes" id="txtLabelNotes">Note / Regalo / Dettagli Volo o Disdetta</label>
+              <input type="text" id="itemNotes" placeholder="Es. Volo WizzAir ore 15:00, Idea regalo..." />
             </div>
           </div>
 
-          <input type="hidden" id="itemColor" value="#f97316" />
+          <div class="form-group" id="groupCancelUrl" style="margin-bottom: 12px;">
+            <label for="itemCancelUrl" id="txtLabelCancelUrl">🔗 Link pagina Account / Disdetta / Biglietto</label>
+            <input type="url" id="itemCancelUrl" placeholder="https://..." />
+          </div>
+
+          <!-- OPZIONE SINCRONIZZAZIONE DIRETTA GOOGLE CALENDAR / TELEFONO -->
+          <div class="cal-sync-check-box">
+            <label class="checkbox-switch">
+              <input type="checkbox" id="syncToGoogleCalOnSave" />
+              <div class="switch-text">
+                <strong id="txtSyncGCalOnSaveTitle" style="color: var(--accent-olive);">📅 Aggiungi subito anche a Google Calendar dopo il salvataggio!</strong>
+                <small id="txtSyncGCalOnSaveDesc">Si aprirà Google Calendar già compilato con data, ora (es. 10:00 / 15:00) e promemoria sul telefono.</small>
+              </div>
+            </label>
+          </div>
+
+          <input type="hidden" id="itemColor" value="#d97706" />
 
           <div class="modal-footer">
             <button type="button" class="btn btn-ghost" id="btnCancelModal">Annulla</button>
@@ -646,11 +722,68 @@
     </div>
   </div>
 
+  <!-- ================= MODALE SINCRONIZZAZIONE GOOGLE CALENDAR & TELEFONO ================= -->
+  <div class="modal-backdrop hidden" id="calSyncModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="calSyncModalTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="calSyncModalTitle">📅 Sincronizza con Google Calendar &amp; Telefono</h2>
+        <button type="button" class="modal-close" id="btnCloseCalSyncModal" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="sync-section vps-highlight-box" style="margin-bottom: 16px;">
+          <div class="sync-title-row">
+            <h3 id="txtCalSyncSec1Title">📲 1. Importa tutto nel Calendario del Telefono (Android / iPhone)</h3>
+            <span class="badge-pwa">1-Click</span>
+          </div>
+          <p class="text-muted" id="txtCalSyncSec1Desc">
+            Scarica e apri il file calendario (.ics) con tutti i tuoi 🎂 Compleanni (ripetuti ogni anno), ✈️ Voli, 🤝 Appuntamenti con orario e Scadenze: il telefono imposterà in automatico le sveglie!
+          </p>
+          <div class="sync-buttons-row" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" id="btnDownloadPhoneCalendarIcs">
+              📲 Aggiungi Tutto al Calendario del Telefono (.ics)
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="sync-section" style="margin-bottom: 16px;">
+          <div class="sync-title-row">
+            <h3 id="txtCalSyncSec2Title">🔄 2. Link di Sincronizzazione Live (Google Calendar &amp; Apple Calendar)</h3>
+            <span class="badge-sync">Live Sync</span>
+          </div>
+          <p class="text-muted" id="txtCalSyncSec2Desc">
+            Copia questo link personale e incollalo in Google Calendar ("Aggiungi altro calendario" → "Da URL") o nel Calendario del telefono per mantenerlo sempre sincronizzato in automatico:
+          </p>
+          <div class="form-group" style="margin-top: 8px;">
+            <input type="text" id="inputLiveCalFeedUrl" readonly value="" style="font-size: 0.8rem;" />
+          </div>
+          <div class="sync-buttons-row" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-success btn-sm" id="btnCopyLiveCalUrl">
+              📋 Copia Link Sincronizzazione
+            </button>
+            <a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" id="btnOpenGCalAddByUrl">
+              🌐 Apri Google Calendar (Da URL) ↗
+            </a>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="sync-section">
+          <p class="text-muted" id="txtCalSyncTip" style="font-size: 0.82rem;">
+            💡 <strong>Suggerimento rapido:</strong> Puoi anche inviare qualsiasi singolo compleanno, volo o appuntamento direttamente all'app <strong>Google Calendar</strong> toccando il pulsante <strong>"📅 Google Calendar"</strong> dentro ogni card o spuntando la casella quando lo crei!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=10"></script>
-  <script src="./data-presets.js?v=10"></script>
-  <script src="./app.js?v=10"></script>
+  <script src="./i18n.js?v=11"></script>
+  <script src="./data-presets.js?v=11"></script>
+  <script src="./app.js?v=11"></script>
 </body>
 </html>
