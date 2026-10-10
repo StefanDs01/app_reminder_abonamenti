@@ -218,8 +218,20 @@
       state.items = Array.isArray(data.items) ? data.items : [];
       state.history = Array.isArray(data.history) ? data.history : [];
       if (data.gmailStatus) state.gmailStatus = data.gmailStatus;
-      if (data.lang === 'it' || data.lang === 'ro') state.lang = data.lang;
-      if (data.mainCurrency === 'EUR' || data.mainCurrency === 'RON') state.mainCurrency = data.mainCurrency;
+
+      const savedLocalLang = localStorage.getItem(STORAGE_KEYS.LANG);
+      const savedLocalCurr = localStorage.getItem(STORAGE_KEYS.CURRENCY);
+      if (savedLocalLang === 'it' || savedLocalLang === 'ro') {
+        state.lang = savedLocalLang;
+      } else if (data.lang === 'it' || data.lang === 'ro') {
+        state.lang = data.lang;
+      }
+
+      if (savedLocalCurr === 'EUR' || savedLocalCurr === 'RON') {
+        state.mainCurrency = savedLocalCurr;
+      } else if (data.mainCurrency === 'EUR' || data.mainCurrency === 'RON') {
+        state.mainCurrency = data.mainCurrency;
+      }
 
       localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(state.user));
       saveUserCacheLocally();
@@ -275,7 +287,10 @@
     if (mode === 'register') {
       if (localDb[username]) {
         if (errEl) {
-          errEl.textContent = '❌ Questo username esiste già! Passa alla scheda "Accedi".';
+          errEl.textContent =
+            state.lang === 'ro'
+              ? '❌ Acest nume de utilizator există deja! Mergi la "Autentificare".'
+              : '❌ Questo username esiste già! Passa alla scheda "Accedi".';
           errEl.classList.remove('hidden');
         }
         return;
@@ -297,14 +312,17 @@
           return;
         }
         if (errEl) {
-          errEl.textContent = '❌ Utente non trovato. Clicca su "✨ Crea Account" per registrarti!';
+          errEl.textContent =
+            state.lang === 'ro'
+              ? '❌ Utilizator negăsit. Apasă pe "✨ Creează Cont" pentru a te înregistra!'
+              : '❌ Utente non trovato. Clicca su "✨ Crea Account" per registrarti!';
           errEl.classList.remove('hidden');
         }
         return;
       }
       if (localDb[username].password !== password) {
         if (errEl) {
-          errEl.textContent = '❌ Password non corretta!';
+          errEl.textContent = state.lang === 'ro' ? '❌ Parolă incorectă!' : '❌ Password non corretta!';
           errEl.classList.remove('hidden');
         }
         return;
@@ -437,6 +455,7 @@
       optSortNameAsc: 'sortNameAsc',
       txtFilterAll: 'filterAll',
       txtFilterMustCancel: 'filterMustCancel',
+      txtFilterEvents: 'filterEvents',
       txtFilterSubs: 'filterSubs',
       txtFilterBills: 'filterBills',
       txtFilterAuto: 'filterAuto',
@@ -445,6 +464,7 @@
       txtEmptyDesc: 'emptyMySubsDesc',
       btnEmptyConnectGmail: 'btnEmptyConnectGmail',
       btnEmptyGoConnect: 'btnGoToConnect',
+      btnEmptyAddBirthday: 'btnEmptyAddBirthday',
       btnEmptyAdd: 'btnAddCustom',
       txtGmailTagNew: 'gmailTagNew',
       txtGmailBannerTitle: 'gmailBannerTitle',
@@ -461,6 +481,19 @@
       txtNavConnect: 'navConnect',
       txtNavCalendar: 'navCalendar',
       txtNavHistoryLabel: 'navHistory',
+      txtCalInteractiveTitle: 'calInteractiveTitle',
+      txtCalInteractiveSub: 'calInteractiveSub',
+      btnQuickAddBirthdayCal: 'btnQuickAddBirthdayCal',
+      btnOpenCalSyncModal: 'btnOpenCalSyncModal',
+      calSyncModalTitle: 'calSyncModalTitle',
+      txtCalSyncSec1Title: 'calSyncSec1Title',
+      txtCalSyncSec1Desc: 'calSyncSec1Desc',
+      btnDownloadPhoneCalendarIcs: 'btnDownloadPhoneCalendarIcs',
+      txtCalSyncSec2Title: 'calSyncSec2Title',
+      txtCalSyncSec2Desc: 'calSyncSec2Desc',
+      btnCopyLiveCalUrl: 'btnCopyLiveCalUrl',
+      btnOpenGCalAddByUrl: 'btnOpenGCalAddByUrl',
+      txtCalSyncTip: 'calSyncTip',
       btnPrevMonth: 'prevMonth',
       btnNextMonth: 'nextMonth',
       txtHistoryTitle: 'historyTitle',
@@ -479,9 +512,21 @@
       txtTypeSubDesc: 'typeSubDesc',
       txtTypeBillTitle: 'typeBillTitle',
       txtTypeBillDesc: 'typeBillDesc',
+      txtTypeBirthdayTitle: 'typeBirthdayTitle',
+      txtTypeBirthdayDesc: 'typeBirthdayDesc',
+      txtTypeEventTitle: 'typeEventTitle',
+      txtTypeEventDesc: 'typeEventDesc',
+      txtQuickEventTitle: 'quickEventTitle',
+      chipQuickBirthday: 'chipQuickBirthday',
+      chipQuickAppointment: 'chipQuickAppointment',
+      chipQuickFlight: 'chipQuickFlight',
+      chipQuickMedical: 'chipQuickMedical',
+      chipQuickAnniversary: 'chipQuickAnniversary',
+      chipQuickReminder: 'chipQuickReminder',
       txtMustCancelSwitchTitle: 'mustCancelSwitchTitle',
       txtMustCancelSwitchDesc: 'mustCancelSwitchDesc',
       txtLabelName: 'labelName',
+      txtLabelEventTime: 'labelEventTime',
       txtLabelAccountEmail: 'labelAccountEmail',
       txtLabelCategory: 'labelCategory',
       txtLabelPrice: 'labelPrice',
@@ -495,6 +540,7 @@
       optCycleBiennial: 'cycleBiennial',
       optCycleOnce: 'cycleOnce',
       txtLabelRemindDays: 'labelRemindDays',
+      optRemind0: 'remind0d',
       optRemind1: 'remind1d',
       optRemind2: 'remind2d',
       optRemind3: 'remind3d',
@@ -508,11 +554,18 @@
       optCatSoftware: 'catOptSoftware',
       optCatBills: 'catOptBills',
       optCatAuto: 'catOptAuto',
+      optCatEvents: 'catOptEvents',
       optCatOther: 'catOptOther',
       txtLabelCancelUrl: 'labelCancelUrl',
       txtLabelNotes: 'labelNotes',
+      txtSyncGCalOnSaveTitle: 'syncGCalOnSaveTitle',
+      txtSyncGCalOnSaveDesc: 'syncGCalOnSaveDesc',
       btnCancelModal: 'btnCancel',
       btnSaveItem: 'btnSave',
+      profileModalTitle: 'profileModalTitle',
+      txtLabelProfileName: 'labelProfileName',
+      btnCancelProfileModal: 'btnCancel',
+      btnSaveProfileName: 'btnSaveProfileName',
       downloadAppModalTitle: 'downloadModalTitle',
       txtDownloadMethod1Title: 'downloadMethod1Title',
       txtDownloadMethod1Desc: 'downloadMethod1Desc',
@@ -551,6 +604,7 @@
       authUsername: 'placeholderUsername',
       authPassword: 'placeholderPassword',
       searchInput: 'searchPlaceholder',
+      itemName: 'placeholderName',
       itemAccountEmail: 'placeholderAccountEmail',
       itemPaymentMethod: 'placeholderPaymentMethod',
       itemNotes: 'placeholderNotes',
@@ -565,6 +619,11 @@
     if (weekdaysRow) {
       const days = t('weekdays');
       weekdaysRow.innerHTML = days.map((d) => `<div>${d}</div>`).join('');
+    }
+
+    const checkedRadio = document.querySelector('input[name="itemType"]:checked');
+    if (checkedRadio) {
+      updateFormVisibilityByType(checkedRadio.value);
     }
   }
 
@@ -967,7 +1026,7 @@
         } else if (isEvent && (!item.price || Number(item.price) === 0)) {
           priceOrMetaHtml = `
             <span class="card-price" style="font-size: 0.92rem; color: #0369a1;">
-              ${item.eventTime ? `⏰ Ore ${escapeHtml(item.eventTime)}` : `📅 ${formatLocalizedDate(item.nextDate)}`}
+              ${item.eventTime ? `⏰ ${state.lang === 'ro' ? 'Ora' : 'Ore'} ${escapeHtml(item.eventTime)}` : `📅 ${formatLocalizedDate(item.nextDate)}`}
             </span>
           `;
         } else {
@@ -979,6 +1038,34 @@
 
         const googleCalUrl = buildGoogleCalendarUrl(item);
 
+        // Se le note contengono il testo di disdetta di un preset, mostriamolo nella lingua corrente (RO / IT)
+        let localizedNotes = item.notes || '';
+        let localizedItemName = item.name || '';
+        if (window.SERVICE_PRESETS) {
+          const matchedPreset = window.SERVICE_PRESETS.find(
+            (p) =>
+              p.id === item.presetId ||
+              p.name.toLowerCase() === localizedItemName.toLowerCase() ||
+              (p.name_ro && p.name_ro.toLowerCase() === localizedItemName.toLowerCase())
+          );
+          if (matchedPreset) {
+            if (state.lang === 'ro' && matchedPreset.name_ro && localizedItemName === matchedPreset.name) {
+              localizedItemName = matchedPreset.name_ro;
+            } else if (state.lang === 'it' && matchedPreset.name_ro && localizedItemName === matchedPreset.name_ro) {
+              localizedItemName = matchedPreset.name;
+            }
+            if (
+              localizedNotes === matchedPreset.howToCancel_it ||
+              localizedNotes === matchedPreset.howToCancel_ro
+            ) {
+              localizedNotes =
+                state.lang === 'ro'
+                  ? matchedPreset.howToCancel_ro || matchedPreset.howToCancel_it
+                  : matchedPreset.howToCancel_it;
+            }
+          }
+        }
+
         return `
           <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}" data-card-expand="${item.id}">
             <div class="card-head">
@@ -988,7 +1075,7 @@
                 </div>
                 <div class="service-main-meta">
                   <div class="service-title-row">
-                    <h3 class="service-title">${escapeHtml(item.name)}</h3>
+                    <h3 class="service-title">${escapeHtml(localizedItemName)}</h3>
                     ${
                       isCancelled
                         ? `<span class="tag tag-cancelled">${t('tagCancelled')}</span>`
@@ -1040,7 +1127,7 @@
               }
               <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 12px; flex-wrap: wrap;">
                 <span>🔔 ${t('remindBeforeLabel')} ${item.remindDaysBefore} ${t('daysBefore')}</span>
-                ${item.eventTime ? `<span>⏰ Ore <strong>${escapeHtml(item.eventTime)}</strong></span>` : ''}
+                ${item.eventTime ? `<span>⏰ ${state.lang === 'ro' ? 'Ora' : 'Ore'} <strong>${escapeHtml(item.eventTime)}</strong></span>` : ''}
                 ${item.paymentMethod ? `<span>💳 ${escapeHtml(item.paymentMethod)}</span>` : ''}
               </div>
               ${
@@ -1050,7 +1137,7 @@
                      </div>`
                   : ''
               }
-              ${item.notes ? `<div class="card-notes">💡 ${escapeHtml(item.notes)}</div>` : ''}
+              ${localizedNotes ? `<div class="card-notes">💡 ${escapeHtml(localizedNotes)}</div>` : ''}
 
               <div class="card-footer-actions">
                 <div class="card-primary-actions">
@@ -1068,7 +1155,7 @@
                           ${
                             isPersonalEvent
                               ? state.lang === 'ro'
-                                ? '✅ Marcat ca Făcut'
+                                ? '✅ Marcat ca Făcut / Anul Viitor'
                                 : '✅ Segna Fatto / Anno Prossimo'
                               : isBill
                               ? t('btnMarkPaid')
@@ -1092,10 +1179,10 @@
                 </div>
 
                 <div class="card-secondary-actions">
-                  <a href="${escapeAttr(googleCalUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline" title="Aggiungi a Google Calendar">
+                  <a href="${escapeAttr(googleCalUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline" title="${state.lang === 'ro' ? 'Adaugă în Google Calendar' : 'Aggiungi a Google Calendar'}">
                     📅 Google Cal
                   </a>
-                  <button type="button" class="btn btn-xs btn-outline" data-action="export-single-ics" data-id="${item.id}" title="Salva nel Calendario del Telefono (.ics)">
+                  <button type="button" class="btn btn-xs btn-outline" data-action="export-single-ics" data-id="${item.id}" title="${state.lang === 'ro' ? 'Salvează în Calendarul Telefonului (.ics)' : 'Salva nel Calendario del Telefono (.ics)'}">
                     📲 .ics
                   </button>
                   ${
@@ -1103,8 +1190,8 @@
                       ? `<a href="${escapeAttr(item.cancelUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline">${t('btnManageAccount')}</a>`
                       : ''
                   }
-                  <button type="button" class="btn btn-xs btn-ghost" data-action="edit" data-id="${item.id}" title="Modifica">✏️</button>
-                  <button type="button" class="btn btn-xs btn-ghost text-danger" data-action="delete" data-id="${item.id}" title="Elimina">🗑️</button>
+                  <button type="button" class="btn btn-xs btn-ghost" data-action="edit" data-id="${item.id}" title="${state.lang === 'ro' ? 'Editează' : 'Modifica'}">✏️</button>
+                  <button type="button" class="btn btn-xs btn-ghost text-danger" data-action="delete" data-id="${item.id}" title="${state.lang === 'ro' ? 'Șterge' : 'Elimina'}">🗑️</button>
                 </div>
               </div>
             </div>
@@ -1309,7 +1396,10 @@
     } else {
       const targetType = prefillType || 'subscription';
       if (prefillDate) {
-        title.textContent = `📅 Nuovo Evento il ${formatLocalizedDate(prefillDate)}`;
+        title.textContent =
+          state.lang === 'ro'
+            ? `📅 Eveniment Nou pe ${formatLocalizedDate(prefillDate)}`
+            : `📅 Nuovo Evento il ${formatLocalizedDate(prefillDate)}`;
       } else if (targetType === 'birthday') {
         title.textContent = state.lang === 'ro' ? '🎂 Adaugă Zi de Naștere / Eveniment' : '🎂 Aggiungi Compleanno / Evento';
       } else {
@@ -1360,7 +1450,7 @@
     const antiRenewalBox = document.getElementById('antiRenewalBox');
     const quickPresetsBox = document.getElementById('quickEventPresetsBox');
     const labelNextDate = document.getElementById('labelNextDate');
-    const labelItemName = document.getElementById('labelItemName');
+    const labelItemName = document.getElementById('txtLabelName');
     const inputItemName = document.getElementById('itemName');
     const groupPayment = document.getElementById('groupPaymentMethod');
     const groupCancelUrl = document.getElementById('groupCancelUrl');
@@ -1380,7 +1470,10 @@
       document.getElementById('cancelBeforeRenewal').checked = false;
       labelNextDate.textContent = state.lang === 'ro' ? '🎂 Data Zilei de Naștere *' : '🎂 Data del Compleanno *';
       if (labelItemName) labelItemName.textContent = state.lang === 'ro' ? 'Nume sărbătorit *' : 'Chi compie gli anni? *';
-      if (inputItemName) inputItemName.placeholder = 'Es. Compleanno Mamma, Marco, Maria...';
+      if (inputItemName) {
+        inputItemName.placeholder =
+          state.lang === 'ro' ? 'Ex. Ziua Mamei, Andrei, Maria...' : 'Es. Compleanno Mamma, Marco, Maria...';
+      }
       if (!document.getElementById('itemId').value) {
         document.getElementById('itemIcon').value = '🎂';
         document.getElementById('itemCategory').value = 'events';
@@ -1392,8 +1485,18 @@
       antiRenewalBox.classList.add('hidden');
       document.getElementById('cancelBeforeRenewal').checked = false;
       labelNextDate.textContent = state.lang === 'ro' ? '📅 Data Evenimentului *' : '📅 Data Evento / Appuntamento *';
-      if (labelItemName) labelItemName.textContent = state.lang === 'ro' ? 'Titlu Eveniment / Zbor / Întâlnire *' : 'Cosa devi ricordare? (Appuntamento / Volo) *';
-      if (inputItemName) inputItemName.placeholder = 'Es. Appuntamento con Tizio, Volo per Romania...';
+      if (labelItemName) {
+        labelItemName.textContent =
+          state.lang === 'ro'
+            ? 'Titlu Eveniment / Zbor / Întâlnire *'
+            : 'Cosa devi ricordare? (Appuntamento / Volo) *';
+      }
+      if (inputItemName) {
+        inputItemName.placeholder =
+          state.lang === 'ro'
+            ? 'Ex. Întâlnire cu Ion, Zbor spre România...'
+            : 'Es. Appuntamento con Tizio, Volo per Romania...';
+      }
       if (!document.getElementById('itemId').value) {
         if (document.getElementById('itemIcon').value === '🎬' || document.getElementById('itemIcon').value === '🎂') {
           document.getElementById('itemIcon').value = '⏰';
@@ -1407,11 +1510,13 @@
       antiRenewalBox.classList.add('hidden');
       document.getElementById('cancelBeforeRenewal').checked = false;
       labelNextDate.textContent = t('labelNextDateBill');
-      if (labelItemName) labelItemName.textContent = t('labelItemName');
+      if (labelItemName) labelItemName.textContent = t('labelName');
+      if (inputItemName) inputItemName.placeholder = t('placeholderName');
     } else {
       antiRenewalBox.classList.remove('hidden');
       labelNextDate.textContent = t('labelNextDateSub');
-      if (labelItemName) labelItemName.textContent = t('labelItemName');
+      if (labelItemName) labelItemName.textContent = t('labelName');
+      if (inputItemName) inputItemName.placeholder = t('placeholderName');
     }
   }
 
@@ -1502,9 +1607,13 @@
       state.items.push(savedObj);
       showToast(
         itemType === 'birthday'
-          ? `🎂 Compleanno "${name}" salvato per il ${formatLocalizedDate(nextDate)}!`
+          ? state.lang === 'ro'
+            ? `🎂 Ziua de naștere "${name}" salvată pentru ${formatLocalizedDate(nextDate)}!`
+            : `🎂 Compleanno "${name}" salvato per il ${formatLocalizedDate(nextDate)}!`
           : itemType === 'event'
-          ? `⏰ Promemoria "${name}" salvato (${formatLocalizedDate(nextDate)}${eventTime ? ' ore ' + eventTime : ''})!`
+          ? state.lang === 'ro'
+            ? `⏰ Evenimentul "${name}" salvat (${formatLocalizedDate(nextDate)}${eventTime ? ' ora ' + eventTime : ''})!`
+            : `⏰ Promemoria "${name}" salvato (${formatLocalizedDate(nextDate)}${eventTime ? ' ore ' + eventTime : ''})!`
           : state.lang === 'ro'
           ? `🔗 "${name}" adăugat în contul tău!`
           : `🔗 "${name}" collegato al tuo account!`
@@ -1543,7 +1652,11 @@
 
     saveUserDataAndSync();
     renderAll();
-    showToast(`✂️ "${item.name}" disdetto! Hai risparmiato ${formatCurrency(item.price, item.currency)}!`);
+    showToast(
+      state.lang === 'ro'
+        ? `✂️ "${item.name}" anulat! Ai economisit ${formatCurrency(item.price, item.currency)}!`
+        : `✂️ "${item.name}" disdetto! Hai risparmiato ${formatCurrency(item.price, item.currency)}!`
+    );
   }
 
   function handleMarkPaidOrRenewed(itemId) {
@@ -1600,7 +1713,7 @@
   function handleDeleteItem(itemId) {
     const item = state.items.find((i) => i.id === itemId);
     if (!item) return;
-    if (!confirm(`Vuoi rimuovere "${item.name}"?`)) return;
+    if (!confirm(state.lang === 'ro' ? `Vrei să ștergi "${item.name}"?` : `Vuoi rimuovere "${item.name}"?`)) return;
     state.items = state.items.filter((i) => i.id !== itemId);
     saveUserDataAndSync();
     renderAll();
@@ -1659,16 +1772,22 @@
               ? 'must-cancel'
               : '';
           const timeBadge = ev.eventTime ? `<strong>${escapeHtml(ev.eventTime)}</strong> ` : '';
+          const editTip = state.lang === 'ro' ? `Apasă pentru a edita: ${ev.name}` : `Tocca per modificare: ${ev.name}`;
           return `
-            <div class="cal-event ${extraClass}" data-action="edit" data-id="${ev.id}" title="Tocca per modificare: ${escapeAttr(ev.name)}">
+            <div class="cal-event ${extraClass}" data-action="edit" data-id="${ev.id}" title="${escapeAttr(editTip)}">
               ${escapeHtml(ev.icon)} ${timeBadge}${escapeHtml(ev.name)}
             </div>
           `;
         })
         .join('');
 
+      const addTip =
+        state.lang === 'ro'
+          ? `Apasă pentru a adăuga zi de naștere, întâlnire sau zbor pe ${day}/${month + 1}/${year}`
+          : `Tocca per aggiungere compleanno, appuntamento o volo il ${day}/${month + 1}/${year}`;
+
       cellsHtml += `
-        <div class="cal-day clickable-day ${isToday ? 'is-today' : ''}" data-cal-date="${dateStr}" title="Tocca per aggiungere compleanno, appuntamento o volo il ${day}/${month + 1}/${year}">
+        <div class="cal-day clickable-day ${isToday ? 'is-today' : ''}" data-cal-date="${dateStr}" title="${escapeAttr(addTip)}">
           <div class="cal-day-top">
             <span class="cal-day-num">${day}</span>
             <span class="cal-day-add-hint">＋</span>
@@ -1686,7 +1805,11 @@
     if (!listEl) return;
 
     if (state.history.length === 0) {
-      listEl.innerHTML = `<p class="text-muted">Nessuna operazione registrata nello storico.</p>`;
+      listEl.innerHTML = `<p class="text-muted">${
+        state.lang === 'ro'
+          ? 'Nicio operațiune înregistrată în istoric.'
+          : 'Nessuna operazione registrata nello storico.'
+      }</p>`;
       return;
     }
 
@@ -1713,7 +1836,7 @@
   async function initServiceWorkerAndNotifications() {
     if ('serviceWorker' in navigator) {
       try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=11');
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=12');
         if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }
@@ -1721,12 +1844,21 @@
 
   async function requestNotificationPermission() {
     if (!('Notification' in window)) {
-      showToast('⚠️ Notifiche non supportate dal browser');
+      showToast(
+        state.lang === 'ro'
+          ? '⚠️ Notificările nu sunt suportate de browser'
+          : '⚠️ Notifiche non supportate dal browser'
+      );
       return false;
     }
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
-      sendNativeNotification('🔔 ScadenzApp', 'Notifiche attive sul tuo dispositivo!');
+      sendNativeNotification(
+        '🔔 ScadenzApp',
+        state.lang === 'ro'
+          ? 'Notificări active pe dispozitivul tău!'
+          : 'Notifiche attive sul tuo dispositivo!'
+      );
       return true;
     }
     return false;
@@ -1763,9 +1895,19 @@
       const title = item.cancelBeforeRenewal
         ? `🛑 ${t('tagMustCancel')} ${item.name}`
         : isPersonal
-        ? `${item.icon || '🎂'} ${item.name}${item.eventTime ? ' (Ore ' + item.eventTime + ')' : ''}`
+        ? `${item.icon || '🎂'} ${item.name}${item.eventTime ? ` (${state.lang === 'ro' ? 'Ora' : 'Ore'} ` + item.eventTime + ')' : ''}`
         : `🔔 ${item.name} (${formatCurrency(item.price, item.currency)})`;
-      sendNativeNotification(title, `${formatLocalizedDate(item.nextDate)} (${days === 0 ? 'OGGI!' : days + ' gg'})`, item.id);
+      sendNativeNotification(
+        title,
+        `${formatLocalizedDate(item.nextDate)} (${
+          days === 0
+            ? state.lang === 'ro'
+              ? 'AZI!'
+              : 'OGGI!'
+            : days + (state.lang === 'ro' ? ' zile' : ' gg')
+        })`,
+        item.id
+      );
       log[k] = true;
     });
     localStorage.setItem(STORAGE_KEYS.NOTIFIED_LOG, JSON.stringify(log));
@@ -1774,7 +1916,11 @@
   // --- EXPORT .ICS (WITH EXACT TIME, RRULE & PHONE ALARM REMINDERS) & .JSON ---
   function exportToIcs(itemsToExport, customFilename = 'scadenzapp-calendario.ics') {
     if (!itemsToExport || itemsToExport.length === 0) {
-      showToast('⚠️ Nessun evento o scadenza da esportare.');
+      showToast(
+        state.lang === 'ro'
+          ? '⚠️ Niciun eveniment sau scadență de exportat.'
+          : '⚠️ Nessun evento o scadenza da esportare.'
+      );
       return;
     }
     const fmt = (s) => s.replace(/-/g, '');
@@ -1827,12 +1973,12 @@
         'BEGIN:VALARM',
         `TRIGGER:-P${remindDays}D`,
         'ACTION:DISPLAY',
-        `DESCRIPTION:Promemoria ScadenzApp: ${summary}`,
+        `DESCRIPTION:ScadenzApp: ${summary}`,
         'END:VALARM',
         'BEGIN:VALARM',
         'TRIGGER:-PT1H',
         'ACTION:DISPLAY',
-        `DESCRIPTION:Tra 1 ora: ${summary}`,
+        `DESCRIPTION:ScadenzApp (1h): ${summary}`,
         'END:VALARM',
         'END:VEVENT'
       );
@@ -1844,7 +1990,11 @@
     a.href = URL.createObjectURL(blob);
     a.download = customFilename;
     a.click();
-    showToast('📲 File Calendario (.ics) pronto! Aprilo per aggiungerlo al Calendario del Telefono o Google.');
+    showToast(
+      state.lang === 'ro'
+        ? '📲 Fișier Calendar (.ics) pregătit! Deschide-l pentru a-l adăuga în Calendarul Telefonului sau Google.'
+        : '📲 File Calendario (.ics) pronto! Aprilo per aggiungerlo al Calendario del Telefono o Google.'
+    );
   }
 
   function exportBackupJson() {
@@ -1941,15 +2091,7 @@
     if (btnEditProfile && profileModal && inputProfileName) {
       btnEditProfile.addEventListener('click', () => {
         inputProfileName.value = state.user.displayName || state.user.username || '';
-        const titleEl = document.getElementById('profileModalTitle');
-        const lblEl = document.getElementById('txtLabelProfileName');
-        const btnCancelEl = document.getElementById('btnCancelProfileModal');
-        const btnSaveEl = document.getElementById('btnSaveProfileName');
-        if (titleEl) titleEl.textContent = state.lang === 'ro' ? '✏️ Modifică Numele Profilului' : '✏️ Modifica Nome Profilo';
-        if (lblEl) lblEl.textContent = state.lang === 'ro' ? 'Cum vrei să te numim în aplicație?' : "Come vuoi essere chiamato nell'app?";
-        if (btnCancelEl) btnCancelEl.textContent = t('btnCancel');
-        if (btnSaveEl) btnSaveEl.textContent = state.lang === 'ro' ? '✅ Salvează Numele' : '✅ Salva Nome';
-
+        applyStaticTranslations();
         profileModal.classList.remove('hidden');
         setTimeout(() => inputProfileName.focus(), 60);
       });
@@ -2030,6 +2172,7 @@
 
     if (btnOpenCalSync && calSyncModal) {
       btnOpenCalSync.addEventListener('click', () => {
+        applyStaticTranslations();
         if (inputLiveCalUrl && state.user && state.user.username) {
           const origin = window.location.origin;
           inputLiveCalUrl.value = `${origin}/api/calendar/${encodeURIComponent(state.user.username)}.ics`;
@@ -2049,13 +2192,17 @@
       btnCopyLiveCal.addEventListener('click', async () => {
         const url = inputLiveCalUrl.value;
         if (!url) return;
+        const msg =
+          state.lang === 'ro'
+            ? '📋 Link Calendar Live copiat! Lipește-l în Google Calendar sau Calendar iPhone/Android.'
+            : '📋 Link Calendario Live copiato! Incollalo su Google Calendar o Calendario iPhone/Android.';
         try {
           await navigator.clipboard.writeText(url);
-          showToast('📋 Link Calendario Live copiato! Incollalo su Google Calendar o Calendario iPhone/Android.');
+          showToast(msg);
         } catch (_) {
           inputLiveCalUrl.select();
           document.execCommand('copy');
-          showToast('📋 Link Calendario Live copiato!');
+          showToast(msg);
         }
       });
     }
@@ -2114,11 +2261,14 @@
       // 2b. Click on a Quick Event Preset chip (🎂 Compleanno, 🤝 Appuntamento 10:00, ✈️ Volo 15:00...)
       const quickEventChip = e.target.closest('.event-quick-chip');
       if (quickEventChip) {
-        const qType = quickEventChip.dataset.quickType || 'event';
-        const qIcon = quickEventChip.dataset.quickIcon || '⏰';
-        const qTime = quickEventChip.dataset.quickTime || '';
-        const qCycle = quickEventChip.dataset.quickCycle || 'once';
-        const qPrefix = quickEventChip.dataset.quickPrefix || '';
+        const qType = quickEventChip.dataset.quickType || quickEventChip.dataset.evType || 'event';
+        const qIcon = quickEventChip.dataset.quickIcon || quickEventChip.dataset.evIcon || '⏰';
+        const qTime = quickEventChip.dataset.quickTime || quickEventChip.dataset.evTime || '';
+        const qCycle = quickEventChip.dataset.quickCycle || (qType === 'birthday' ? 'yearly' : 'once');
+        const qPrefix =
+          state.lang === 'ro'
+            ? quickEventChip.dataset.quickPrefixRo || ''
+            : quickEventChip.dataset.quickPrefixIt || '';
 
         const radio = document.querySelector(`input[name="itemType"][value="${qType}"]`);
         if (radio) radio.checked = true;
@@ -2237,14 +2387,14 @@
             state.items = data.items;
             saveUserDataAndSync();
             renderAll();
-            showToast('⬆️ Backup importato!');
+            showToast(state.lang === 'ro' ? '⬆️ Backup importat!' : '⬆️ Backup importato!');
           }
         } catch (_) {}
       };
       reader.readAsText(e.target.files[0]);
     });
     document.getElementById('btnClearHistory').addEventListener('click', () => {
-      if (!confirm('Svuotare lo storico?')) return;
+      if (!confirm(state.lang === 'ro' ? 'Vrei să golești istoricul?' : 'Svuotare lo storico?')) return;
       state.history = [];
       saveUserDataAndSync();
       renderAll();
