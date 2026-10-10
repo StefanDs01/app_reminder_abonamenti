@@ -7,7 +7,7 @@
     LOCAL_USERS_DB: 'scadenzapp_local_users_v2',
     LANG: 'scadenzapp_lang_v1',
     CURRENCY: 'scadenzapp_currency_v1',
-    THEME: 'scadenzapp_theme_v1',
+    THEME: 'scadenzapp_theme_v2',
     NOTIFIED_LOG: 'scadenzapp_notified_log_v1'
   };
 
@@ -128,10 +128,9 @@
 
     if (savedLang === 'it' || savedLang === 'ro') state.lang = savedLang;
     if (savedCurr === 'EUR' || savedCurr === 'RON') state.mainCurrency = savedCurr;
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeButtonIcon(savedTheme);
-    }
+    const effectiveTheme = savedTheme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
+    updateThemeButtonIcon(effectiveTheme);
 
     applyStaticTranslations();
 
@@ -696,6 +695,47 @@
 
     document.getElementById('kpiSavedMoney').textContent = formatCurrency(totalSaved, state.mainCurrency);
     document.getElementById('kpiSavedCount').textContent = `${cancelledHistory.length} OK`;
+
+    // Aggiornamento Barre Verticali Bento (Opzione 2)
+    const streamingSpend = activeItems
+      .filter((i) => i.category === 'streaming')
+      .reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
+    const billsSpend = activeBills.reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
+    const otherSpend = activeItems
+      .filter((i) => i.category !== 'streaming' && i.itemType !== 'bill')
+      .reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
+
+    const hasAnySpend = streamingSpend > 0 || billsSpend > 0 || otherSpend > 0;
+    const maxSpend = Math.max(streamingSpend, billsSpend, otherSpend, 1);
+
+    const barStreaming = document.getElementById('barFillStreaming');
+    const barBills = document.getElementById('barFillBills');
+    const barOther = document.getElementById('barFillOther');
+
+    if (barStreaming) {
+      barStreaming.style.height = hasAnySpend
+        ? `${Math.max(16, Math.min(100, Math.round((streamingSpend / maxSpend) * 100)))}%`
+        : '68%';
+    }
+    if (barBills) {
+      barBills.style.height = hasAnySpend
+        ? `${Math.max(16, Math.min(100, Math.round((billsSpend / maxSpend) * 100)))}%`
+        : '36%';
+    }
+    if (barOther) {
+      barOther.style.height = hasAnySpend
+        ? `${Math.max(16, Math.min(100, Math.round((otherSpend / maxSpend) * 100)))}%`
+        : '48%';
+    }
+
+    const lblStreaming = document.getElementById('lblBarStreaming');
+    const lblBills = document.getElementById('lblBarBills');
+    const lblOther = document.getElementById('lblBarOther');
+    const btnAddSubHero = document.getElementById('txtBtnHeroAddSub');
+    if (lblStreaming) lblStreaming.textContent = state.lang === 'ro' ? 'Streaming' : 'Streaming';
+    if (lblBills) lblBills.textContent = state.lang === 'ro' ? 'Facturi' : 'Bollette';
+    if (lblOther) lblOther.textContent = state.lang === 'ro' ? 'Servicii' : 'Servizi';
+    if (btnAddSubHero) btnAddSubHero.textContent = state.lang === 'ro' ? 'Conectează Serviciu' : 'Collega Servizio';
   }
 
   function renderCounts() {
@@ -771,6 +811,9 @@
 
     emptyState.classList.add('hidden');
 
+    const radius = 28;
+    const circumference = Math.round(2 * Math.PI * radius); // ~176
+
     grid.innerHTML = items
       .map((item) => {
         const days = getDaysRemaining(item.nextDate);
@@ -783,55 +826,74 @@
         const isCancelled = item.status === 'cancelled';
         const itemCurrency = item.currency || 'EUR';
 
-        let countdownClass = 'countdown-ok';
-        let progressColor = '#10b981';
-        let countdownLabel = state.lang === 'ro' ? `Peste ${days} zile` : `Tra ${days} giorni`;
+        // Calcolo Anello Circolare di Scadenza (Opzione 3) con Colori Opzione 2 (Warm Olive, Honey Gold, Coral Red)
+        let ringColor = '#65a30d'; // Warm Olive Green
+        let ringTextColor = 'var(--text-main)';
+        let ringMainText = '';
+        let ringSubText = '';
+        let ringPct = 65;
 
         if (isCancelled) {
-          countdownLabel = t('tagCancelled');
-          progressColor = '#64748b';
+          ringColor = '#94a3b8';
+          ringPct = 0;
+          ringMainText = '✓';
+          ringSubText = state.lang === 'ro' ? 'OPRIT' : 'OFF';
         } else if (days < 0) {
-          countdownClass = 'countdown-danger';
-          progressColor = '#f43f5e';
-          countdownLabel = state.lang === 'ro' ? `⚠️ Expirat (${Math.abs(days)}z)` : `⚠️ Scaduto da ${Math.abs(days)} gg`;
+          ringColor = '#e11d48';
+          ringTextColor = '#e11d48';
+          ringPct = 100;
+          ringMainText = `-${Math.abs(days)}`;
+          ringSubText = state.lang === 'ro' ? 'EXPIRAT' : 'SCADUTO';
         } else if (days === 0) {
-          countdownClass = 'countdown-danger';
-          progressColor = '#f43f5e';
-          countdownLabel = state.lang === 'ro' ? '🚨 SCADENT AZI!' : '🚨 SCADE OGGI!';
+          ringColor = '#e11d48';
+          ringTextColor = '#e11d48';
+          ringPct = 100;
+          ringMainText = state.lang === 'ro' ? 'AZI' : 'OGGI';
+          ringSubText = '!';
         } else if (days === 1) {
-          countdownClass = 'countdown-danger';
-          progressColor = '#f43f5e';
-          countdownLabel = state.lang === 'ro' ? '⏰ Scadent MÂINE!' : '⏰ Scade DOMANI!';
-        } else if (days <= item.remindDaysBefore || (item.cancelBeforeRenewal && days <= 7)) {
-          countdownClass = 'countdown-danger';
-          progressColor = '#f43f5e';
-          countdownLabel = state.lang === 'ro' ? `⏳ Mai sunt ${days} zile` : `⏳ Mancano ${days} giorni`;
-        } else if (days <= 14) {
-          countdownClass = 'countdown-warning';
-          progressColor = '#f59e0b';
+          ringColor = '#e11d48';
+          ringTextColor = '#e11d48';
+          ringPct = 90;
+          ringMainText = '1';
+          ringSubText = state.lang === 'ro' ? 'ZI' : 'GIORNO';
+        } else {
+          ringMainText = String(days);
+          ringSubText = state.lang === 'ro' ? 'ZILE' : 'GIORNI';
+          if (item.cancelBeforeRenewal || days <= item.remindDaysBefore || days <= 3) {
+            ringColor = '#e11d48'; // Coral Red urgente
+            ringTextColor = '#e11d48';
+            ringPct = Math.max(18, Math.min(95, Math.round((Math.min(days, 30) / 30) * 100)));
+          } else if (days <= 10) {
+            ringColor = '#d97706'; // Honey Gold attenzione
+            ringTextColor = '#d97706';
+            ringPct = Math.max(25, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
+          } else {
+            ringColor = '#65a30d'; // Warm Olive tranquillo
+            ringPct = Math.max(30, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
+          }
         }
 
-        // Percentuale barra di avanzamento verso la scadenza (su ciclo 30gg)
-        const progressPct = isCancelled
-          ? 0
-          : days <= 0
-          ? 100
-          : Math.max(12, Math.min(100, Math.round(((30 - Math.min(days, 30)) / 30) * 100)));
+        const dashOffset = Math.round(circumference - (ringPct / 100) * circumference);
 
         const recommendedCancelDate = formatLocalizedDate(
           formatDateInput(addDays(parseLocalDate(item.nextDate), -Math.max(1, Math.min(item.remindDaysBefore, 3))))
         );
 
         const cycleShort = state.lang === 'ro' ? cycleMeta.short_ro || cycleMeta.short : cycleMeta.short;
+        const renewsLabelText = isCancelled
+          ? state.lang === 'ro'
+            ? 'Anulat'
+            : 'Disdetto'
+          : `${isBill ? (state.lang === 'ro' ? 'Scadent' : 'Scade') : (state.lang === 'ro' ? 'Reînnoire' : 'Rinnovo')}: ${formatLocalizedDate(item.nextDate)}`;
 
         return `
           <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}" data-card-expand="${item.id}">
             <div class="card-head">
               <div class="card-service-info">
-                <div class="service-avatar" style="background: ${escapeAttr(item.color || '#f97316')}">
+                <div class="service-avatar" style="background: ${escapeAttr(item.color || '#d97706')}">
                   ${escapeHtml(item.icon || '🎬')}
                 </div>
-                <div>
+                <div class="service-main-meta">
                   <div class="service-title-row">
                     <h3 class="service-title">${escapeHtml(item.name)}</h3>
                     ${
@@ -844,24 +906,33 @@
                         : ''
                     }
                   </div>
-                  <div class="card-subline">
-                    <span class="countdown-badge ${countdownClass}">${countdownLabel}</span>
-                    <span>• ${formatLocalizedDate(item.nextDate)}</span>
+                  <div class="card-price-inline">
+                    <span class="card-price">${formatCurrency(item.price, itemCurrency)}</span>
+                    <span class="card-cycle">${escapeHtml(cycleShort)}</span>
+                  </div>
+                  <div class="card-manage-pill">
+                    <span>${state.lang === 'ro' ? 'Gestionează' : 'Gestisci'} ▾</span>
                   </div>
                 </div>
               </div>
 
+              <!-- ANELLO CIRCOLARE DI SCADENZA (Opzione 3) -->
               <div class="card-right-col">
-                <div>
-                  <div class="card-price">${formatCurrency(item.price, itemCurrency)}</div>
-                  <div class="card-cycle">${escapeHtml(cycleShort)}</div>
+                <div class="card-countdown-ring">
+                  <svg class="progress-ring-svg" viewBox="0 0 68 68">
+                    <circle class="progress-ring-track" cx="34" cy="34" r="28"></circle>
+                    <circle class="progress-ring-value" cx="34" cy="34" r="28"
+                      stroke="${ringColor}"
+                      stroke-dasharray="${circumference}"
+                      stroke-dashoffset="${dashOffset}"></circle>
+                  </svg>
+                  <div class="ring-center-label">
+                    <span class="ring-days-num" style="color: ${ringTextColor}">${ringMainText}</span>
+                    <span class="ring-days-unit">${ringSubText}</span>
+                  </div>
                 </div>
-                <div class="card-expand-chevron" aria-hidden="true">▾</div>
+                <span class="ring-renews-date">${renewsLabelText}</span>
               </div>
-            </div>
-
-            <div class="card-progress-track">
-              <div class="card-progress-fill" style="width: ${progressPct}%; background: ${progressColor};"></div>
             </div>
 
             <!-- Cassetto dettagli che si apre toccando la card -->
@@ -1394,7 +1465,8 @@
   async function initServiceWorkerAndNotifications() {
     if ('serviceWorker' in navigator) {
       try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=5');
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=9');
+        if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }
   }

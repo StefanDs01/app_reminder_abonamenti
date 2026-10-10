@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="dark">
+<html lang="it" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#181311" />
+  <meta name="theme-color" content="#F7F3EB" />
   <meta name="description" content="ScadenzApp — Gestisci i tuoi abbonamenti reali (Netflix, Disney+, prove di 1 mese), bollette e bollo auto." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=8" />
+  <link rel="manifest" href="./manifest.webmanifest?v=9" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=8" />
+  <link rel="stylesheet" href="./styles.css?v=9" />
 </head>
 <body>
 
   <!-- =====================================================================
-       1. SCHERMATA DI LOGIN / REGISTRAZIONE (Design Caldo & Accogliente)
+       1. SCHERMATA DI LOGIN / REGISTRAZIONE (Golden Sand & Warm Olive)
        ===================================================================== -->
   <div id="authScreen" class="auth-screen">
     <div class="auth-ambient-glow"></div>
@@ -68,7 +68,7 @@
   </div>
 
   <!-- =====================================================================
-       2. APPLICAZIONE PRINCIPALE (Pulita, Calda e Divisa in Schermate)
+       2. APPLICAZIONE PRINCIPALE (Golden Sand & Olive + Anelli Circolari)
        ===================================================================== -->
   <div id="appScreen" class="app-screen hidden">
     <!-- HEADER MINIMALISTA E CALDO -->
@@ -89,7 +89,7 @@
           <button type="button" class="chip-btn" id="btnLangToggle" title="IT / RO">🇮🇹 IT</button>
           <button type="button" class="chip-btn" id="btnCurrencyToggle" title="EUR / RON">💶 EUR</button>
           <button type="button" class="chip-btn" id="btnNotificationStatus" title="Notifiche">🔔</button>
-          <button type="button" class="chip-btn" id="btnThemeToggle" title="Tema Caldo Chiaro / Scuro">☀️</button>
+          <button type="button" class="chip-btn" id="btnThemeToggle" title="Tema Caldo Chiaro / Scuro">🌙</button>
           <button type="button" class="chip-btn chip-danger" id="btnLogout" title="Esci">
             <span id="txtLogoutBtn">🚪</span>
           </button>
@@ -101,35 +101,60 @@
 
       <!-- ================= VISTA 1: HOME — SOLO I TUOI ABBONAMENTI ATTIVI ================= -->
       <section id="viewList" class="view-section view-animate">
-        <!-- HERO CARD CALDA & INTERATTIVA -->
+        <!-- HERO BENTO CARD (Stile Opzione 2: Golden Sand & Warm Olive) -->
         <div class="hero-wallet-card">
           <div class="hero-wallet-top">
-            <div>
+            <div class="hero-spend-block">
               <span class="hero-wallet-label" id="txtHeroMonthlyTitle">Spesa Mensile Attiva</span>
               <div class="hero-big-amount" id="kpiMonthlySubs">€ 0,00</div>
               <span class="hero-sub-amount" id="kpiYearlySubs">Proiezione annua: € 0,00</span>
             </div>
-            <button type="button" class="btn-hero-connect" id="btnHeroQuickAdd" title="Collega servizio">
-              <span>✨</span>
-            </button>
+
+            <!-- Mini grafico a barre verticale stile Opzione 2 -->
+            <div class="hero-bento-bars" aria-hidden="true">
+              <div class="bento-bar-col">
+                <div class="bento-bar-track">
+                  <div class="bento-bar-fill bar-olive" id="barFillStreaming" style="height: 65%;"></div>
+                </div>
+                <span class="bento-bar-label" id="lblBarStreaming">Media</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-track">
+                  <div class="bento-bar-fill bar-gold" id="barFillBills" style="height: 35%;"></div>
+                </div>
+                <span class="bento-bar-label" id="lblBarBills">Bollette</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-track">
+                  <div class="bento-bar-fill bar-sand" id="barFillOther" style="height: 45%;"></div>
+                </div>
+                <span class="bento-bar-label" id="lblBarOther">Servizi</span>
+              </div>
+            </div>
           </div>
 
-          <!-- 3 Pillole Interattive (Cliccabili per filtrare al volo!) -->
-          <div class="hero-mini-kpis">
-            <button type="button" class="mini-kpi mini-kpi-urgent" data-quick-filter="must-cancel">
-              <span class="mini-kpi-label" id="txtKpiUrgentLabel">Da Disdire</span>
-              <strong class="mini-kpi-val" id="kpiUrgentCount">0</strong>
-              <small id="kpiUrgentSub">Nessuna urgenza</small>
-            </button>
-            <button type="button" class="mini-kpi" data-quick-filter="bills">
-              <span class="mini-kpi-label" id="txtKpiBillsLabel">Bollette (Anno)</span>
-              <strong class="mini-kpi-val" id="kpiYearlyBills">€ 0,00</strong>
-              <small id="kpiMonthlyBills">€ 0,00/m</small>
-            </button>
-            <button type="button" class="mini-kpi mini-kpi-saved" data-quick-nav="history">
-              <span class="mini-kpi-label" id="txtKpiSavedLabel">Risparmiati</span>
-              <strong class="mini-kpi-val" id="kpiSavedMoney">€ 0,00</strong>
-              <small id="kpiSavedCount">0</small>
+          <div class="hero-bento-actions-row">
+            <!-- 3 Pillole Interattive (Cliccabili per filtrare al volo!) -->
+            <div class="hero-mini-kpis">
+              <button type="button" class="mini-kpi mini-kpi-urgent" data-quick-filter="must-cancel">
+                <span class="mini-kpi-label" id="txtKpiUrgentLabel">Da Disdire</span>
+                <strong class="mini-kpi-val" id="kpiUrgentCount">0</strong>
+                <small id="kpiUrgentSub">Nessuna urgenza</small>
+              </button>
+              <button type="button" class="mini-kpi" data-quick-filter="bills">
+                <span class="mini-kpi-label" id="txtKpiBillsLabel">Bollette (Anno)</span>
+                <strong class="mini-kpi-val" id="kpiYearlyBills">€ 0,00</strong>
+                <small id="kpiMonthlyBills">€ 0,00/m</small>
+              </button>
+              <button type="button" class="mini-kpi mini-kpi-saved" data-quick-nav="history">
+                <span class="mini-kpi-label" id="txtKpiSavedLabel">Risparmiati</span>
+                <strong class="mini-kpi-val" id="kpiSavedMoney">€ 0,00</strong>
+                <small id="kpiSavedCount">0</small>
+              </button>
+            </div>
+
+            <button type="button" class="btn-hero-add-pill" id="btnHeroQuickAdd">
+              <span>＋</span> <span id="txtBtnHeroAddSub">Collega Servizio</span>
             </button>
           </div>
         </div>
@@ -601,8 +626,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=8"></script>
-  <script src="./data-presets.js?v=8"></script>
-  <script src="./app.js?v=8"></script>
+  <script src="./i18n.js?v=9"></script>
+  <script src="./data-presets.js?v=9"></script>
+  <script src="./app.js?v=9"></script>
 </body>
 </html>
