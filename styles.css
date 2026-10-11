@@ -1020,6 +1020,168 @@ body {
   cursor: pointer;
 }
 
+/* SPENDIO NATIVE AD BANNER & CONTEXTUAL PARTNER TIPS */
+.spendio-ad-card {
+  background: linear-gradient(135deg, #fffdf0 0%, #f4fce3 100%);
+  border: 1.5px solid rgba(163, 230, 53, 0.45);
+  border-radius: 26px;
+  padding: 13px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 22px rgba(24, 24, 27, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="dark"] .spendio-ad-card {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(163, 230, 53, 0.08) 100%);
+  border-color: rgba(163, 230, 53, 0.28);
+}
+
+.spendio-ad-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.spendio-ad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #3f6212;
+  background: rgba(163, 230, 53, 0.28);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+[data-theme="dark"] .spendio-ad-badge {
+  color: #bef264;
+  background: rgba(163, 230, 53, 0.18);
+}
+
+.spendio-ad-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spendio-ad-mini-btn {
+  background: rgba(24, 24, 27, 0.06);
+  border: none;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.spendio-ad-mini-btn:hover {
+  background: rgba(24, 24, 27, 0.12);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .spendio-ad-mini-btn {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.spendio-ad-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.spendio-ad-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px rgba(163, 230, 53, 0.28);
+}
+
+.spendio-ad-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.spendio-ad-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+  line-height: 1.25;
+}
+
+.spendio-ad-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.spendio-ad-cta {
+  background: #18181b;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 8px 13px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(24, 24, 27, 0.16);
+  transition: transform 0.15s ease;
+}
+
+.spendio-ad-body:hover .spendio-ad-cta {
+  transform: scale(1.04);
+}
+
+[data-theme="dark"] .spendio-ad-cta {
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
+}
+
+.card-partner-tip {
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(254, 240, 138, 0.35), rgba(190, 242, 100, 0.25));
+  border: 1px dashed rgba(132, 204, 22, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.76rem;
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .card-partner-tip {
+  background: rgba(163, 230, 53, 0.1);
+  border-color: rgba(163, 230, 53, 0.35);
+}
+
+.card-partner-tip-cta {
+  font-weight: 800;
+  color: #3f6212;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-partner-tip-cta {
+  color: #bef264;
+}
+
 /* LISTA CARD STILE SPENDIO (Shopping / Entertainment / Restaurants look!) */
 .items-grid {
   display: flex;

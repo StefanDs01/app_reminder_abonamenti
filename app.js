@@ -8,7 +8,9 @@
     LANG: 'scadenzapp_lang_v1',
     CURRENCY: 'scadenzapp_currency_v1',
     THEME: 'scadenzapp_theme_v2',
-    NOTIFIED_LOG: 'scadenzapp_notified_log_v1'
+    NOTIFIED_LOG: 'scadenzapp_notified_log_v1',
+    ADS_HIDDEN: 'scadenzapp_ads_hidden_v1',
+    AFFILIATE_LINKS: 'scadenzapp_affiliate_links_v1'
   };
 
   // --- APPLICATION STATE ---
@@ -627,6 +629,151 @@
     }
   }
 
+  // --- SPENDIO NATIVE AD & SMART AFFILIATE MONETIZATION ---
+  let currentAdIndex = 0;
+
+  const SPENDIO_ADS_CATALOG = [
+    {
+      key: 'cards',
+      icon: '💳',
+      title_it: 'Blocca i rinnovi indesiderati con Carte Virtuali',
+      desc_it: 'Crea carte usa e getta per le prove di 30 giorni: zero addebiti a sorpresa!',
+      cta_it: 'Prova Gratis ➔',
+      title_ro: 'Oprește reînnoirile nedorite cu Carduri Virtuale',
+      desc_ro: 'Creează carduri de unică folosință pentru perioadele de probă: zero plăți surpriză!',
+      cta_ro: 'Încearcă ➔',
+      defaultUrl: 'https://www.revolut.com/'
+    },
+    {
+      key: 'bills',
+      icon: '⚡',
+      title_it: 'Paghi troppo di Luce, Gas o Internet Fibra?',
+      desc_it: 'Confronta le tariffe più basse del mese e risparmia fino a 280€/anno sulle bollette.',
+      cta_it: 'Confronta ➔',
+      title_ro: 'Plătești prea mult la Curent, Gaze sau Internet?',
+      desc_ro: 'Compară cele mai mici tarife ale lunii și economisește la facturile casei.',
+      cta_ro: 'Compară ➔',
+      defaultUrl: 'https://www.segugio.it/tariffe-luce-gas/'
+    },
+    {
+      key: 'auto',
+      icon: '🚗',
+      title_it: 'Assicurazione Auto o Moto in scadenza?',
+      desc_it: 'Calcola un preventivo RCA in 60 secondi e blocca il prezzo più basso garantito.',
+      cta_it: 'Calcola RCA ➔',
+      title_ro: 'Asigurarea RCA sau Rovinieta urmează să expire?',
+      desc_ro: 'Verifică rapid ofertele RCA online și economisește la reînnoirea poliței auto.',
+      cta_ro: 'Calculează ➔',
+      defaultUrl: 'https://www.segugio.it/assicurazione-auto/'
+    },
+    {
+      key: 'sharing',
+      icon: '🍿',
+      title_it: 'Dimezza il costo di Streaming, Musica e Cloud',
+      desc_it: 'Scopri come condividere legalmente gli abbonamenti digitali e risparmiare fino al 70%.',
+      cta_it: 'Scopri Come ➔',
+      title_ro: 'Redu la jumătate costul pentru Streaming și Muzică',
+      desc_ro: 'Descoperă cum poți împărți legal abonamentele digitale și economisi până la 70%.',
+      cta_ro: 'Descoperă ➔',
+      defaultUrl: 'https://www.togetherprice.com/'
+    }
+  ];
+
+  function getCustomAffiliateLinks() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.AFFILIATE_LINKS) || '{}') || {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function getOfferUrl(key, fallbackUrl) {
+    const custom = getCustomAffiliateLinks();
+    if (key === 'cards' && custom.cards) return custom.cards;
+    if (key === 'bills' && custom.bills) return custom.bills;
+    if (key === 'auto' && custom.auto) return custom.auto;
+    return fallbackUrl;
+  }
+
+  function isAdsHidden() {
+    return localStorage.getItem(STORAGE_KEYS.ADS_HIDDEN) === '1';
+  }
+
+  function renderSpendioAdBanner(forceNext = false) {
+    const slot = document.getElementById('spendioAdBannerSlot');
+    if (!slot) return;
+
+    if (isAdsHidden()) {
+      slot.classList.add('hidden');
+      return;
+    }
+    slot.classList.remove('hidden');
+
+    if (forceNext) {
+      currentAdIndex = (currentAdIndex + 1) % SPENDIO_ADS_CATALOG.length;
+    } else {
+      if (state.currentFilter === 'bills') currentAdIndex = 1;
+      else if (state.currentFilter === 'auto') currentAdIndex = 2;
+      else if (state.currentFilter === 'must-cancel') currentAdIndex = 0;
+    }
+
+    const offer = SPENDIO_ADS_CATALOG[currentAdIndex] || SPENDIO_ADS_CATALOG[0];
+    const isRo = state.lang === 'ro';
+
+    const badgeEl = document.getElementById('spendioAdBadgeText');
+    const hideBtnEl = document.getElementById('btnOpenAdFreeModal');
+    const iconEl = document.getElementById('spendioAdIcon');
+    const titleEl = document.getElementById('spendioAdTitle');
+    const descEl = document.getElementById('spendioAdDesc');
+    const ctaEl = document.getElementById('spendioAdCta');
+    const linkEl = document.getElementById('spendioAdLink');
+
+    if (badgeEl) badgeEl.textContent = isRo ? '✨ Sfat Sponsorizat • Economisește' : '✨ Consiglio Partner • Risparmia';
+    if (hideBtnEl) hideBtnEl.textContent = isRo ? '✕ Ascunde' : '✕ Nascondi';
+    if (iconEl) iconEl.textContent = offer.icon;
+    if (titleEl) titleEl.textContent = isRo ? offer.title_ro : offer.title_it;
+    if (descEl) descEl.textContent = isRo ? offer.desc_ro : offer.desc_it;
+    if (ctaEl) ctaEl.textContent = isRo ? offer.cta_ro : offer.cta_it;
+    if (linkEl) linkEl.href = getOfferUrl(offer.key, offer.defaultUrl);
+  }
+
+  function getContextualPartnerTipHtml(item) {
+    if (isAdsHidden() || !item || item.status === 'cancelled') return '';
+    if (item.itemType === 'birthday' || item.itemType === 'event' || item.category === 'events') return '';
+
+    const isRo = state.lang === 'ro';
+    let tipText = '';
+    let ctaText = '';
+    let targetUrl = '';
+
+    if (item.category === 'auto') {
+      tipText = isRo
+        ? '🚗 Partner: Compară RCA Auto și economisește până la 35% la reînnoire'
+        : '🚗 Partner: Confronta preventivi RCA Auto e risparmia fino al 35%';
+      ctaText = isRo ? 'Vezi oferte ➔' : 'Preventivo ➔';
+      targetUrl = getOfferUrl('auto', 'https://www.segugio.it/assicurazione-auto/');
+    } else if (item.itemType === 'bill' || item.category === 'bills') {
+      tipText = isRo
+        ? '⚡ Partner: Verifică dacă există un tarif mai ieftin la Curent / Gaze / Fibra'
+        : '⚡ Partner: Scopri le tariffe Luce, Gas e Fibra più economiche del mese';
+      ctaText = isRo ? 'Compară ➔' : 'Confronta ➔';
+      targetUrl = getOfferUrl('bills', 'https://www.segugio.it/tariffe-luce-gas/');
+    } else {
+      tipText = isRo
+        ? '💳 Partner: Folosește un card virtual gratuit ca să blochezi plățile nedorite'
+        : '💳 Partner: Usa una carta virtuale gratuita per bloccare rinnovi indesiderati';
+      ctaText = isRo ? 'Card Gratuit ➔' : 'Carta Gratis ➔';
+      targetUrl = getOfferUrl('cards', 'https://www.revolut.com/');
+    }
+
+    return `
+      <a href="${escapeAttr(targetUrl)}" target="_blank" rel="noopener noreferrer" class="card-partner-tip">
+        <span>${escapeHtml(tipText)}</span>
+        <span class="card-partner-tip-cta">${escapeHtml(ctaText)}</span>
+      </a>
+    `;
+  }
+
   // --- RENDERING DASHBOARD ---
   function renderAll() {
     applyStaticTranslations();
@@ -634,6 +781,7 @@
     renderUrgentBanner();
     renderKpis();
     renderCounts();
+    renderSpendioAdBanner(false);
     renderItemsList();
     renderServiceProposals();
     renderCalendar();
@@ -1269,6 +1417,7 @@
                   : ''
               }
               ${localizedNotes ? `<div class="card-notes">💡 ${escapeHtml(localizedNotes)}</div>` : ''}
+              ${getContextualPartnerTipHtml(item)}
 
               <div class="card-footer-actions">
                 <div class="card-primary-actions">
@@ -1973,7 +2122,7 @@
           refreshing = true;
           window.location.reload();
         });
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=15', { updateViaCache: 'none' });
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=16', { updateViaCache: 'none' });
         if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }
@@ -2485,9 +2634,100 @@
         state.currentFilter = pill.dataset.filter;
         document.querySelectorAll('#categoryFilterPills .pill').forEach((p) => p.classList.remove('active'));
         pill.classList.add('active');
+        renderSpendioAdBanner(false);
         renderItemsList();
       });
     });
+
+    // Spendio Native Ad Banner & Custom Affiliate Links Manager
+    const btnNextAdOffer = document.getElementById('btnNextAdOffer');
+    const btnOpenAdFreeModal = document.getElementById('btnOpenAdFreeModal');
+    const btnCloseAdFreeModal = document.getElementById('btnCloseAdFreeModal');
+    const adFreeModalBackdrop = document.getElementById('adFreeModalBackdrop');
+    const btnToggleAdsVisibility = document.getElementById('btnToggleAdsVisibility');
+    const customAffiliateForm = document.getElementById('customAffiliateForm');
+
+    const syncAdFreeModalState = () => {
+      const hiddenNow = isAdsHidden();
+      if (btnToggleAdsVisibility) {
+        btnToggleAdsVisibility.textContent = hiddenNow
+          ? state.lang === 'ro'
+            ? '👁️ Reactivează Sfaturile Partner în App'
+            : '👁️ Riattiva Consigli Partner nell’App'
+          : state.lang === 'ro'
+          ? '🙈 Ascunde Bannerul Sponsorizat'
+          : '🙈 Nascondi Banner Sponsorizzato';
+      }
+      const links = getCustomAffiliateLinks();
+      const inCards = document.getElementById('inputAffUrlCards');
+      const inBills = document.getElementById('inputAffUrlBills');
+      const inAuto = document.getElementById('inputAffUrlAuto');
+      if (inCards) inCards.value = links.cards || '';
+      if (inBills) inBills.value = links.bills || '';
+      if (inAuto) inAuto.value = links.auto || '';
+    };
+
+    if (btnNextAdOffer) {
+      btnNextAdOffer.addEventListener('click', () => {
+        renderSpendioAdBanner(true);
+      });
+    }
+
+    if (btnOpenAdFreeModal && adFreeModalBackdrop) {
+      btnOpenAdFreeModal.addEventListener('click', () => {
+        syncAdFreeModalState();
+        adFreeModalBackdrop.classList.remove('hidden');
+      });
+    }
+
+    if (btnCloseAdFreeModal && adFreeModalBackdrop) {
+      btnCloseAdFreeModal.addEventListener('click', () => {
+        adFreeModalBackdrop.classList.add('hidden');
+      });
+    }
+
+    if (btnToggleAdsVisibility) {
+      btnToggleAdsVisibility.addEventListener('click', () => {
+        const nextHidden = !isAdsHidden();
+        localStorage.setItem(STORAGE_KEYS.ADS_HIDDEN, nextHidden ? '1' : '0');
+        syncAdFreeModalState();
+        renderSpendioAdBanner(false);
+        renderItemsList();
+        if (adFreeModalBackdrop) adFreeModalBackdrop.classList.add('hidden');
+        showToast(
+          nextHidden
+            ? state.lang === 'ro'
+              ? '✨ Bannerul sponsorizat a fost ascuns!'
+              : '✨ Banner sponsorizzato nascosto!'
+            : state.lang === 'ro'
+            ? '✨ Sfaturile Partner au fost reactivate!'
+            : '✨ Consigli Partner riattivati!'
+        );
+      });
+    }
+
+    if (customAffiliateForm) {
+      customAffiliateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inCards = document.getElementById('inputAffUrlCards');
+        const inBills = document.getElementById('inputAffUrlBills');
+        const inAuto = document.getElementById('inputAffUrlAuto');
+        const customObj = {
+          cards: inCards ? inCards.value.trim() : '',
+          bills: inBills ? inBills.value.trim() : '',
+          auto: inAuto ? inAuto.value.trim() : ''
+        };
+        localStorage.setItem(STORAGE_KEYS.AFFILIATE_LINKS, JSON.stringify(customObj));
+        renderSpendioAdBanner(false);
+        renderItemsList();
+        if (adFreeModalBackdrop) adFreeModalBackdrop.classList.add('hidden');
+        showToast(
+          state.lang === 'ro'
+            ? '💰 Linkurile tale de afiliere au fost salvate!'
+            : '💰 I tuoi link affiliati personalizzati sono stati salvati!'
+        );
+      });
+    }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       state.searchQuery = e.target.value;
