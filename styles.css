@@ -1,70 +1,82 @@
 :root,
 [data-theme="light"] {
-  /* TEMA PRINCIPALE: OPZIONE 2 — GOLDEN SAND & WARM OLIVE (Chiaro, Caldo, Nordico) */
-  --bg-body: #f7f3eb;
+  /* =========================================================================
+     TEMA SPENDIO: SUNNY PASTEL YELLOW, PISTACHIO MINT, FROSTED GLASS & DARK PILL
+     ========================================================================= */
+  --bg-body: #f5f7ef;
   --bg-surface: #ffffff;
-  --bg-surface-elevated: #f0eae0;
-  --bg-glass: rgba(255, 255, 255, 0.92);
-  --text-main: #231f1a;
-  --text-secondary: #6b6052;
-  --text-muted: #9a8d7b;
-  --border-color: rgba(185, 165, 132, 0.26);
-  --border-strong: rgba(170, 145, 108, 0.44);
+  --bg-surface-elevated: #f3f5ec;
+  --bg-sheet: rgba(255, 255, 255, 0.92);
+  --bg-glass: rgba(255, 255, 255, 0.68);
+  --text-main: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #8e8e99;
+  --border-color: rgba(24, 24, 27, 0.07);
+  --border-strong: rgba(24, 24, 27, 0.14);
 
-  /* Accenti Caldi: Miele Dorato (#D97706) & Verde Oliva Caldo (#65A30D) */
-  --primary: #d97706;
-  --primary-hover: #b45309;
-  --primary-soft: rgba(217, 119, 6, 0.13);
+  /* Palette Spendio: Giallo Solare, Lime Pastello, Lilla, Rosa Corallo, Menta, Cielo */
+  --primary: #18181b;
+  --primary-hover: #27272a;
+  --primary-soft: rgba(250, 204, 21, 0.22);
+  --accent-yellow: #facc15;
+  --accent-lime: #a3e635;
+  --accent-mint: #4ade80;
+  --accent-lilac: #c084fc;
+  --accent-pink: #f472b6;
+  --accent-orange: #fb923c;
+  --accent-sky: #60a5fa;
   --accent-olive: #65a30d;
-  --accent-olive-soft: rgba(101, 163, 13, 0.14);
-  --accent-sand: #d4b483;
-  --danger: #e11d48;
-  --danger-soft: rgba(225, 29, 72, 0.12);
-  --warning: #d97706;
-  --warning-soft: rgba(217, 119, 6, 0.14);
-  --success: #65a30d;
-  --success-soft: rgba(101, 163, 13, 0.15);
-  --ring-bg: #ede6d8;
+  --accent-olive-soft: rgba(132, 204, 22, 0.18);
+  --accent-sand: #eab308;
 
-  --shadow-sm: 0 6px 20px rgba(120, 95, 55, 0.06), 0 1px 3px rgba(120, 95, 55, 0.04);
-  --shadow-md: 0 14px 34px rgba(120, 95, 55, 0.11);
-  --shadow-glow: 0 10px 26px rgba(217, 119, 6, 0.25);
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 24px;
-  --radius-xl: 30px;
+  --danger: #e11d48;
+  --danger-soft: rgba(225, 29, 72, 0.11);
+  --warning: #d97706;
+  --warning-soft: rgba(245, 158, 11, 0.16);
+  --success: #16a34a;
+  --success-soft: rgba(74, 222, 128, 0.2);
+  --ring-bg: #eef0e8;
+
+  --shadow-sm: 0 8px 24px rgba(24, 24, 27, 0.05), 0 2px 6px rgba(24, 24, 27, 0.03);
+  --shadow-md: 0 18px 42px rgba(24, 24, 27, 0.09);
+  --shadow-glow: 0 12px 28px rgba(250, 204, 21, 0.32);
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 26px;
+  --radius-xl: 34px;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 [data-theme="dark"] {
-  /* TEMA CALDO SCURO (Warm Espresso, Honey Gold & Olive) */
-  --bg-body: #171411;
-  --bg-surface: #221e19;
-  --bg-surface-elevated: #2d2720;
-  --bg-glass: rgba(34, 30, 25, 0.9);
-  --text-main: #faf6f0;
-  --text-secondary: #cbbba8;
-  --text-muted: #968674;
-  --border-color: rgba(235, 205, 165, 0.12);
-  --border-strong: rgba(235, 205, 165, 0.25);
+  /* TEMA SPENDIO DARK (Obsidian Charcoal, Neon Lime, Warm Gold & Pastel Accents) */
+  --bg-body: #11120f;
+  --bg-surface: #1b1d18;
+  --bg-surface-elevated: #252821;
+  --bg-sheet: rgba(27, 29, 24, 0.95);
+  --bg-glass: rgba(32, 35, 28, 0.78);
+  --text-main: #f8faf5;
+  --text-secondary: #b8c0ae;
+  --text-muted: #7e8775;
+  --border-color: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
 
-  --primary: #f59e0b;
-  --primary-hover: #d97706;
-  --primary-soft: rgba(245, 158, 11, 0.16);
-  --accent-olive: #84cc16;
-  --accent-olive-soft: rgba(132, 204, 22, 0.16);
-  --accent-sand: #c8a97e;
+  --primary: #facc15;
+  --primary-hover: #eab308;
+  --primary-soft: rgba(250, 204, 21, 0.16);
+  --accent-olive: #a3e635;
+  --accent-olive-soft: rgba(163, 230, 53, 0.16);
+  --accent-sand: #facc15;
   --danger: #fb7185;
   --danger-soft: rgba(251, 113, 133, 0.16);
-  --warning: #f59e0b;
-  --warning-soft: rgba(245, 158, 11, 0.16);
-  --success: #84cc16;
-  --success-soft: rgba(132, 204, 22, 0.16);
-  --ring-bg: #352e26;
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.16);
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.16);
+  --ring-bg: #2d3129;
 
-  --shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 10px 28px rgba(245, 158, 11, 0.25);
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 18px 42px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 12px 30px rgba(250, 204, 21, 0.22);
 }
 
 * {
@@ -77,15 +89,24 @@
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-body);
+  /* Gradiente solare superiore Giallo-Pastello -> Verde Menta/Pistacchio come nello screenshot Spendio */
   background-image:
-    radial-gradient(circle at 12% 0%, rgba(217, 119, 6, 0.08), transparent 40%),
-    radial-gradient(circle at 88% 12%, rgba(101, 163, 13, 0.07), transparent 38%);
+    radial-gradient(ellipse 95% 48% at 18% 0%, rgba(244, 219, 94, 0.78) 0%, rgba(238, 229, 138, 0.45) 48%, transparent 80%),
+    radial-gradient(ellipse 90% 48% at 88% 12%, rgba(190, 232, 138, 0.68) 0%, rgba(214, 239, 178, 0.35) 52%, transparent 82%),
+    linear-gradient(180deg, #ece082 0%, #e1ecb6 290px, var(--bg-body) 620px);
   background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.5;
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    radial-gradient(ellipse 90% 42% at 18% 0%, rgba(234, 179, 8, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 85% 42% at 85% 12%, rgba(132, 204, 22, 0.18) 0%, transparent 72%),
+    linear-gradient(180deg, #1f2216 0%, #141610 340px, var(--bg-body) 640px);
 }
 
 .hidden {
@@ -120,7 +141,7 @@ body {
 }
 
 /* =========================================================
-   1. SCHERMATA DI LOGIN / REGISTRAZIONE (Golden Sand & Olive)
+   1. SCHERMATA DI LOGIN / REGISTRAZIONE (Stile Spendio App)
    ========================================================= */
 .auth-screen {
   min-height: 100vh;
@@ -134,10 +155,10 @@ body {
 
 .auth-ambient-glow {
   position: fixed;
-  width: 420px;
-  height: 420px;
+  width: 460px;
+  height: 460px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.16) 0%, rgba(101, 163, 13, 0.08) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.35) 0%, rgba(163, 230, 53, 0.22) 50%, transparent 72%);
   top: -120px;
   pointer-events: none;
   z-index: 0;
@@ -158,14 +179,21 @@ body {
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 36px;
   padding: 34px 26px 28px;
   box-shadow: var(--shadow-md);
   margin-top: 36px;
   position: relative;
   z-index: 2;
+}
+
+[data-theme="dark"] .auth-card {
+  background: rgba(27, 29, 24, 0.88);
+  border-color: var(--border-strong);
 }
 
 .auth-brand {
@@ -174,31 +202,43 @@ body {
 }
 
 .auth-logo-circle {
-  width: 68px;
-  height: 68px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #d97706 0%, #65a30d 100%);
+  width: 82px;
+  height: 82px;
+  border-radius: 24px;
+  margin: 0 auto 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.1rem;
-  margin: 0 auto 14px;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 14px 30px rgba(234, 179, 8, 0.35);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
 }
 
 .auth-logo-circle:hover {
-  transform: rotate(-8deg) scale(1.06);
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.spendio-coin-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .auth-brand h1 {
-  font-size: 1.8rem;
+  font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .auth-brand h1 span {
-  background: linear-gradient(135deg, #d97706, #65a30d);
+  background: linear-gradient(135deg, #ca8a04, #4d7c0f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .auth-brand h1 span {
+  background: linear-gradient(135deg, #facc15, #a3e635);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -215,7 +255,7 @@ body {
   gap: 6px;
   background: var(--bg-surface-elevated);
   padding: 5px;
-  border-radius: 16px;
+  border-radius: 999px;
   margin-bottom: 22px;
 }
 
@@ -226,15 +266,20 @@ body {
   font-weight: 700;
   font-size: 0.9rem;
   padding: 11px 12px;
-  border-radius: 12px;
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.22s ease;
 }
 
 .auth-tab.active {
-  background: var(--primary);
+  background: #18181b;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="dark"] .auth-tab.active {
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
 }
 
 .auth-form {
@@ -248,7 +293,7 @@ body {
   border: 1px solid rgba(225, 29, 72, 0.35);
   color: var(--danger);
   padding: 11px 14px;
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -261,24 +306,29 @@ body {
 }
 
 /* =========================================================
-   2. HEADER MINIMALISTA E CALDO
+   2. HEADER TRASLUCIDO E BARRA MESI EDITORIALE SPENDIO
    ========================================================= */
 .app-screen {
-  padding-bottom: 110px;
+  padding-bottom: 116px;
 }
 
 .app-header {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: var(--bg-glass);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .app-header {
+  background: rgba(20, 22, 18, 0.75);
+  border-bottom-color: var(--border-color);
 }
 
 .header-inner {
-  max-width: 820px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 12px 16px;
   display: flex;
@@ -291,19 +341,24 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: transparent;
-  border: 1px solid transparent;
-  padding: 4px 10px 4px 4px;
-  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
   color: var(--text-main);
   font-family: inherit;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+[data-theme="dark"] .user-profile-pill {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-color);
 }
 
 .user-profile-pill:hover {
-  background: var(--bg-surface-elevated);
-  border-color: var(--border-color);
+  background: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 
@@ -312,39 +367,41 @@ body {
 }
 
 .profile-edit-pencil {
-  font-size: 0.78rem;
-  opacity: 0.7;
+  font-size: 0.76rem;
+  opacity: 0.65;
   margin-left: 2px;
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #65a30d, #d97706);
-  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fde047 0%, #86efac 100%);
+  color: #18181b;
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(101, 163, 13, 0.25);
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .user-meta {
   display: flex;
   flex-direction: column;
   line-height: 1.15;
+  text-align: left;
 }
 
 .user-greeting {
-  font-size: 0.73rem;
-  color: var(--text-muted);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
 .user-meta strong {
-  font-size: 0.98rem;
+  font-size: 0.92rem;
   font-weight: 800;
 }
 
@@ -356,23 +413,41 @@ body {
 }
 
 .chip-btn {
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   color: var(--text-main);
-  padding: 7px 11px;
+  padding: 7px 12px;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.77rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+[data-theme="dark"] .chip-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-color);
+}
+
+.chip-circle {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .chip-btn:hover {
   transform: translateY(-1px);
-  border-color: var(--primary);
+  background: #ffffff;
+}
+
+[data-theme="dark"] .chip-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .chip-btn:active {
@@ -380,115 +455,271 @@ body {
 }
 
 .chip-warm {
-  background: var(--primary-soft);
-  border-color: rgba(217, 119, 6, 0.35);
-  color: var(--primary);
+  background: linear-gradient(135deg, #fde047 0%, #bef264 100%);
+  border-color: rgba(255, 255, 255, 0.9);
+  color: #18181b;
 }
 
 .chip-danger {
-  background: var(--danger-soft);
-  border-color: rgba(225, 29, 72, 0.28);
+  background: rgba(255, 241, 242, 0.85);
+  border-color: rgba(225, 29, 72, 0.2);
   color: var(--danger);
 }
 
 /* =========================================================
-   3. HERO BENTO CARD (Stile Opzione 2: Golden Sand & Olive)
+   3. BARRA MESI EDITORIALE & HERO DONUT CARD STILE SPENDIO
    ========================================================= */
 .main-container {
-  max-width: 820px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 18px 16px 32px;
+  padding: 8px 16px 32px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
-.hero-wallet-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  padding: 24px 22px;
+/* Selettore Mese Orizzontale "Aug • September 2024 • Oct" */
+.spendio-month-strip {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 6px 8px 10px;
+  user-select: none;
+}
+
+.spendio-month-side {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: rgba(24, 24, 27, 0.34);
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+[data-theme="dark"] .spendio-month-side {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.spendio-month-side:hover {
   color: var(--text-main);
-  box-shadow: var(--shadow-sm);
+  transform: scale(1.05);
+}
+
+.spendio-month-center {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  color: var(--text-main);
+  transition: transform 0.2s ease;
+}
+
+.spendio-month-center:hover {
+  transform: translateY(-1px);
+}
+
+.spendio-month-title {
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.spendio-month-year {
+  font-size: 0.86rem;
+  font-weight: 700;
+  opacity: 0.65;
+  margin-top: 2px;
+}
+
+/* Hero Card Traslucida in Vetro Satinato */
+.hero-wallet-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 36px;
+  padding: 24px 20px 20px;
+  color: var(--text-main);
+  box-shadow: 0 20px 44px rgba(80, 90, 35, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   position: relative;
   overflow: hidden;
 }
 
-.hero-wallet-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
+[data-theme="dark"] .hero-wallet-card {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
 }
 
-.hero-spend-block {
-  flex: 1;
+.spendio-donut-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spendio-donut-container {
+  position: relative;
+  width: 248px;
+  height: 248px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spendio-donut-svg {
+  width: 240px;
+  height: 240px;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.spendio-donut-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 24;
+}
+
+[data-theme="dark"] .spendio-donut-bg {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.spendio-donut-seg {
+  fill: none;
+  stroke-width: 24;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.55s cubic-bezier(0.22, 1, 0.36, 1), stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06));
+}
+
+.spendio-donut-badges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.spendio-pct-badge {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.67rem;
+  font-weight: 800;
+  color: #18181b;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.spendio-donut-center {
+  position: absolute;
+  inset: 38px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
 }
 
 .hero-wallet-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
-  font-weight: 700;
+  font-weight: 600;
   display: block;
 }
 
 .hero-big-amount {
-  font-size: 2.5rem;
+  font-size: 2.1rem;
   font-weight: 900;
   letter-spacing: -0.04em;
-  line-height: 1.1;
-  margin: 4px 0 6px;
+  line-height: 1.08;
+  margin: 4px 0;
   color: var(--text-main);
 }
 
 .hero-sub-amount {
-  font-size: 0.82rem;
+  font-size: 0.69rem;
   color: var(--text-muted);
   font-weight: 600;
+  line-height: 1.25;
+  max-width: 155px;
 }
 
-/* Barre Verticali Bento (Come nel mockup Opzione 2!) */
-.hero-bento-bars {
+/* Legenda compatta a pallini pastello sotto il Donut */
+.spendio-category-legend {
   display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  padding-left: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  margin-top: 8px;
 }
 
-.bento-bar-col {
-  display: flex;
-  flex-direction: column;
+.spendio-legend-item {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.bento-bar-track {
-  width: 22px;
-  height: 76px;
-  background: var(--bg-surface-elevated);
-  border-radius: 999px;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-  padding: 2px;
-}
-
-.bento-bar-fill {
-  width: 100%;
-  border-radius: 999px;
-  transition: height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  min-height: 14%;
-}
-
-.bar-olive { background: var(--accent-olive); }
-.bar-gold { background: var(--primary); }
-.bar-sand { background: var(--accent-sand); }
-
-.bento-bar-label {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .spendio-legend-item {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-color);
+}
+
+.spendio-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Banner Consiglio Smart Giallo-Verde (Come nello screenshot Spendio!) */
+.spendio-insight-banner {
+  background: linear-gradient(90deg, #fde047 0%, #d9f99d 52%, #a3e635 100%);
+  border-radius: 22px;
+  padding: 10px 15px 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  box-shadow: 0 8px 22px rgba(163, 230, 53, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.spendio-insight-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+}
+
+.spendio-insight-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1a2e05;
+  line-height: 1.35;
 }
 
 .hero-bento-actions-row {
@@ -500,25 +731,35 @@ body {
 .hero-mini-kpis {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 9px;
 }
 
 .mini-kpi {
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
   padding: 11px 12px;
   display: flex;
   flex-direction: column;
   text-align: left;
   color: var(--text-main);
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+[data-theme="dark"] .mini-kpi {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-color);
 }
 
 .mini-kpi:hover {
   transform: translateY(-2px);
-  border-color: var(--primary);
+  background: #ffffff;
+}
+
+[data-theme="dark"] .mini-kpi:hover {
+  background: #2f332a;
 }
 
 .mini-kpi:active {
@@ -526,40 +767,48 @@ body {
 }
 
 .mini-kpi-urgent {
-  background: var(--warning-soft);
-  border-color: rgba(217, 119, 6, 0.28);
+  background: rgba(254, 226, 226, 0.72);
+  border-color: rgba(244, 114, 182, 0.35);
+}
+
+[data-theme="dark"] .mini-kpi-urgent {
+  background: rgba(225, 29, 72, 0.15);
 }
 
 .mini-kpi-saved {
-  background: var(--accent-olive-soft);
-  border-color: rgba(101, 163, 13, 0.25);
+  background: rgba(220, 252, 231, 0.76);
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+[data-theme="dark"] .mini-kpi-saved {
+  background: rgba(74, 222, 128, 0.14);
 }
 
 .mini-kpi-label {
-  font-size: 0.7rem;
+  font-size: 0.69rem;
   color: var(--text-secondary);
   font-weight: 700;
 }
 
 .mini-kpi-val {
-  font-size: 1.08rem;
+  font-size: 1.05rem;
   font-weight: 800;
   margin: 2px 0;
   color: var(--text-main);
 }
 
 .mini-kpi small {
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   color: var(--text-muted);
 }
 
 .btn-hero-add-pill {
   width: 100%;
-  background: var(--primary);
+  background: #18181b;
   color: #ffffff;
   border: none;
-  border-radius: 16px;
-  padding: 13px 18px;
+  border-radius: 999px;
+  padding: 14px 20px;
   font-size: 0.92rem;
   font-weight: 800;
   cursor: pointer;
@@ -567,13 +816,18 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.26);
+  box-shadow: 0 10px 24px rgba(24, 24, 27, 0.18);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
+[data-theme="dark"] .btn-hero-add-pill {
+  background: linear-gradient(135deg, #fde047 0%, #86efac 100%);
+  color: #18181b;
+}
+
 .btn-hero-add-pill:hover {
-  background: var(--primary-hover);
   transform: translateY(-1px);
+  opacity: 0.95;
 }
 
 .btn-hero-add-pill:active {
@@ -581,14 +835,29 @@ body {
 }
 
 /* =========================================================
-   4. BANNER AVVISI URGENTI
+   4. FOGLIO BIANCO SPENDIO & AVVISI URGENTI
    ========================================================= */
+.spendio-white-sheet {
+  background: var(--bg-sheet);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 36px;
+  padding: 20px 18px 26px;
+  margin-top: 16px;
+  box-shadow: 0 16px 40px rgba(24, 24, 27, 0.06);
+}
+
+[data-theme="dark"] .spendio-white-sheet {
+  border-color: var(--border-color);
+}
+
 .urgent-alerts-section {
   background: var(--danger-soft);
-  border: 1px solid rgba(225, 29, 72, 0.3);
-  border-radius: var(--radius-lg);
+  border: 1px solid rgba(225, 29, 72, 0.25);
+  border-radius: 24px;
   padding: 15px 16px;
-  margin-top: 14px;
+  margin-bottom: 16px;
 }
 
 .urgent-header {
@@ -627,7 +896,7 @@ body {
 .urgent-banner-item {
   background: var(--bg-surface);
   border-left: 4px solid var(--danger);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -655,7 +924,7 @@ body {
 }
 
 /* =========================================================
-   5. TOOLBAR HOME PULITA & CARD CON ANELLO CIRCOLARE (Opzione 3)
+   5. TOOLBAR FILTRI & CARD SPENDIO CON CERCHI PASTELLO
    ========================================================= */
 .home-toolbar {
   display: flex;
@@ -663,7 +932,7 @@ body {
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
-  margin: 18px 0 14px;
+  margin: 0 0 16px;
 }
 
 .filter-pills {
@@ -679,34 +948,39 @@ body {
 }
 
 .pill {
-  background: var(--bg-surface);
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   padding: 8px 15px;
   border-radius: 999px;
-  font-size: 0.81rem;
+  font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(120, 95, 55, 0.04);
   transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .pill:hover {
-  border-color: var(--primary);
+  border-color: var(--border-strong);
   color: var(--text-main);
 }
 
 .pill.active {
-  background: var(--primary);
+  background: #18181b;
   border-color: transparent;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 6px 14px rgba(24, 24, 27, 0.16);
+}
+
+[data-theme="dark"] .pill.active {
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
 }
 
 .pill-danger.active {
   background: var(--danger);
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.28);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(225, 29, 72, 0.28);
 }
 
 .search-and-sort-compact {
@@ -719,7 +993,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--bg-surface);
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);
   border-radius: 999px;
   padding: 6px 12px;
@@ -730,12 +1004,12 @@ body {
   border: none;
   color: var(--text-main);
   font-size: 0.82rem;
-  width: 120px;
+  width: 115px;
   outline: none;
 }
 
 #sortSelect {
-  background: var(--bg-surface);
+  background: var(--bg-surface-elevated);
   color: var(--text-main);
   border: 1px solid var(--border-color);
   border-radius: 999px;
@@ -746,21 +1020,21 @@ body {
   cursor: pointer;
 }
 
-/* LISTA CARD ABBONAMENTI CON ANELLO CIRCOLARE DI SCADENZA (Opzione 2 + Opzione 3) */
+/* LISTA CARD STILE SPENDIO (Shopping / Entertainment / Restaurants look!) */
 .items-grid {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .sub-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 26px;
-  padding: 18px 20px;
+  border-radius: 28px;
+  padding: 16px 18px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 6px 20px rgba(24, 24, 27, 0.04);
   cursor: pointer;
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, box-shadow 0.22s ease;
 }
@@ -768,12 +1042,16 @@ body {
 .sub-card:hover {
   transform: translateY(-2px);
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .sub-card.must-cancel-card {
-  border-color: rgba(225, 29, 72, 0.4);
-  background: linear-gradient(180deg, rgba(225, 29, 72, 0.04) 0%, var(--bg-surface) 100%);
+  border-color: rgba(225, 29, 72, 0.35);
+  background: linear-gradient(180deg, rgba(254, 226, 226, 0.35) 0%, var(--bg-surface) 100%);
+}
+
+[data-theme="dark"] .sub-card.must-cancel-card {
+  background: linear-gradient(180deg, rgba(225, 29, 72, 0.1) 0%, var(--bg-surface) 100%);
 }
 
 .card-head {
@@ -791,17 +1069,18 @@ body {
   flex: 1;
 }
 
+/* Icona Circolare Pastello Stile Spendio */
 .service-avatar {
   width: 54px;
   height: 54px;
-  border-radius: 18px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.55rem;
-  color: #ffffff;
+  font-size: 1.5rem;
+  color: #18181b;
   flex-shrink: 0;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .service-main-meta {
@@ -814,15 +1093,22 @@ body {
 .service-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   flex-wrap: wrap;
 }
 
 .service-title {
-  font-size: 1.1rem;
+  font-size: 1.06rem;
   font-weight: 800;
   line-height: 1.2;
   color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.card-date-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 .card-price-inline {
@@ -830,81 +1116,85 @@ body {
   align-items: baseline;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 2px;
 }
 
 .card-price {
-  font-size: 1.05rem;
+  font-size: 1.32rem;
   font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--text-main);
 }
 
 .card-cycle {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+  font-size: 0.74rem;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
 .card-manage-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 7px;
-  padding: 5px 13px;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 3px 10px;
   border-radius: 999px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-color);
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--text-secondary);
   width: fit-content;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.sub-card:hover .card-manage-pill {
-  border-color: var(--primary);
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .sub-card.expanded .card-manage-pill {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: #18181b;
   color: #ffffff;
 }
 
-/* COLONNA DESTRA CON ANELLO CIRCOLARE DI SCADENZA (Opzione 3!) */
+[data-theme="dark"] .sub-card.expanded .card-manage-pill {
+  background: var(--accent-yellow);
+  color: #18181b;
+}
+
+/* Colonna destra Spendio: Prezzo grande + Anello Scadenza compatto */
 .card-right-col {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  gap: 12px;
   flex-shrink: 0;
+}
+
+.card-right-price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
 }
 
 .card-countdown-ring {
   position: relative;
-  width: 68px;
-  height: 68px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .progress-ring-svg {
-  width: 68px;
-  height: 68px;
+  width: 56px;
+  height: 56px;
   transform: rotate(-90deg);
 }
 
 .progress-ring-track {
   fill: none;
   stroke: var(--ring-bg);
-  stroke-width: 5.5;
+  stroke-width: 5;
 }
 
 .progress-ring-value {
   fill: none;
-  stroke-width: 5.5;
+  stroke-width: 5;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
 }
@@ -917,31 +1207,30 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  line-height: 1.05;
+  line-height: 1;
   pointer-events: none;
 }
 
 .ring-days-num {
-  font-size: 1.15rem;
+  font-size: 0.96rem;
   font-weight: 900;
   color: var(--text-main);
   letter-spacing: -0.03em;
 }
 
 .ring-days-unit {
-  font-size: 0.56rem;
+  font-size: 0.48rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
   margin-top: 1px;
 }
 
 .ring-renews-date {
-  font-size: 0.69rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--text-secondary);
-  text-align: center;
+  color: var(--text-muted);
 }
 
 /* Cassetto dettagli che si apre con un tocco sulla card */
@@ -962,13 +1251,13 @@ body {
   color: var(--text-secondary);
   background: var(--bg-surface-elevated);
   padding: 4px 10px;
-  border-radius: 8px;
+  border-radius: 999px;
   display: inline-block;
   margin-bottom: 8px;
 }
 
 .tag {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 800;
   padding: 3px 9px;
   border-radius: 999px;
@@ -977,15 +1266,15 @@ body {
 }
 
 .tag-must-cancel { background: var(--danger-soft); color: var(--danger); }
-.tag-bill { background: var(--warning-soft); color: var(--primary); }
-.tag-sub { background: var(--accent-olive-soft); color: var(--accent-olive); }
+.tag-bill { background: rgba(244, 114, 182, 0.16); color: #db2777; }
+.tag-sub { background: rgba(192, 132, 252, 0.18); color: #9333ea; }
 .tag-cancelled { background: rgba(148, 163, 184, 0.16); color: var(--text-muted); }
 
 .cancel-limit-callout {
   background: var(--primary-soft);
-  border-left: 3px solid var(--primary);
+  border-left: 3px solid #eab308;
   padding: 8px 11px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 0.79rem;
   color: var(--text-main);
   margin: 8px 0;
@@ -996,7 +1285,7 @@ body {
   color: var(--text-secondary);
   background: var(--bg-surface-elevated);
   padding: 8px 11px;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 10px;
 }
 
@@ -1019,7 +1308,7 @@ body {
    6. SCHERMATA "COLLEGA SERVIZI" & CATALOGO INTERATTIVO
    ========================================================= */
 .proposals-strip-section {
-  background: var(--bg-surface);
+  background: var(--bg-sheet);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: 22px 20px;
@@ -1052,7 +1341,7 @@ body {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  padding: 8px 14px;
+  padding: 8px 15px;
   border-radius: 999px;
   font-size: 0.81rem;
   font-weight: 700;
@@ -1062,10 +1351,15 @@ body {
 }
 
 .preset-tab.active {
-  background: var(--primary);
+  background: #18181b;
   color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="dark"] .preset-tab.active {
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
 }
 
 .proposals-grid {
@@ -1075,27 +1369,28 @@ body {
 }
 
 .proposal-card {
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 18px;
+  border-radius: 24px;
   padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 14px;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .proposal-card:hover {
   transform: translateY(-4px) scale(1.01);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
 }
 
 .proposal-card.is-already-connected {
-  border-color: rgba(101, 163, 13, 0.45);
-  background: var(--accent-olive-soft);
+  border-color: rgba(74, 222, 128, 0.55);
+  background: var(--success-soft);
 }
 
 .proposal-top {
@@ -1105,9 +1400,9 @@ body {
 }
 
 .brand-badge-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1115,7 +1410,7 @@ body {
   font-size: 0.92rem;
   color: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
 }
 
 .proposal-info h4 {
@@ -1139,7 +1434,7 @@ body {
 }
 
 /* =========================================================
-   7. BARRA DI NAVIGAZIONE FLUTTUANTE A PILLOLA (Opzione 2!)
+   7. BARRA DI NAVIGAZIONE SCURA A PILLOLA STILE SPENDIO
    ========================================================= */
 .bottom-nav {
   position: fixed;
@@ -1147,61 +1442,76 @@ body {
   left: 14px;
   right: 14px;
   z-index: 60;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  background: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  max-width: 560px;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
   border-radius: 999px;
-  box-shadow: 0 12px 32px rgba(95, 75, 40, 0.14);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
 }
 
 .bottom-nav-item {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.58);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  font-size: 0.72rem;
+  gap: 2px;
+  font-size: 0.64rem;
   font-weight: 700;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 2px 6px;
+  min-width: 62px;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.bottom-nav-item.active {
-  color: var(--accent-olive);
-  transform: translateY(-2px);
-}
-
-.nav-icon {
-  font-size: 1.25rem;
-}
-
-.bottom-nav-fab {
-  width: 50px;
-  height: 50px;
+.nav-icon-circle {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, transform 0.2s ease;
+}
+
+.bottom-nav-item.active {
   color: #ffffff;
+}
+
+/* Cerchio bianco attivo come l'icona Home nello screenshot Spendio! */
+.bottom-nav-item.active .nav-icon-circle {
+  background: #ffffff;
+  color: #18181b;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.22);
+  transform: scale(1.04);
+}
+
+/* Pulsante centrale + con gradiente Giallo -> Verde Menta stile Spendio! */
+.bottom-nav-fab {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fde047 0%, #86efac 100%);
+  color: #18181b;
   border: none;
-  font-size: 1.6rem;
-  font-weight: 800;
+  font-size: 1.65rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.36);
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+  flex-shrink: 0;
+  box-shadow: 0 8px 22px rgba(163, 230, 53, 0.38);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bottom-nav-fab:hover {
-  background: var(--primary-hover);
   transform: scale(1.08);
 }
 
@@ -1217,9 +1527,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 15px;
-  border-radius: var(--radius-sm);
-  font-size: 0.86rem;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
@@ -1231,28 +1541,33 @@ body {
 
 .btn:active { transform: scale(0.97); }
 .btn-block { width: 100%; }
-.btn-lg { padding: 13px 20px; font-size: 0.96rem; border-radius: 14px; }
-.btn-sm { padding: 7px 12px; font-size: 0.8rem; border-radius: 10px; }
-.btn-xs { padding: 5px 10px; font-size: 0.75rem; border-radius: 9px; }
+.btn-lg { padding: 13px 20px; font-size: 0.95rem; border-radius: 999px; }
+.btn-sm { padding: 7px 13px; font-size: 0.79rem; border-radius: 999px; }
+.btn-xs { padding: 5px 11px; font-size: 0.74rem; border-radius: 999px; }
 
 .btn-primary {
-  background: var(--primary);
+  background: #18181b;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.26);
+  box-shadow: 0 6px 16px rgba(24, 24, 27, 0.18);
 }
 .btn-primary:hover {
-  background: var(--primary-hover);
+  background: #27272a;
+}
+
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
 }
 
 .btn-danger { background: var(--danger); color: #fff; }
-.btn-success { background: var(--accent-olive); color: #fff; }
+.btn-success { background: #16a34a; color: #fff; }
 .btn-ghost { background: transparent; border-color: var(--border-color); color: var(--text-secondary); }
 .btn-outline { background: var(--bg-surface); border-color: var(--border-strong); }
 
 .service-plan-box {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-strong);
-  border-radius: 16px;
+  border-radius: 22px;
   padding: 15px;
   margin-bottom: 16px;
 }
@@ -1275,8 +1590,8 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-strong);
   color: var(--text-main);
-  padding: 8px 13px;
-  border-radius: 11px;
+  padding: 8px 14px;
+  border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
@@ -1285,24 +1600,31 @@ body {
 
 .plan-option-btn:hover,
 .plan-option-btn.selected {
-  background: var(--primary);
+  background: #18181b;
   border-color: transparent;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="dark"] .plan-option-btn:hover,
+[data-theme="dark"] .plan-option-btn.selected {
+  background: var(--accent-yellow);
+  color: #18181b;
 }
 
 /* Empty State */
 .empty-state {
   background: var(--bg-surface);
   border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-xl);
-  padding: 40px 24px;
+  border-radius: 28px;
+  padding: 36px 22px;
   text-align: center;
 }
 
 .empty-illustration {
-  font-size: 3rem;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
 }
 
 .empty-state h3 {
@@ -1327,17 +1649,17 @@ body {
 /* Calendar & History */
 .calendar-card,
 .history-card {
-  background: var(--bg-surface);
+  background: var(--bg-sheet);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  padding: 20px;
+  border-radius: 34px;
+  padding: 22px 20px;
   box-shadow: var(--shadow-sm);
 }
 
 .calendar-interactive-banner {
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
+  background: linear-gradient(90deg, rgba(253, 224, 71, 0.35) 0%, rgba(163, 230, 53, 0.3) 100%);
+  border: 1px solid rgba(163, 230, 53, 0.45);
+  border-radius: 24px;
   padding: 14px 16px;
   margin-bottom: 18px;
   display: flex;
@@ -1397,9 +1719,9 @@ body {
 }
 
 .cal-day {
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
+  border-radius: 16px;
   min-height: 82px;
   padding: 6px;
   font-size: 0.75rem;
@@ -1412,8 +1734,7 @@ body {
 }
 
 .cal-day.clickable-day:hover {
-  border-color: var(--primary);
-  background: var(--bg-surface);
+  border-color: var(--border-strong);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -1428,7 +1749,7 @@ body {
 .cal-day-add-hint {
   font-size: 0.72rem;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--text-main);
   opacity: 0.35;
   transition: opacity 0.16s ease, transform 0.16s ease;
 }
@@ -1440,9 +1761,13 @@ body {
 
 .cal-day.is-today,
 .cal-day.today {
-  border-color: var(--primary);
-  box-shadow: inset 0 0 0 1.5px var(--primary);
-  background: var(--primary-soft);
+  border-color: #84cc16;
+  box-shadow: inset 0 0 0 1.5px #84cc16;
+  background: rgba(217, 249, 157, 0.35);
+}
+
+[data-theme="dark"] .cal-day.is-today {
+  background: rgba(163, 230, 53, 0.14);
 }
 
 .cal-day.other-month {
@@ -1457,8 +1782,8 @@ body {
   font-size: 0.67rem;
   font-weight: 700;
   padding: 3px 6px;
-  border-radius: 7px;
-  background: var(--bg-surface);
+  border-radius: 8px;
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   margin-bottom: 3px;
@@ -1475,29 +1800,29 @@ body {
 }
 
 .cal-event.is-birthday {
-  background: var(--primary-soft);
-  border-color: rgba(217, 119, 6, 0.4);
-  color: var(--primary);
+  background: rgba(244, 114, 182, 0.18);
+  border-color: rgba(244, 114, 182, 0.4);
+  color: #db2777;
 }
 
 .cal-event.is-event {
-  background: var(--accent-olive-soft);
-  border-color: rgba(101, 163, 13, 0.4);
-  color: var(--accent-olive);
+  background: rgba(96, 165, 250, 0.18);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #2563eb;
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .history-row,
 .history-item {
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 12px 15px;
+  border-radius: 20px;
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1508,8 +1833,8 @@ body {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(12, 8, 5, 0.76);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 16, 14, 0.68);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1524,7 +1849,7 @@ body {
   overflow-y: auto;
   background: var(--bg-surface);
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-xl);
+  border-radius: 34px;
   box-shadow: var(--shadow-md);
   animation: warmFadeSlideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1546,8 +1871,8 @@ body {
   background: var(--bg-surface-elevated);
   border: none;
   color: var(--text-secondary);
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1rem;
@@ -1567,7 +1892,7 @@ body {
 .type-radio-card {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 11px 13px;
   display: flex;
   align-items: center;
@@ -1577,7 +1902,7 @@ body {
 }
 
 .type-radio-card:hover {
-  border-color: var(--primary);
+  border-color: var(--border-strong);
 }
 
 .type-radio-card strong {
@@ -1603,33 +1928,33 @@ body {
 }
 
 .event-quick-chip:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: #18181b;
+  border-color: #18181b;
   color: #ffffff;
 }
 
 .cal-sync-check-box {
   background: var(--accent-olive-soft);
   border: 1px solid rgba(101, 163, 13, 0.35);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 11px 14px;
   margin-bottom: 12px;
 }
 
 .tag-birthday {
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: rgba(244, 114, 182, 0.18);
+  color: #db2777;
 }
 
 .tag-event {
-  background: var(--accent-olive-soft);
-  color: var(--accent-olive);
+  background: rgba(96, 165, 250, 0.18);
+  color: #2563eb;
 }
 
 .anti-renewal-Highlight {
   background: var(--danger-soft);
   border: 1px solid rgba(225, 29, 72, 0.35);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 12px 14px;
   margin-bottom: 14px;
 }
@@ -1644,7 +1969,7 @@ body {
 .checkbox-switch input {
   margin-top: 4px;
   transform: scale(1.25);
-  accent-color: var(--primary);
+  accent-color: #18181b;
 }
 
 .switch-text strong {
@@ -1679,7 +2004,7 @@ body {
 .form-group textarea {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-strong);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 10px 12px;
   color: var(--text-main);
   font-size: 0.88rem;
@@ -1691,7 +2016,7 @@ body {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: var(--primary);
+  border-color: #18181b;
 }
 
 .input-with-icon {
@@ -1731,10 +2056,10 @@ body {
 .badge-sync {
   font-size: 0.7rem;
   font-weight: 800;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: linear-gradient(135deg, #fde047, #bef264);
+  color: #18181b;
 }
 
 /* =========================================================
@@ -1746,10 +2071,10 @@ body {
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  background: var(--bg-surface);
+  background: var(--bg-sheet);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  padding: 20px 22px;
+  border-radius: 34px;
+  padding: 22px;
   margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
 }
@@ -1768,13 +2093,13 @@ body {
 }
 
 .gmail-pill-tag {
-  background: var(--primary);
-  color: #ffffff;
+  background: linear-gradient(135deg, #fde047, #a3e635);
+  color: #18181b;
   font-size: 0.7rem;
   font-weight: 800;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 999px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 
 .gmail-status-pill {
@@ -1789,8 +2114,8 @@ body {
 
 .gmail-status-pill.connected {
   background: var(--success-soft);
-  border-color: rgba(16, 185, 129, 0.45);
-  color: #34d399;
+  border-color: rgba(22, 163, 74, 0.4);
+  color: var(--success);
 }
 
 .gmail-auto-left h3 {
@@ -1814,8 +2139,8 @@ body {
 .gmail-guide-box {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-strong);
-  border-left: 4px solid var(--primary);
-  border-radius: 14px;
+  border-left: 4px solid #eab308;
+  border-radius: 16px;
   padding: 12px 14px;
   margin-top: 10px;
   font-size: 0.83rem;
@@ -1830,7 +2155,7 @@ body {
 /* Toast */
 .toast-container {
   position: fixed;
-  bottom: 88px;
+  bottom: 92px;
   right: 16px;
   left: 16px;
   z-index: 250;
@@ -1842,14 +2167,14 @@ body {
 }
 
 .toast {
-  background: var(--bg-surface-elevated);
-  color: var(--text-main);
-  border: 1px solid var(--border-strong);
-  border-left: 4px solid var(--primary);
+  background: #18181b;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 4px solid #fde047;
   padding: 12px 16px;
-  border-radius: 14px;
+  border-radius: 18px;
   box-shadow: var(--shadow-md);
-  font-size: 0.86rem;
+  font-size: 0.85rem;
   font-weight: 700;
   max-width: 420px;
   width: 100%;
@@ -1863,7 +2188,9 @@ body {
   .form-type-selector {
     grid-template-columns: 1fr;
   }
-  .hero-big-amount { font-size: 2rem; }
+  .spendio-month-title { font-size: 2rem; }
+  .spendio-month-side { font-size: 1.3rem; }
+  .hero-big-amount { font-size: 1.95rem; }
   .proposals-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); }
   .gmail-auto-actions { width: 100%; }
   .gmail-auto-actions .btn { flex: 1; }

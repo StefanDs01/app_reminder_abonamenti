@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#F7F3EB" />
+  <meta name="theme-color" content="#EDE38C" />
   <meta name="description" content="ScadenzApp — Gestisci i tuoi abbonamenti reali (Netflix, Disney+, prove di 1 mese), bollette e bollo auto." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ScadenzApp" />
   <title>ScadenzApp — I Tuoi Abbonamenti &amp; Scadenze</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=12" />
-  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="manifest" href="./manifest.webmanifest?v=13" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=13" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./styles.css?v=12" />
+  <link rel="stylesheet" href="./styles.css?v=13" />
 </head>
 <body>
 
   <!-- =====================================================================
-       1. SCHERMATA DI LOGIN / REGISTRAZIONE (Golden Sand & Warm Olive)
+       1. SCHERMATA DI LOGIN / REGISTRAZIONE (Spendio Pastel Yellow & Lime)
        ===================================================================== -->
   <div id="authScreen" class="auth-screen">
     <div class="auth-ambient-glow"></div>
@@ -31,7 +31,9 @@
 
     <div class="auth-card">
       <div class="auth-brand">
-        <div class="auth-logo-circle">🔔</div>
+        <div class="auth-logo-circle">
+          <img src="./icon.svg?v=13" alt="ScadenzApp Coin Mascot" class="spendio-coin-img" />
+        </div>
         <h1>Scadenz<span>App</span></h1>
         <p id="txtAuthWelcomeSub">
           Gestisci i tuoi abbonamenti reali, evita i rinnovi dimenticati e controlla bollette e bollo auto.
@@ -68,10 +70,10 @@
   </div>
 
   <!-- =====================================================================
-       2. APPLICAZIONE PRINCIPALE (Golden Sand & Olive + Anelli Circolari)
+       2. APPLICAZIONE PRINCIPALE (Design Spendio: Pastel Yellow-Mint, Donut & Dark Nav)
        ===================================================================== -->
   <div id="appScreen" class="app-screen hidden">
-    <!-- HEADER MINIMALISTA E CALDO -->
+    <!-- HEADER STILE SPENDIO -->
     <header class="app-header">
       <div class="header-inner">
         <button type="button" class="user-profile-pill" id="btnEditProfileName" title="Tocca per cambiare il tuo nome profilo">
@@ -89,9 +91,9 @@
           </button>
           <button type="button" class="chip-btn" id="btnLangToggle" title="IT / RO">🇮🇹 IT</button>
           <button type="button" class="chip-btn" id="btnCurrencyToggle" title="EUR / RON">💶 EUR</button>
-          <button type="button" class="chip-btn" id="btnNotificationStatus" title="Notifiche">🔔</button>
-          <button type="button" class="chip-btn" id="btnThemeToggle" title="Tema Caldo Chiaro / Scuro">🌙</button>
-          <button type="button" class="chip-btn chip-danger" id="btnLogout" title="Esci">
+          <button type="button" class="chip-btn chip-circle" id="btnNotificationStatus" title="Notifiche">🔔</button>
+          <button type="button" class="chip-btn chip-circle" id="btnThemeToggle" title="Tema Chiaro / Scuro">🌙</button>
+          <button type="button" class="chip-btn chip-danger chip-circle" id="btnLogout" title="Esci">
             <span id="txtLogoutBtn">🚪</span>
           </button>
         </div>
@@ -100,38 +102,64 @@
 
     <main class="main-container">
 
-      <!-- ================= VISTA 1: HOME — SOLO I TUOI ABBONAMENTI ATTIVI ================= -->
+      <!-- ================= VISTA 1: HOME — STILE SPENDIO ================= -->
       <section id="viewList" class="view-section view-animate">
-        <!-- HERO BENTO CARD (Stile Opzione 2: Golden Sand & Warm Olive) -->
+
+        <!-- BARRA MESI EDITORIALE STILE SPENDIO (es. Set • Ottobre 2026 • Nov) -->
+        <div class="spendio-month-strip" aria-label="Selettore Mese">
+          <button type="button" class="spendio-month-side" id="btnHeroPrevMonth">Set</button>
+          <button type="button" class="spendio-month-center" id="btnHeroCurrentMonth" data-quick-nav="calendar" title="Vai al Calendario">
+            <span class="spendio-month-title" id="heroMonthName">Ottobre</span>
+            <sup class="spendio-month-year" id="heroMonthYear">2026</sup>
+          </button>
+          <button type="button" class="spendio-month-side" id="btnHeroNextMonth">Nov</button>
+        </div>
+
+        <!-- HERO CARD GLASSMORPHISM CON GRAFICO DONUT PASTELLO STILE SPENDIO -->
         <div class="hero-wallet-card">
-          <div class="hero-wallet-top">
-            <div class="hero-spend-block">
-              <span class="hero-wallet-label" id="txtHeroMonthlyTitle">Spesa Mensile Attiva</span>
-              <div class="hero-big-amount" id="kpiMonthlySubs">€ 0,00</div>
-              <span class="hero-sub-amount" id="kpiYearlySubs">Proiezione annua: € 0,00</span>
+          <div class="spendio-donut-stage">
+            <div class="spendio-donut-container">
+              <!-- Grafico a Ciambella Multi-Segmento Arrotondato -->
+              <svg class="spendio-donut-svg" id="spendioDonutSvg" viewBox="0 0 240 240" aria-hidden="true">
+                <circle class="spendio-donut-bg" cx="120" cy="120" r="88" />
+                <g id="spendioDonutSegments"></g>
+              </svg>
+
+              <!-- Pillole Percentuali Attorno alla Ciambella (5%, 10%, 18%, 25%, 30%) -->
+              <div class="spendio-donut-badges" id="spendioDonutBadges" aria-hidden="true"></div>
+
+              <!-- Totale Spese al Centro della Ciambella -->
+              <div class="spendio-donut-center">
+                <span class="hero-wallet-label" id="txtHeroMonthlyTitle">Spesa Mensile Attiva</span>
+                <div class="hero-big-amount" id="kpiMonthlySubs">€ 0,00</div>
+                <span class="hero-sub-amount" id="kpiYearlySubs">Proiezione annua: € 0,00</span>
+              </div>
             </div>
 
-            <!-- Mini grafico a barre verticale stile Opzione 2 -->
-            <div class="hero-bento-bars" aria-hidden="true">
+            <!-- Legenda Categorie Compatta + Barre nascoste per compatibilità -->
+            <div class="spendio-category-legend" id="spendioCategoryLegend"></div>
+            <div class="hero-bento-bars hidden" aria-hidden="true">
               <div class="bento-bar-col">
-                <div class="bento-bar-track">
-                  <div class="bento-bar-fill bar-olive" id="barFillStreaming" style="height: 65%;"></div>
-                </div>
+                <div class="bento-bar-track"><div class="bento-bar-fill bar-olive" id="barFillStreaming" style="height: 65%;"></div></div>
                 <span class="bento-bar-label" id="lblBarStreaming">Media</span>
               </div>
               <div class="bento-bar-col">
-                <div class="bento-bar-track">
-                  <div class="bento-bar-fill bar-gold" id="barFillBills" style="height: 35%;"></div>
-                </div>
+                <div class="bento-bar-track"><div class="bento-bar-fill bar-gold" id="barFillBills" style="height: 35%;"></div></div>
                 <span class="bento-bar-label" id="lblBarBills">Bollette</span>
               </div>
               <div class="bento-bar-col">
-                <div class="bento-bar-track">
-                  <div class="bento-bar-fill bar-sand" id="barFillOther" style="height: 45%;"></div>
-                </div>
+                <div class="bento-bar-track"><div class="bento-bar-fill bar-sand" id="barFillOther" style="height: 45%;"></div></div>
                 <span class="bento-bar-label" id="lblBarOther">Servizi</span>
               </div>
             </div>
+          </div>
+
+          <!-- BANNER CONSIGLIO SMART GIALLO-VERDE STILE SPENDIO -->
+          <div class="spendio-insight-banner" id="spendioInsightBanner">
+            <div class="spendio-insight-icon" id="spendioInsightIcon">💡</div>
+            <p class="spendio-insight-text" id="spendioInsightText">
+              Che ne dici di controllare le prossime scadenze e rilassarti un po' ora? 😉
+            </p>
           </div>
 
           <div class="hero-bento-actions-row">
@@ -160,63 +188,68 @@
           </div>
         </div>
 
-        <!-- BANNER AVVISI URGENTI (Visibile solo quando c'è davvero una scadenza imminente) -->
-        <div id="urgentAlertsSection" class="urgent-alerts-section hidden" aria-live="polite">
-          <div class="urgent-header">
-            <div class="urgent-title">
-              <span class="pulse-dot"></span>
-              <h2 id="urgentSectionTitle">🚨 In Scadenza</h2>
+        <!-- FOGLIO BIANCO STILE SPENDIO CON LISTA CARD ARROTONDATE -->
+        <div class="spendio-white-sheet">
+          <!-- BANNER AVVISI URGENTI (Visibile solo quando c'è davvero una scadenza imminente) -->
+          <div id="urgentAlertsSection" class="urgent-alerts-section hidden" aria-live="polite">
+            <div class="urgent-header">
+              <div class="urgent-title">
+                <span class="pulse-dot"></span>
+                <h2 id="urgentSectionTitle">🚨 In Scadenza</h2>
+              </div>
+              <button type="button" class="btn btn-xs btn-outline" id="btnTriggerBrowserNotif">🔔 Testa</button>
             </div>
-            <button type="button" class="btn btn-xs btn-outline" id="btnTriggerBrowserNotif">🔔 Testa</button>
-          </div>
-          <div id="urgentAlertsList" class="urgent-alerts-grid"></div>
-        </div>
-
-        <!-- FILTRI MORBIDI SCORREVOLI + RICERCA COMPATTA -->
-        <div class="home-toolbar">
-          <div class="filter-pills" id="categoryFilterPills">
-            <button type="button" class="pill active" data-filter="all" id="txtFilterAll">Tutti</button>
-            <button type="button" class="pill pill-danger" data-filter="must-cancel">
-              <span id="txtFilterMustCancel">🛑 Da Disdire</span> (<span id="countMustCancel">0</span>)
-            </button>
-            <button type="button" class="pill" data-filter="events">
-              <span id="txtFilterEvents">🎂 Compleanni &amp; Eventi</span> (<span id="countEvents">0</span>)
-            </button>
-            <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
-            <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette</button>
-            <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Auto</button>
-            <button type="button" class="pill" data-filter="cancelled" id="txtFilterCancelled">✂️ Disdetti</button>
+            <div id="urgentAlertsList" class="urgent-alerts-grid"></div>
           </div>
 
-          <div class="search-and-sort-compact">
-            <div class="search-box">
-              <span>🔍</span>
-              <input type="search" id="searchInput" placeholder="Cerca..." />
+          <!-- FILTRI MORBIDI SCORREVOLI + RICERCA COMPATTA -->
+          <div class="home-toolbar">
+            <div class="filter-pills" id="categoryFilterPills">
+              <button type="button" class="pill active" data-filter="all" id="txtFilterAll">Tutti</button>
+              <button type="button" class="pill pill-danger" data-filter="must-cancel">
+                <span id="txtFilterMustCancel">🛑 Da Disdire</span> (<span id="countMustCancel">0</span>)
+              </button>
+              <button type="button" class="pill" data-filter="events">
+                <span id="txtFilterEvents">🎂 Compleanni &amp; Eventi</span> (<span id="countEvents">0</span>)
+              </button>
+              <button type="button" class="pill" data-filter="subscriptions" id="txtFilterSubs">🎬 Abbonamenti</button>
+              <button type="button" class="pill" data-filter="bills" id="txtFilterBills">⚡ Bollette</button>
+              <button type="button" class="pill" data-filter="auto" id="txtFilterAuto">🚗 Auto</button>
+              <button type="button" class="pill" data-filter="cancelled" id="txtFilterCancelled">✂️ Disdetti</button>
             </div>
-            <select id="sortSelect" aria-label="Ordina per">
-              <option value="dueDateAsc" id="optSortDueDate">⏳ Scadenza</option>
-              <option value="cancelFirst" id="optSortCancelFirst">🛑 Da Disdire</option>
-              <option value="priceDesc" id="optSortPriceDesc">💶 Prezzo</option>
-              <option value="nameAsc" id="optSortNameAsc">🔤 A-Z</option>
-            </select>
+
+            <div class="search-and-sort-compact">
+              <div class="search-box">
+                <span>🔍</span>
+                <input type="search" id="searchInput" placeholder="Cerca..." />
+              </div>
+              <select id="sortSelect" aria-label="Ordina per">
+                <option value="dueDateAsc" id="optSortDueDate">⏳ Scadenza</option>
+                <option value="cancelFirst" id="optSortCancelFirst">🛑 Da Disdire</option>
+                <option value="priceDesc" id="optSortPriceDesc">💶 Prezzo</option>
+                <option value="nameAsc" id="optSortNameAsc">🔤 A-Z</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <h2 id="txtMyActiveTitle" class="sr-only">📋 I Tuoi Abbonamenti</h2>
+          <h2 id="txtMyActiveTitle" class="sr-only">📋 I Tuoi Abbonamenti</h2>
 
-        <!-- LISTA DEGLI ABBONAMENTI (Card interattive che si espandono al tocco!) -->
-        <div id="itemsGrid" class="items-grid"></div>
+          <!-- LISTA DEGLI ABBONAMENTI (Card Spendio bianche che si espandono al tocco!) -->
+          <div id="itemsGrid" class="items-grid"></div>
 
-        <!-- STATO VUOTO ACCOGLIENTE (Quando hai 0 abbonamenti) -->
-        <div id="emptyState" class="empty-state hidden">
-          <div class="empty-illustration">🌅</div>
-          <h3 id="txtEmptyTitle">Il tuo spazio è ancora vuoto</h3>
-          <p id="txtEmptyDesc">Collega i tuoi abbonamenti (Netflix, Disney+, Spotify, Bollette) o aggiungi compleanni, voli e appuntamenti per ricevere promemoria puntuali.</p>
-          <div class="empty-actions">
-            <button type="button" class="btn btn-primary btn-lg" id="btnEmptyGoConnect">✨ Esplora e Collega Servizi</button>
-            <button type="button" class="btn btn-outline" id="btnEmptyAddBirthday">🎂 Aggiungi Compleanno / Evento</button>
-            <button type="button" class="btn btn-outline" id="btnEmptyConnectGmail">📧 Auto-Import da Gmail</button>
-            <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Crea Manualmente</button>
+          <!-- STATO VUOTO ACCOGLIENTE (Quando hai 0 abbonamenti) -->
+          <div id="emptyState" class="empty-state hidden">
+            <div class="empty-illustration">
+              <img src="./icon.svg?v=13" alt="Spendio Mascot" style="width: 68px; height: 68px; border-radius: 18px;" />
+            </div>
+            <h3 id="txtEmptyTitle">Il tuo spazio è ancora vuoto</h3>
+            <p id="txtEmptyDesc">Collega i tuoi abbonamenti (Netflix, Disney+, Spotify, Bollette) o aggiungi compleanni, voli e appuntamenti per ricevere promemoria puntuali.</p>
+            <div class="empty-actions">
+              <button type="button" class="btn btn-primary btn-lg" id="btnEmptyGoConnect">✨ Esplora e Collega Servizi</button>
+              <button type="button" class="btn btn-outline" id="btnEmptyAddBirthday">🎂 Aggiungi Compleanno / Evento</button>
+              <button type="button" class="btn btn-outline" id="btnEmptyConnectGmail">📧 Auto-Import da Gmail</button>
+              <button type="button" class="btn btn-ghost" id="btnEmptyAdd">＋ Crea Manualmente</button>
+            </div>
           </div>
         </div>
       </section>
@@ -319,25 +352,50 @@
       </section>
     </main>
 
-    <!-- BARRA DI NAVIGAZIONE FISSA IN BASSO (Stile App Mobile Fluida) -->
+    <!-- BARRA DI NAVIGAZIONE SCURA A PILLOLA STILE SPENDIO -->
     <nav class="bottom-nav" aria-label="Navigazione principale">
       <button type="button" class="bottom-nav-item active" data-nav="list">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-9.5z" />
+          </svg>
+        </span>
         <span class="nav-label"><span id="txtNavMySubsLabel">I Miei</span> (<span id="countAllActive">0</span>)</span>
       </button>
       <button type="button" class="bottom-nav-item" data-nav="connect">
-        <span class="nav-icon">✨</span>
+        <span class="nav-icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="8" y1="6" x2="21" y2="6" />
+            <line x1="8" y1="12" x2="21" y2="12" />
+            <line x1="8" y1="18" x2="21" y2="18" />
+            <circle cx="4" cy="6" r="1.5" fill="currentColor" />
+            <circle cx="4" cy="12" r="1.5" fill="currentColor" />
+            <circle cx="4" cy="18" r="1.5" fill="currentColor" />
+          </svg>
+        </span>
         <span class="nav-label" id="txtNavConnect">Collega Servizi</span>
       </button>
       <button type="button" class="bottom-nav-fab" id="btnAddNewMain" aria-label="Aggiungi Scadenza">
         <span>＋</span>
       </button>
       <button type="button" class="bottom-nav-item" data-nav="calendar">
-        <span class="nav-icon">📅</span>
+        <span class="nav-icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="4" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </span>
         <span class="nav-label" id="txtNavCalendar">Calendario</span>
       </button>
       <button type="button" class="bottom-nav-item" data-nav="history">
-        <span class="nav-icon">🧾</span>
+        <span class="nav-icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </span>
         <span class="nav-label"><span id="txtNavHistoryLabel">Storico</span> (<span id="countHistory">0</span>)</span>
       </button>
     </nav>
@@ -782,8 +840,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <script src="./i18n.js?v=12"></script>
-  <script src="./data-presets.js?v=12"></script>
-  <script src="./app.js?v=12"></script>
+  <script src="./i18n.js?v=13"></script>
+  <script src="./data-presets.js?v=13"></script>
+  <script src="./app.js?v=13"></script>
 </body>
 </html>

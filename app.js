@@ -730,18 +730,21 @@
         : t('kpiUrgentNone');
 
     const activeSubs = activeItems.filter((i) => i.itemType === 'subscription');
+    const activeBills = activeItems.filter((i) => i.itemType === 'bill');
     const monthlySubsTotal = activeSubs.reduce((acc, item) => acc + getMonthlyEquivalentInMainCurrency(item), 0);
     const yearlySubsTotal = activeSubs.reduce((acc, item) => acc + getYearlyEquivalentInMainCurrency(item), 0);
-
-    document.getElementById('kpiMonthlySubs').textContent = formatCurrency(monthlySubsTotal, state.mainCurrency);
-    document.getElementById('kpiYearlySubs').textContent =
-      state.lang === 'ro'
-        ? `Anual: ${formatCurrency(yearlySubsTotal, state.mainCurrency)} • ${activeSubs.length} abonamente reale active`
-        : `Proiezione annua: ${formatCurrency(yearlySubsTotal, state.mainCurrency)} • ${activeSubs.length} abbonamenti reali attivi`;
-
-    const activeBills = activeItems.filter((i) => i.itemType === 'bill');
     const yearlyBillsTotal = activeBills.reduce((acc, item) => acc + getYearlyEquivalentInMainCurrency(item), 0);
     const monthlyBillsAvg = yearlyBillsTotal / 12;
+
+    // Totale mensile complessivo mostrato al centro del Donut Spendio
+    const totalMonthlyAll = monthlySubsTotal + monthlyBillsAvg;
+    const shownHeroMonthly = totalMonthlyAll > 0 ? totalMonthlyAll : monthlySubsTotal;
+
+    document.getElementById('kpiMonthlySubs').textContent = formatCurrency(shownHeroMonthly, state.mainCurrency);
+    document.getElementById('kpiYearlySubs').textContent =
+      state.lang === 'ro'
+        ? `Anual: ${formatCurrency(yearlySubsTotal, state.mainCurrency)} • ${activeSubs.length} abonamente`
+        : `Anno: ${formatCurrency(yearlySubsTotal, state.mainCurrency)} • ${activeSubs.length} abbonamenti`;
 
     document.getElementById('kpiYearlyBills').textContent = formatCurrency(yearlyBillsTotal, state.mainCurrency);
     document.getElementById('kpiMonthlyBills').textContent = `${formatCurrency(monthlyBillsAvg, state.mainCurrency)}/m`;
@@ -755,45 +758,176 @@
     document.getElementById('kpiSavedMoney').textContent = formatCurrency(totalSaved, state.mainCurrency);
     document.getElementById('kpiSavedCount').textContent = `${cancelledHistory.length} OK`;
 
-    // Aggiornamento Barre Verticali Bento (Opzione 2)
-    const streamingSpend = activeItems
-      .filter((i) => i.category === 'streaming')
-      .reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
-    const billsSpend = activeBills.reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
-    const otherSpend = activeItems
-      .filter((i) => i.category !== 'streaming' && i.itemType !== 'bill')
-      .reduce((acc, i) => acc + getMonthlyEquivalentInMainCurrency(i), 0);
+    // 1. Aggiorna Barra Mesi Editoriale Spendio (es. Set • Ottobre 2026 • Nov)
+    const locale = state.lang === 'ro' ? 'ro-RO' : 'it-IT';
+    const refDate = state.calendarDate || new Date();
+    const prevDate = new Date(refDate.getFullYear(), refDate.getMonth() - 1, 1);
+    const nextDate = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 1);
+    const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1).replace('.', '') : '');
 
-    const hasAnySpend = streamingSpend > 0 || billsSpend > 0 || otherSpend > 0;
-    const maxSpend = Math.max(streamingSpend, billsSpend, otherSpend, 1);
+    const elPrevM = document.getElementById('btnHeroPrevMonth');
+    const elCurrM = document.getElementById('heroMonthName');
+    const elCurrY = document.getElementById('heroMonthYear');
+    const elNextM = document.getElementById('btnHeroNextMonth');
 
-    const barStreaming = document.getElementById('barFillStreaming');
-    const barBills = document.getElementById('barFillBills');
-    const barOther = document.getElementById('barFillOther');
+    if (elPrevM) elPrevM.textContent = cap(prevDate.toLocaleDateString(locale, { month: 'short' }));
+    if (elCurrM) elCurrM.textContent = cap(refDate.toLocaleDateString(locale, { month: 'long' }));
+    if (elCurrY) elCurrY.textContent = String(refDate.getFullYear());
+    if (elNextM) elNextM.textContent = cap(nextDate.toLocaleDateString(locale, { month: 'short' }));
 
-    if (barStreaming) {
-      barStreaming.style.height = hasAnySpend
-        ? `${Math.max(16, Math.min(100, Math.round((streamingSpend / maxSpend) * 100)))}%`
-        : '68%';
+    // 2. Calcola Segmenti Donut Pastello Stile Spendio
+    const catDefs = [
+      {
+        key: 'streaming',
+        label: state.lang === 'ro' ? 'Streaming' : 'Streaming',
+        color: '#c084fc',
+        badgeBg: '#f3e8ff',
+        amount: activeItems
+          .filter((i) => i.category === 'streaming')
+          .reduce((a, i) => a + getMonthlyEquivalentInMainCurrency(i), 0)
+      },
+      {
+        key: 'bills',
+        label: state.lang === 'ro' ? 'Facturi' : 'Bollette',
+        color: '#f472b6',
+        badgeBg: '#fce7f3',
+        amount: activeItems
+          .filter((i) => i.itemType === 'bill' && i.category !== 'auto')
+          .reduce((a, i) => a + getMonthlyEquivalentInMainCurrency(i), 0)
+      },
+      {
+        key: 'software',
+        label: state.lang === 'ro' ? 'App & Cloud' : 'App & Cloud',
+        color: '#60a5fa',
+        badgeBg: '#dbeafe',
+        amount: activeItems
+          .filter((i) => i.category === 'software')
+          .reduce((a, i) => a + getMonthlyEquivalentInMainCurrency(i), 0)
+      },
+      {
+        key: 'auto',
+        label: state.lang === 'ro' ? 'Auto' : 'Auto & Bollo',
+        color: '#fb923c',
+        badgeBg: '#ffedd5',
+        amount: activeItems
+          .filter((i) => i.category === 'auto')
+          .reduce((a, i) => a + getMonthlyEquivalentInMainCurrency(i), 0)
+      },
+      {
+        key: 'other',
+        label: state.lang === 'ro' ? 'Altele' : 'Casa & Altro',
+        color: '#4ade80',
+        badgeBg: '#dcfce7',
+        amount: activeItems
+          .filter(
+            (i) =>
+              i.category !== 'streaming' &&
+              i.category !== 'software' &&
+              i.category !== 'auto' &&
+              !(i.itemType === 'bill' && i.category !== 'auto')
+          )
+          .reduce((a, i) => a + getMonthlyEquivalentInMainCurrency(i), 0)
+      }
+    ];
+
+    const totalCatSpend = catDefs.reduce((acc, c) => acc + c.amount, 0);
+    const segGroup = document.getElementById('spendioDonutSegments');
+    const badgesContainer = document.getElementById('spendioDonutBadges');
+    const legendContainer = document.getElementById('spendioCategoryLegend');
+
+    const donutR = 88;
+    const donutCirc = 2 * Math.PI * donutR;
+
+    // Se non ci sono ancora spese inserite, mostra l'anello pastello dimostrativo in stile Spendio (30%, 25%, 18%, 15%, 12%)
+    const activeSegments =
+      totalCatSpend > 0
+        ? catDefs
+            .filter((c) => c.amount > 0)
+            .map((c) => ({
+              ...c,
+              frac: c.amount / totalCatSpend,
+              pct: Math.max(1, Math.round((c.amount / totalCatSpend) * 100))
+            }))
+        : [
+            { label: catDefs[0].label, color: '#c084fc', badgeBg: '#f3e8ff', frac: 0.3, pct: 30 },
+            { label: catDefs[2].label, color: '#60a5fa', badgeBg: '#dbeafe', frac: 0.25, pct: 25 },
+            { label: catDefs[4].label, color: '#4ade80', badgeBg: '#dcfce7', frac: 0.18, pct: 18 },
+            { label: catDefs[3].label, color: '#fb923c', badgeBg: '#ffedd5', frac: 0.15, pct: 15 },
+            { label: catDefs[1].label, color: '#f472b6', badgeBg: '#fce7f3', frac: 0.12, pct: 12 }
+          ];
+
+    if (segGroup && badgesContainer) {
+      const gapLen = activeSegments.length > 1 ? 30 : 0;
+      let cumFrac = 0;
+      let segsSvg = '';
+      let badgesHtml = '';
+
+      activeSegments.forEach((seg) => {
+        const rawArc = seg.frac * donutCirc;
+        const visibleArc = Math.max(10, rawArc - gapLen);
+        const startOffset = cumFrac * donutCirc + gapLen / 2;
+
+        segsSvg += `<circle class="spendio-donut-seg" cx="120" cy="120" r="${donutR}" stroke="${seg.color}" stroke-dasharray="${visibleArc.toFixed(1)} ${donutCirc.toFixed(1)}" stroke-dashoffset="${(-startOffset).toFixed(1)}" />`;
+
+        const midFrac = cumFrac + seg.frac / 2;
+        const angleRad = midFrac * 2 * Math.PI - Math.PI / 2;
+        const badgeLeft = 50 + 42.5 * Math.cos(angleRad);
+        const badgeTop = 50 + 42.5 * Math.sin(angleRad);
+
+        badgesHtml += `<span class="spendio-pct-badge" style="left:${badgeLeft.toFixed(1)}%; top:${badgeTop.toFixed(1)}%; background:${seg.badgeBg};">${seg.pct}%</span>`;
+
+        cumFrac += seg.frac;
+      });
+
+      segGroup.innerHTML = segsSvg;
+      badgesContainer.innerHTML = badgesHtml;
     }
-    if (barBills) {
-      barBills.style.height = hasAnySpend
-        ? `${Math.max(16, Math.min(100, Math.round((billsSpend / maxSpend) * 100)))}%`
-        : '36%';
-    }
-    if (barOther) {
-      barOther.style.height = hasAnySpend
-        ? `${Math.max(16, Math.min(100, Math.round((otherSpend / maxSpend) * 100)))}%`
-        : '48%';
+
+    if (legendContainer) {
+      legendContainer.innerHTML = activeSegments
+        .map(
+          (seg) => `
+          <span class="spendio-legend-item">
+            <span class="spendio-legend-dot" style="background:${seg.color}"></span>
+            <span>${escapeHtml(seg.label)}</span>
+          </span>
+        `
+        )
+        .join('');
     }
 
-    const lblStreaming = document.getElementById('lblBarStreaming');
-    const lblBills = document.getElementById('lblBarBills');
-    const lblOther = document.getElementById('lblBarOther');
+    // 3. Aggiorna Banner Consiglio Smart Giallo-Verde Stile Spendio
+    const insightIconEl = document.getElementById('spendioInsightIcon');
+    const insightTextEl = document.getElementById('spendioInsightText');
+    if (insightIconEl && insightTextEl) {
+      if (mustCancelActive.length > 0) {
+        insightIconEl.textContent = '🛑';
+        insightTextEl.textContent =
+          state.lang === 'ro'
+            ? `Atenție! Ai ${mustCancelActive.length} abonament(e) de anulat înainte de reînnoire ca să economisești 😉`
+            : `Occhio! Hai ${mustCancelActive.length} abbonamento/i da disdire prima del rinnovo per risparmiare 😉`;
+      } else if (urgentItems.length > 0) {
+        insightIconEl.textContent = '🔔';
+        insightTextEl.textContent =
+          state.lang === 'ro'
+            ? `Ai ${urgentItems.length} scadențe apropiate în zilele următoare. Verifică-le mai jos! 😉`
+            : `Hai ${urgentItems.length} scadenze ravvicinate nei prossimi giorni: dà un'occhiata qui sotto! 😉`;
+      } else if (activeItems.length > 0) {
+        insightIconEl.textContent = '😊';
+        insightTextEl.textContent =
+          state.lang === 'ro'
+            ? 'Ce zici să-ți faci lista de dorințe pentru luna viitoare și să iei o pauză acum? 😉'
+            : 'Tutto sotto controllo! Che ne dici di pianificare il prossimo mese e goderti una pausa ora? 😉';
+      } else {
+        insightIconEl.textContent = '✨';
+        insightTextEl.textContent =
+          state.lang === 'ro'
+            ? 'Conectează abonamentele sau adaugă zile de naștere și relaxează-te: te anunțăm noi la timp! 😉'
+            : 'Collega i tuoi abbonamenti o aggiungi compleanni e rilassati: ti avvisiamo noi in anticipo! 😉';
+      }
+    }
+
     const btnAddSubHero = document.getElementById('txtBtnHeroAddSub');
-    if (lblStreaming) lblStreaming.textContent = state.lang === 'ro' ? 'Streaming' : 'Streaming';
-    if (lblBills) lblBills.textContent = state.lang === 'ro' ? 'Facturi' : 'Bollette';
-    if (lblOther) lblOther.textContent = state.lang === 'ro' ? 'Servicii' : 'Servizi';
     if (btnAddSubHero) btnAddSubHero.textContent = state.lang === 'ro' ? 'Conectează Serviciu' : 'Collega Servizio';
   }
 
@@ -933,8 +1067,8 @@
 
     emptyState.classList.add('hidden');
 
-    const radius = 28;
-    const circumference = Math.round(2 * Math.PI * radius); // ~176
+    const radius = 23;
+    const circumference = Math.round(2 * Math.PI * radius); // ~145
 
     grid.innerHTML = items
       .map((item) => {
@@ -951,8 +1085,17 @@
         const isCancelled = item.status === 'cancelled';
         const itemCurrency = item.currency || 'EUR';
 
-        // Calcolo Anello Circolare di Scadenza (Opzione 3) con Colori Opzione 2 (Warm Olive, Honey Gold, Coral Red)
-        let ringColor = isBirthday ? '#db2777' : isEvent ? '#0284c7' : '#65a30d';
+        // Cerchio Pastello Spendio in base alla categoria (Shopping Lilla, Entertainment Rosa, Restaurants Menta...)
+        let pastelAvatarBg = '#f3e8ff'; // Lilla pastello
+        if (isBirthday) pastelAvatarBg = '#fce7f3'; // Rosa pastello
+        else if (isEvent) pastelAvatarBg = '#dbeafe'; // Azzurro cielo pastello
+        else if (isBill || item.category === 'bills') pastelAvatarBg = '#fce7f3'; // Rosa corallo pastello
+        else if (item.category === 'auto') pastelAvatarBg = '#ffedd5'; // Pesca pastello
+        else if (item.category === 'software') pastelAvatarBg = '#dbeafe'; // Cielo pastello
+        else if (item.category === 'other') pastelAvatarBg = '#dcfce7'; // Verde menta pastello
+
+        // Calcolo Anello Circolare di Scadenza con Palette Spendio
+        let ringColor = isBirthday ? '#f472b6' : isEvent ? '#60a5fa' : '#4ade80';
         let ringTextColor = 'var(--text-main)';
         let ringMainText = '';
         let ringSubText = '';
@@ -989,11 +1132,11 @@
             ringTextColor = isBirthday ? '#db2777' : '#e11d48';
             ringPct = Math.max(18, Math.min(95, Math.round((Math.min(days, 30) / 30) * 100)));
           } else if (days <= 10) {
-            ringColor = '#d97706'; // Honey Gold attenzione
-            ringTextColor = '#d97706';
+            ringColor = '#fb923c';
+            ringTextColor = '#ea580c';
             ringPct = Math.max(25, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
           } else {
-            ringColor = isBirthday ? '#db2777' : isEvent ? '#0284c7' : '#65a30d';
+            ringColor = isBirthday ? '#f472b6' : isEvent ? '#60a5fa' : '#4ade80';
             ringPct = Math.max(30, Math.min(92, Math.round((Math.min(days, 30) / 30) * 100)));
           }
         }
@@ -1005,34 +1148,22 @@
         );
 
         const cycleShort = state.lang === 'ro' ? cycleMeta.short_ro || cycleMeta.short : cycleMeta.short;
-        let renewsLabelText = '';
+        let dateSubText = formatLocalizedDate(item.nextDate);
         if (isCancelled) {
-          renewsLabelText = state.lang === 'ro' ? 'Anulat' : 'Completato';
-        } else if (isBirthday) {
-          renewsLabelText = `🎂 ${formatLocalizedDate(item.nextDate)}`;
-        } else if (isEvent) {
-          renewsLabelText = `${item.eventTime ? `⏰ ${item.eventTime} • ` : '📅 '}${formatLocalizedDate(item.nextDate)}`;
-        } else {
-          renewsLabelText = `${isBill ? (state.lang === 'ro' ? 'Scadent' : 'Scade') : (state.lang === 'ro' ? 'Reînnoire' : 'Rinnovo')}: ${formatLocalizedDate(item.nextDate)}`;
+          dateSubText = state.lang === 'ro' ? 'Anulat' : 'Disdetto';
+        } else if (item.eventTime) {
+          dateSubText = `${formatLocalizedDate(item.nextDate)} • ⏰ ${escapeHtml(item.eventTime)}`;
         }
 
-        let priceOrMetaHtml = '';
+        let rightPriceHtml = '';
         if (isBirthday && (!item.price || Number(item.price) === 0)) {
-          priceOrMetaHtml = `
-            <span class="card-price" style="font-size: 0.92rem; color: #be185d;">
-              🎂 ${state.lang === 'ro' ? 'Aniversare Anuală' : 'Compleanno Annuale'}${item.eventTime ? ` • ⏰ ${escapeHtml(item.eventTime)}` : ''}
-            </span>
-          `;
+          rightPriceHtml = `<span class="card-price" style="font-size: 0.9rem; color: #db2777;">🎂 ${state.lang === 'ro' ? 'Anual' : 'Annuale'}</span>`;
         } else if (isEvent && (!item.price || Number(item.price) === 0)) {
-          priceOrMetaHtml = `
-            <span class="card-price" style="font-size: 0.92rem; color: #0369a1;">
-              ${item.eventTime ? `⏰ ${state.lang === 'ro' ? 'Ora' : 'Ore'} ${escapeHtml(item.eventTime)}` : `📅 ${formatLocalizedDate(item.nextDate)}`}
-            </span>
-          `;
+          rightPriceHtml = `<span class="card-price" style="font-size: 0.9rem; color: #2563eb;">${item.eventTime ? `⏰ ${escapeHtml(item.eventTime)}` : '📅'}</span>`;
         } else {
-          priceOrMetaHtml = `
+          rightPriceHtml = `
             <span class="card-price">${formatCurrency(item.price, itemCurrency)}</span>
-            <span class="card-cycle">${escapeHtml(cycleShort)}${item.eventTime ? ` • ⏰ ${escapeHtml(item.eventTime)}` : ''}</span>
+            <span class="card-cycle">${escapeHtml(cycleShort)}</span>
           `;
         }
 
@@ -1070,7 +1201,7 @@
           <article class="sub-card ${item.cancelBeforeRenewal && !isCancelled ? 'must-cancel-card' : ''}" data-card-expand="${item.id}">
             <div class="card-head">
               <div class="card-service-info">
-                <div class="service-avatar" style="background: ${escapeAttr(item.color || '#d97706')}">
+                <div class="service-avatar" style="background: ${pastelAvatarBg}">
                   ${escapeHtml(item.icon || '🎬')}
                 </div>
                 <div class="service-main-meta">
@@ -1084,27 +1215,28 @@
                         : isBirthday
                         ? `<span class="tag tag-birthday">🎂 ${state.lang === 'ro' ? 'Zi de naștere' : 'Compleanno'}</span>`
                         : isEvent
-                        ? `<span class="tag tag-event">⏰ ${state.lang === 'ro' ? 'Eveniment' : 'Evento / Appuntamento'}</span>`
+                        ? `<span class="tag tag-event">⏰ ${state.lang === 'ro' ? 'Eveniment' : 'Evento'}</span>`
                         : isBill
                         ? `<span class="tag tag-bill">${t('tagBill')}</span>`
                         : ''
                     }
                   </div>
-                  <div class="card-price-inline">
-                    ${priceOrMetaHtml}
-                  </div>
+                  <span class="card-date-sub">${dateSubText}</span>
                   <div class="card-manage-pill">
                     <span>${state.lang === 'ro' ? 'Detalii & Calendar' : 'Dettagli & Calendario'} ▾</span>
                   </div>
                 </div>
               </div>
 
-              <!-- ANELLO CIRCOLARE DI SCADENZA (Opzione 3) -->
+              <!-- DESTRA STILE SPENDIO: PREZZO GRANDE + ANELLO SCADENZA -->
               <div class="card-right-col">
+                <div class="card-right-price-block">
+                  ${rightPriceHtml}
+                </div>
                 <div class="card-countdown-ring">
-                  <svg class="progress-ring-svg" viewBox="0 0 68 68">
-                    <circle class="progress-ring-track" cx="34" cy="34" r="28"></circle>
-                    <circle class="progress-ring-value" cx="34" cy="34" r="28"
+                  <svg class="progress-ring-svg" viewBox="0 0 56 56">
+                    <circle class="progress-ring-track" cx="28" cy="28" r="23"></circle>
+                    <circle class="progress-ring-value" cx="28" cy="28" r="23"
                       stroke="${ringColor}"
                       stroke-dasharray="${circumference}"
                       stroke-dashoffset="${dashOffset}"></circle>
@@ -1114,7 +1246,6 @@
                     <span class="ring-days-unit">${ringSubText}</span>
                   </div>
                 </div>
-                <span class="ring-renews-date">${renewsLabelText}</span>
               </div>
             </div>
 
@@ -1836,7 +1967,7 @@
   async function initServiceWorkerAndNotifications() {
     if ('serviceWorker' in navigator) {
       try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=12');
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=13');
         if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }
@@ -2362,15 +2493,18 @@
       renderItemsList();
     });
 
-    // Calendar month nav
-    document.getElementById('btnPrevMonth').addEventListener('click', () => {
-      state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
+    // Calendar & Spendio Hero month nav
+    const shiftCalendarMonth = (delta) => {
+      state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + delta, 1);
+      renderKpis();
       renderCalendar();
-    });
-    document.getElementById('btnNextMonth').addEventListener('click', () => {
-      state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
-      renderCalendar();
-    });
+    };
+    document.getElementById('btnPrevMonth').addEventListener('click', () => shiftCalendarMonth(-1));
+    document.getElementById('btnNextMonth').addEventListener('click', () => shiftCalendarMonth(1));
+    const btnHeroPrev = document.getElementById('btnHeroPrevMonth');
+    const btnHeroNext = document.getElementById('btnHeroNextMonth');
+    if (btnHeroPrev) btnHeroPrev.addEventListener('click', () => shiftCalendarMonth(-1));
+    if (btnHeroNext) btnHeroNext.addEventListener('click', () => shiftCalendarMonth(1));
 
     // History & Export actions
     document.getElementById('btnExportIcsAll').addEventListener('click', () => {
