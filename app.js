@@ -1967,7 +1967,13 @@
   async function initServiceWorkerAndNotifications() {
     if ('serviceWorker' in navigator) {
       try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js?v=13');
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+        swRegistration = await navigator.serviceWorker.register('./sw.js?v=15', { updateViaCache: 'none' });
         if (swRegistration && swRegistration.update) swRegistration.update();
       } catch (_) {}
     }

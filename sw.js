@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scadenzapp-v14.0.0';
+const CACHE_NAME = 'scadenzapp-v15.0.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Strategia Network-First: scarica sempre i file più aggiornati dal server VPS,
+// Strategia Network-First (senza cache disco): scarica sempre i file più aggiornati dal server VPS,
 // e usa la cache locale solo quando il telefono è offline.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
@@ -43,7 +43,7 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) return;
 
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: 'no-store' })
       .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();

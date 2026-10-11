@@ -21,8 +21,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Window window = getWindow();
-        window.setStatusBarColor(Color.parseColor("#090d16"));
-        window.setNavigationBarColor(Color.parseColor("#090d16"));
+        window.setStatusBarColor(Color.parseColor("#ECE082"));
+        window.setNavigationBarColor(Color.parseColor("#18181B"));
 
         webView = new WebView(this);
         setContentView(webView);
@@ -36,7 +36,8 @@ public class MainActivity extends Activity {
         settings.setUseWideViewPort(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        webView.setBackgroundColor(Color.parseColor("#090d16"));
+        webView.clearCache(true);
+        webView.setBackgroundColor(Color.parseColor("#F5F7EF"));
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
             @Override
